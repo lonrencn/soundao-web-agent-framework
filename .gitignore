@@ -1,0 +1,25 @@
+# Runtime state
+runs/
+latest_result.json
+latest_agent_command.json
+.agent_loop_state.json
+
+# Logs
+*.log
+*.err.log
+*.out.log
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Local environments
+.venv/
+venv/
+env/
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
