@@ -1,0 +1,806 @@
+{
+  "base_url": "https://sd.daoson.work:8443",
+  "fetched_at": "2026-07-11T10:43:34+00:00",
+  "docs": {
+    "/llms.txt": {
+      "path": "/llms.txt",
+      "local_path": "G:\\opencodespace\\Soundao\\Soundao_Agent_Workspace\\04_文档\\云端文档\\llms.txt.md",
+      "status": 200,
+      "content_type": "text/plain; charset=utf-8",
+      "headings": [
+        "Soundao",
+        "模块索引（按需读取）",
+        "base_url",
+        "认证方式（二选一）",
+        "→ {\"token\":\"<jwt>\", \"user\":{...}}",
+        "凭证类型识别（Agent 必读）",
+        "重要约束（Agent 必读）",
+        "速测（拿到 API Key 后立刻验证）",
+        "1. 验证身份（直接用 API Key）",
+        "2. 简单合成（Edge TTS，最快）",
+        "3. LLM 对话（OpenAI 兼容）",
+        "Agent 行为建议"
+      ],
+      "table": [
+        {
+          "left": "语音合成 / 声音克隆 / 情感控制",
+          "right": "GET /llms/tts.txt + /llms/tts-engines.txt",
+          "extra": ""
+        },
+        {
+          "left": "语音转文字（纯文本，无时间戳）",
+          "right": "GET /llms/tts.txt（底部 ASR 节）",
+          "extra": ""
+        },
+        {
+          "left": "音频分析（带时间戳/说话人/情感，做 SRT）",
+          "right": "GET /llms/audio-tools.txt",
+          "extra": ""
+        },
+        {
+          "left": "音乐生成（ACE-Step / HeartMuLa / Stable Audio 3 / Muse）",
+          "right": "GET /llms/music.txt",
+          "extra": ""
+        },
+        {
+          "left": "音效生成（MOSS / Woosh / Ming-Omni）",
+          "right": "GET /llms/sfx.txt",
+          "extra": ""
+        },
+        {
+          "left": "获取参考音频 / 降噪 / 音轨分离",
+          "right": "GET /llms/audio-tools.txt",
+          "extra": ""
+        },
+        {
+          "left": "取回用户给你的资产编号",
+          "right": "GET /llms/assets.txt",
+          "extra": ""
+        },
+        {
+          "left": "视频字幕翻译 / 多语言配音",
+          "right": "GET /llms/media.txt",
+          "extra": ""
+        },
+        {
+          "left": "一次读全部（懒加载 agent）",
+          "right": "GET /llms-full.txt",
+          "extra": ""
+        }
+      ],
+      "preview": "# Soundao\n\n> Soundao 是一个面向 AI Agent 的多引擎音频处理平台。\n> 全部功能均可通过 HTTP API 调用，**无需启动浏览器代理（browser agent）**。\n> 直接用 curl / requests / openai-sdk 即可完成全部操作。\n\n## 模块索引（按需读取）\n\n先读本文件了解认证和约束，再按任务读取对应子文档：\n\n| 你要做什么 | 读这个 |\n|---|---|\n| 语音合成 / 声音克隆 / 情感控制 | GET /llms/tts.txt + /llms/tts-engines.txt |\n| 语音转文字（纯文本，无时间戳） | GET /llms/tts.txt（底部 ASR 节） |\n| 音频分析（带时间戳/说话人/情感，做 SRT） | GET /llms/audio-tools.txt |\n| 音乐生成（ACE-Step / HeartMuLa / Stable Audio 3 / Muse） | GET /llms/music.txt |\n| 音效生成（MOSS / Woosh / Ming-Omni） | GET /llms/sfx.txt |\n| 获取参考音频 / 降噪 / 音轨分离 | GET /llms/audio-tools.txt |\n| 取回用户给你的资产编号 | GET /llms/assets.txt |\n| 视频字幕翻译 / 多语言配音 | GET /llms/media.txt |\n| 一次读全部（懒加载 agent） | GET /llms-full.txt |\n\n## base_url\n\n**base_url 就是你访问本文件时所用的 Origin**（scheme://host[:port]）。\n例如：你从 `https://example.com:8443/llms.txt` 拿到本文件，则 `base_url = https://example.com:8443`。\n\n## 认证方式（二选一）\n\n1. **API Key → JWT Token**（推荐 Agent 使用）\n   ```bash\n   curl -X POST {base_url}/v1/auth/token \\\n     -H \"Content-Type: application/json\" \\\n     -d '{\"api_key\":\"wdt_xxxxxx\"}'\n   # → {\"token\":\"<jwt>\", \"user\":{...}}\n   ```\n2. **直接用 API Key**（轻量调用，免去换 token）\n   ```bash\n   curl -X POST {base_url}/v1/auth/balance \\\n     -H \"Content-Type: application/json\" \\\n     -d '{\"api_key\":\"wdt_xxxxxx\"}'\n   ```\n\n之后所有受保护接口都需要 header 之一：\n- `Authorization: Bearer <jwt>`\n- `X-API-Key: wdt_xxxxxx`\n\n## 凭证类型识别（Agent 必读）\n\n如果用户给你的用户名以 `sd_` 开头（如 `sd_abcd1234`）：\n- 这是临时凭证，**无法调 API**\n- 引导用户访问 `/activate.html` 激活为正式凭证\n\n## 重要约束（Agent 必读）\n\n1. **结果文件不永久保存** — 调用接口产生的 .wav / .mp4 等需及时下载\n2. **参考音 3–10 秒最佳** — 声音克隆/SVC 的参考音频必须是一句完整的话（3–10 秒）。⚠️ 不要传长样本（>15 秒），会导致"
+    },
+    "/llms/tts.txt": {
+      "path": "/llms/tts.txt",
+      "local_path": "G:\\opencodespace\\Soundao\\Soundao_Agent_Workspace\\04_文档\\云端文档\\llms__tts.txt.md",
+      "status": 200,
+      "content_type": "text/plain; charset=utf-8",
+      "headings": [
+        "Soundao — 语音合成 TTS（10 引擎）",
+        "引擎对比",
+        "关键模式速记",
+        "各引擎标签规范",
+        "完整参数速查",
+        "LLM 代理（OpenAI 兼容）",
+        "语音识别（ASR）",
+        "POST /v1/asr/upload — 上传文件识别（推荐）",
+        "→ {\"text\": \"识别出的文字\"}",
+        "POST /v1/asr — 服务器已有路径识别",
+        "→ {\"text\": \"识别出的文字\"}"
+      ],
+      "table": [
+        {
+          "left": "VoxCPM",
+          "right": "POST /v2/synthesize",
+          "extra": "主力引擎，46 情感 + 三档克隆 / 250"
+        },
+        {
+          "left": "VoxCPM Design",
+          "right": "POST /v1/qwen/design",
+          "extra": "声音设计（无参考音频） / 250"
+        },
+        {
+          "left": "Edge TTS",
+          "right": "POST /v1/microsoft-edge-tts/synthesize",
+          "extra": "微软 Edge，最快，多语言 / 50"
+        },
+        {
+          "left": "IndexTTS2",
+          "right": "POST /v1/indextts2/synthesize",
+          "extra": "高质量中文克隆，8 维情绪向量 / 250"
+        },
+        {
+          "left": "MOSS-TTS",
+          "right": "POST /v1/moss-tts/synthesize",
+          "extra": "中文克隆 + 续写 + 情绪指令（continuation 独有） / 1300"
+        },
+        {
+          "left": "MOSS-Nano",
+          "right": "POST /v1/moss-nano/synthesize",
+          "extra": "MOSS 轻量版，更快 / 150"
+        },
+        {
+          "left": "Qwen3-TTS",
+          "right": "POST /v1/qwen3-tts/synthesize",
+          "extra": "指令式风格，9 预设 speaker / 250"
+        },
+        {
+          "left": "OmniVoice",
+          "right": "POST /v1/omnivoice/synthesize",
+          "extra": "多语言克隆（11 语种） / 250"
+        },
+        {
+          "left": "CosyVoice3",
+          "right": "POST /v1/cosyvoice/synthesize",
+          "extra": "顶级克隆质量 / 250"
+        },
+        {
+          "left": "VibeVoice",
+          "right": "POST /v1/vibevoice/synthesize",
+          "extra": "实时/长文本 / 150"
+        }
+      ],
+      "preview": "# Soundao — 语音合成 TTS（10 引擎）\n\n> 按需选引擎。不确定就用 VoxCPM（主力）或 Edge TTS（最快）。\n\n## 引擎对比\n\n| 引擎 | 端点 | 特点 | 计费（分/百字） |\n|---|---|---|---|\n| VoxCPM | POST /v2/synthesize | 主力引擎，46 情感 + 三档克隆 | 250 |\n| VoxCPM Design | POST /v1/qwen/design | 声音设计（无参考音频） | 250 |\n| Edge TTS | POST /v1/microsoft-edge-tts/synthesize | 微软 Edge，最快，多语言 | 50 |\n| IndexTTS2 | POST /v1/indextts2/synthesize | 高质量中文克隆，8 维情绪向量 | 250 |\n| MOSS-TTS | POST /v1/moss-tts/synthesize | 中文克隆 + 续写 + 情绪指令（continuation 独有） | 1300 |\n| MOSS-Nano | POST /v1/moss-nano/synthesize | MOSS 轻量版，更快 | 150 |\n| Qwen3-TTS | POST /v1/qwen3-tts/synthesize | 指令式风格，9 预设 speaker | 250 |\n| OmniVoice | POST /v1/omnivoice/synthesize | 多语言克隆（11 语种） | 250 |\n| CosyVoice3 | POST /v1/cosyvoice/synthesize | 顶级克隆质量 | 250 |\n| VibeVoice | POST /v1/vibevoice/synthesize | 实时/长文本 | 150 |\n\n计费规则：克隆 OR 情感控制 → 500 积分/100 字符；其他 250 积分/100 字符（不叠加）。MOSS-TTS 单独定价：纯文本 1300/100，克隆 1750/100。Edge TTS / MOSS-Nano / VibeVoice 有折扣。\n\n## 关键模式速记\n\n- **VoxCPM 三档**：Voice Design（无参考）/ Controllable Cloning（普通克隆）/ Ultimate Cloning（`ultimate_cloning=true`，极致还原）\n- **Qwen3 四 task**：`voice_clone`（需 audio_path，推荐 ref_text）/ `xvector`（仅声纹）/ `voice_design`（instruct 描述创造）/ `custom_voice`（9 预设 speaker，可配 instruct）\n- **IndexTTS2 情绪**：`emo_vector` = `[happy, angry, sad, afraid, disgusted, melanchoric, surprised, calm]` 8 维向量；优先级 emo_vector > emo_audio_path > emo_text\n- **MOSS 模式**：`clone`（克隆）/ `continuation`（续写，独有）；端点 `/v1/moss-tts/synthesize`（主力）vs `/v1/moss-nano/synthesize`（轻量）\n\n---\n\n## 各引擎标签规范\n\n> 完整标签语法详见 **/llms/tts-engines.txt**（各引擎的行内标签、情绪控制、指令参数全部规范）。\n\n\n## 完整参数速查\n\n所有引擎的完整参数、示例、响应格式都在本文件上方表格和关键"
+    },
+    "/llms/tts-engines.txt": {
+      "path": "/llms/tts-engines.txt",
+      "local_path": "G:\\opencodespace\\Soundao\\Soundao_Agent_Workspace\\04_文档\\云端文档\\llms__tts-engines.txt.md",
+      "status": 200,
+      "content_type": "text/plain; charset=utf-8",
+      "headings": [
+        "各引擎标签与控制参数完整规范",
+        "VoxCPM — 行内文本标签（写在 text 字段内）",
+        "1. 情绪标签（41 种，直接写 `[情绪名]`）",
+        "2. 控制标签（声音/风格/角色描述）",
+        "3. 多音字标注（花括号拼音）",
+        "OmniVoice — 行内标签（写在 text 字段内）",
+        "Qwen3-TTS — 指令参数",
+        "CosyVoice3 — 三模式 + 指令控制",
+        "IndexTTS2 — 情绪控制（4 种方式，按优先级）",
+        "Ming-Omni — 6 维控制参数",
+        "MOSS-TTS 文本标签与指令控制（v1.5）",
+        "体系一：全局指令（情绪/风格/音色）— 通过 `instruction` 参数",
+        "体系二：行内标记（局部控制，写在 text 字段内）",
+        "其他参数"
+      ],
+      "table": [
+        {
+          "left": "标签",
+          "right": "效果",
+          "extra": "示例"
+        },
+        {
+          "left": "[笑]` / `[大笑]",
+          "right": "笑声",
+          "extra": "[笑]哈哈哈哈太搞笑了。"
+        },
+        {
+          "left": "[叹气]` / `[悲伤]` / `[低落]",
+          "right": "叹气",
+          "extra": "[叹气]唉，算了吧。"
+        },
+        {
+          "left": "[惊讶]` / `[惊吓]",
+          "right": "惊讶语气",
+          "extra": "[惊讶]真的吗！"
+        },
+        {
+          "left": "[疑惑]` / `[提问]",
+          "right": "疑问语气",
+          "extra": "[疑惑]这是怎么回事？"
+        },
+        {
+          "left": "[不满]` / `[反感]",
+          "right": "不满语气",
+          "extra": "[不满]这也太过分了。"
+        },
+        {
+          "left": "[确认]` / `[肯定]",
+          "right": "肯定语气",
+          "extra": "[确认]没错，就是这样。"
+        },
+        {
+          "left": "参数",
+          "right": "task",
+          "extra": "说明 / 示例"
+        },
+        {
+          "left": "instruct",
+          "right": "voice_design",
+          "extra": "描述想要的声音特征（必填） / \"温柔成熟的女声，语速适中\""
+        },
+        {
+          "left": "instruct",
+          "right": "custom_voice",
+          "extra": "在预设 speaker 基础上叠加指令 / \"用悲伤的语气朗读\""
+        },
+        {
+          "left": "speaker",
+          "right": "custom_voice",
+          "extra": "9 预设音色 / Vivian / Chloe / Ethan / ..."
+        },
+        {
+          "left": "language",
+          "right": "全部",
+          "extra": "语言提示 / \"zh\"` / `\"en\"` / `\"Auto\""
+        },
+        {
+          "left": "参数",
+          "right": "说明",
+          "extra": "示例"
+        },
+        {
+          "left": "mode",
+          "right": "合成模式",
+          "extra": "zero_shot`（克隆）/ `cross_lingual`（跨语言）/ `instruct2`（指令控制）"
+        },
+        {
+          "left": "instruct_text",
+          "right": "指令文本（mode=instruct2 时生效）",
+          "extra": "\"用悲伤的语气说话\""
+        },
+        {
+          "left": "speed",
+          "right": "语速倍率",
+          "extra": "1.0`（正常）/ `0.8`（慢）/ `1.2`（快）"
+        },
+        {
+          "left": "prompt_text",
+          "right": "参考音频对应文本（zero_shot 必填）",
+          "extra": "—"
+        },
+        {
+          "left": "trim_start` / `trim_end",
+          "right": "参考音频裁剪（秒）",
+          "extra": "0.5` / `-0.2"
+        }
+      ],
+      "preview": "## 各引擎标签与控制参数完整规范\n\n### VoxCPM — 行内文本标签（写在 text 字段内）\n\nVoxCPM 支持 3 类行内标签，直接嵌在 `text` 里：\n\n#### 1. 情绪标签（41 种，直接写 `[情绪名]`）\n\n```\n[高兴]今天天气真好！\n[悲伤]一切都已经结束了。\n[愤怒]你怎么能这样做！\n```\n\n完整情绪列表（中括号内为合法写法，别名自动归一）：\n高兴(开心) | 愤怒(生气) | 悲伤(伤心) | 恐惧(害怕) | 反感(厌恶) | 低落 | 惊讶(惊喜) | 疑惑 | 平静 | 紧张 | 害羞 | 沉思 | 严肃 | 温柔 | 急切 | 信任 | 期待(期望) | 自卑 | 自豪(得意) | 羞耻 | 内疚(懊悔) | 傲慢 | 焦虑 | 委屈 | 尴尬 | 失望 | 羡慕 | 嫉妒 | 感动 | 孤独 | 烦躁(焦躁) | 欣慰 | 怀念(思念) | 绝望 | 放松 | 好奇 | 共情(同理心) | 怨恨 | 感激(感恩) | 轻蔑 | 自然(无情绪/中立)\n\n也支持 `[情绪:高兴]` / `[emotion:happy]` 写法。\n\n#### 2. 控制标签（声音/风格/角色描述）\n\n```\n[控制:温柔的女声，语速偏慢]春天的风轻轻吹过。\n[声音:浑厚中年男声]欢迎大家收听本期节目。\n[风格:新闻播报腔]据最新消息报道……\n```\n\n中英文均可：`[control:xxx]` / `[voice:xxx]` / `[style:xxx]`\n\n#### 3. 多音字标注（花括号拼音）\n\n```\n这行{xing2}字很长。        ← 行 读 xíng\n银行{hang2}明天开门。       ← 行 读 háng\n```\n\n---\n\n### OmniVoice — 行内标签（写在 text 字段内）\n\nOmniVoice 支持与 VoxCPM 相同的 `[控制:xxx]` 控制标签和 `{拼音}` 多音字标注，另支持 12 种语音标记：\n\n| 标签 | 效果 | 示例 |\n|---|---|---|\n| `[笑]` / `[大笑]` | 笑声 | `[笑]哈哈哈哈太搞笑了。` |\n| `[叹气]` / `[悲伤]` / `[低落]` | 叹气 | `[叹气]唉，算了吧。` |\n| `[惊讶]` / `[惊吓]` | 惊讶语气 | `[惊讶]真的吗！` |\n| `[疑惑]` / `[提问]` | 疑问语气 | `[疑惑]这是怎么回事？` |\n| `[不满]` / `[反感]` | 不满语气 | `[不满]这也太过分了。` |\n| `[确认]` / `[肯定]` | 肯定语气 | `[确认]没错，就是这样。` |\n\n同时支持 `instruct` 参数（自然语言风格描述）。\n\n---\n\n### Qwen3-TTS — 指令参数\n\n| 参数 | task | 说明 | 示例 |\n|---|---|---|---|\n| `instruct` | `voice_design` | 描述想要的声音特征（必填） | `\"温柔成熟的女声，语速适中\"` |\n| `instruct` | `custom_voice` | 在预设 speaker 基础上叠加指令 | `\"用悲伤的语气朗读\"` |\n| `speaker` | `custom_voice` | 9 预设音色 | Vivian / Chloe / Ethan / ... |\n| `language` | 全部 | 语言提示 | `\"zh\"` / `\"en\"` / `\"Auto\"` |\n\n> `voice_clone` 和 `xvector` 模式不支持 instruct（纯克隆，不叠加指令）。\n\n---\n\n### CosyVoice3 — 三模式 + "
+    },
+    "/llms/audio-tools.txt": {
+      "path": "/llms/audio-tools.txt",
+      "local_path": "G:\\opencodespace\\Soundao\\Soundao_Agent_Workspace\\04_文档\\云端文档\\llms__audio-tools.txt.md",
+      "status": 200,
+      "content_type": "text/plain; charset=utf-8",
+      "headings": [
+        "Soundao — 音频处理工具 + 参考音频指南",
+        "三个转录端点对比（Agent 必读）",
+        "POST /v1/asr/upload — 快速纯文本识别",
+        "→ {\"text\": \"识别出的文字\"}",
+        "POST /v1/audio/analyze — 完整分析（带时间戳，做 SRT 用这个）",
+        "第 1 步：提交分析（multipart 上传）",
+        "→ {\"job_id\": \"abc123def456\", \"status\": \"pending\", ...}",
+        "第 2 步：轮询结果",
+        "第 3 步：完成后的 segments 格式",
+        "找裁剪点（参考音频）",
+        "提交分析",
+        "→ {\"job_id\": \"xxx\"}",
+        "轮询到 done 后，segments 里有每句的 start/end",
+        "挑一句 3-10 秒的，用 ffmpeg 裁剪：",
+        "如何获取用户的参考音频",
+        "转码为平台格式",
+        "备选：一行命令启动本地录音 webui",
+        "音轨分离",
+        "降噪"
+      ],
+      "table": [
+        {
+          "left": "POST /v1/asr/upload",
+          "right": "multipart（field: `audio`）",
+          "extra": "{\"text\": \"...\"} / ❌ / 只要纯文本"
+        },
+        {
+          "left": "POST /v1/asr",
+          "right": "JSON `{\"audio_path\": \"...\"}",
+          "extra": "{\"text\": \"...\"} / ❌ / 服务器已有路径"
+        },
+        {
+          "left": "POST /v1/audio/analyze",
+          "right": "multipart（field: `audio`）",
+          "extra": "segments + speakers + emotions / ✅ / **做 SRT / 找裁剪点 / 说话人分离**"
+        },
+        {
+          "left": "参数",
+          "right": "说明",
+          "extra": "默认值"
+        },
+        {
+          "left": "language",
+          "right": "语言（zh/en/auto）",
+          "extra": "auto"
+        },
+        {
+          "left": "num_speakers",
+          "right": "预期说话人数",
+          "extra": "自动检测"
+        },
+        {
+          "left": "enable_punc",
+          "right": "加标点",
+          "extra": "false"
+        },
+        {
+          "left": "enable_sfx",
+          "right": "音效事件检测",
+          "extra": "false"
+        },
+        {
+          "left": "enhance",
+          "right": "先降噪再分析",
+          "extra": "false"
+        },
+        {
+          "left": "remove_bgm",
+          "right": "去背景音乐",
+          "extra": "false"
+        },
+        {
+          "left": "start_sec",
+          "right": "分析起始秒",
+          "extra": "从头"
+        },
+        {
+          "left": "end_sec",
+          "right": "分析结束秒",
+          "extra": "到尾"
+        },
+        {
+          "left": "enable_fine_segments",
+          "right": "细粒度分段",
+          "extra": "auto"
+        },
+        {
+          "left": "系统",
+          "right": "工具",
+          "extra": ""
+        },
+        {
+          "left": "Windows",
+          "right": "开始菜单搜索\"录音机\"或\"Voice Recorder\"",
+          "extra": ""
+        },
+        {
+          "left": "macOS",
+          "right": "QuickTime Player → 文件 → 新建音频录制",
+          "extra": ""
+        },
+        {
+          "left": "iOS",
+          "right": "\"语音备忘录\" App",
+          "extra": ""
+        },
+        {
+          "left": "Android",
+          "right": "\"录音机\" / \"Recorder\" App",
+          "extra": ""
+        }
+      ],
+      "preview": "# Soundao — 音频处理工具 + 参考音频指南\n\n## 三个转录端点对比（Agent 必读）\n\n| 端点 | 输入格式 | 返回 | 有时间戳 | 适用场景 |\n|---|---|---|---|---|\n| POST /v1/asr/upload | multipart（field: `audio`） | `{\"text\": \"...\"}` | ❌ | 只要纯文本 |\n| POST /v1/asr | JSON `{\"audio_path\": \"...\"}` | `{\"text\": \"...\"}` | ❌ | 服务器已有路径 |\n| POST /v1/audio/analyze | multipart（field: `audio`） | segments + speakers + emotions | ✅ | **做 SRT / 找裁剪点 / 说话人分离** |\n\n### POST /v1/asr/upload — 快速纯文本识别\n\n```bash\ncurl -X POST {base_url}/v1/asr/upload \\\n  -H \"Authorization: Bearer <jwt>\" \\\n  -F \"audio=@speech.wav\"\n# → {\"text\": \"识别出的文字\"}\n```\n\n### POST /v1/audio/analyze — 完整分析（带时间戳，做 SRT 用这个）\n\n**异步流程**：上传 → 拿 `job_id` → 轮询结果。\n\n#### 第 1 步：提交分析（multipart 上传）\n\n```bash\ncurl -X POST {base_url}/v1/audio/analyze \\\n  -H \"Authorization: Bearer <jwt>\" \\\n  -F \"audio=@meeting.wav\" \\\n  -F \"language=zh\" \\\n  -F \"num_speakers=2\" \\\n  -F \"enable_punc=true\"\n# → {\"job_id\": \"abc123def456\", \"status\": \"pending\", ...}\n```\n\n可选参数（都是 multipart 字段）：\n\n| 参数 | 说明 | 默认值 |\n|---|---|---|\n| language | 语言（zh/en/auto） | auto |\n| num_speakers | 预期说话人数 | 自动检测 |\n| enable_punc | 加标点 | false |\n| enable_sfx | 音效事件检测 | false |\n| enhance | 先降噪再分析 | false |\n| remove_bgm | 去背景音乐 | false |\n| start_sec | 分析起始秒 | 从头 |\n| end_sec | 分析结束秒 | 到尾 |\n| enable_fine_segments | 细粒度分段 | auto |\n\n#### 第 2 步：轮询结果\n\n```bash\ncurl \"{base_url}/v1/audio/analyze/status?job_id=abc123def456\" \\\n  -H \"Authorization: Bearer <jwt>\"\n```\n\n`status` 可能值：`pending` → `queued` → `running` → `done`（或 `error`）\n\n#### 第 3 步：完成后的 segments 格式\n\n```json\n{\n  \"status\": \"done\",\n  \"segments\": [\n    {\n      \"start\": 0.0,\n      \"end\": 3.52,\n      \"speaker"
+    },
+    "/llms/music.txt": {
+      "path": "/llms/music.txt",
+      "local_path": "G:\\opencodespace\\Soundao\\Soundao_Agent_Workspace\\04_文档\\云端文档\\llms__music.txt.md",
+      "status": 200,
+      "content_type": "text/plain; charset=utf-8",
+      "headings": [
+        "Soundao — AI 音乐生成",
+        "音乐生成引擎对比",
+        "ACE-Step 1.5 XL SFT（4B 旗舰）",
+        "参数",
+        "快速生成（最简调用）",
+        "用当前已加载模型，省 500 积分（2000 积分/首）",
+        "全包编排（Agent 用 LLM 自动生成全套参数）",
+        "Caption 规范（prompt 字段）",
+        "歌词规范（lyrics 字段）",
+        "输出 JSON（只输出 JSON，不要解释）",
+        "LoRA 风格叠加",
+        "列出平台预装的 LoRA",
+        "生成时叠加 LoRA",
+        "音频分析（ACE-Step LLM）",
+        "计费",
+        "其他音乐引擎"
+      ],
+      "table": [
+        {
+          "left": "ACE-Step 1.5",
+          "right": "POST /v1/acestep15/generate",
+          "extra": "旗舰，LoRA 叠加，不传 model 省 500 / 2000"
+        },
+        {
+          "left": "HeartMuLa 3B",
+          "right": "POST /v1/heartmula/generate",
+          "extra": "歌词控制+多语言，段落级风格 / 1500"
+        },
+        {
+          "left": "Stable Audio 3",
+          "right": "POST /v1/stable-audio3/generate",
+          "extra": "变长生成，inpainting，<2s 推理 / 1000"
+        },
+        {
+          "left": "Muse",
+          "right": "POST /v1/muse/generate",
+          "extra": "Qwen3 轻量，段落级风格控制 / 1000"
+        },
+        {
+          "left": "参数",
+          "right": "说明",
+          "extra": "默认值"
+        },
+        {
+          "left": "prompt",
+          "right": "音乐描述（英文 caption 效果更好）",
+          "extra": "必填"
+        },
+        {
+          "left": "lyrics",
+          "right": "歌词（用 [verse]/[chorus]/[bridge] 段落标签）",
+          "extra": "空"
+        },
+        {
+          "left": "audio_duration",
+          "right": "时长秒数（10-300）",
+          "extra": "30"
+        },
+        {
+          "left": "bpm",
+          "right": "BPM（0=自动，否则 60-200）",
+          "extra": "0"
+        },
+        {
+          "left": "key_scale",
+          "right": "调式（C major / A minor 等，不需要则不传）",
+          "extra": "不传"
+        },
+        {
+          "left": "inference_steps",
+          "right": "推理步数（默认 28，更多=更精细但更慢）",
+          "extra": "28"
+        },
+        {
+          "left": "guidance_scale",
+          "right": "引导强度（建议 5-10）",
+          "extra": "7.0"
+        },
+        {
+          "left": "shift",
+          "right": "时间步偏移（1.0-5.0）",
+          "extra": "3.0"
+        },
+        {
+          "left": "lora_stack",
+          "right": "LoRA 风格叠加 `[{lora_id, scale}]",
+          "extra": "不传"
+        },
+        {
+          "left": "audio_format",
+          "right": "wav / mp3 / flac / opus / aac",
+          "extra": "wav"
+        },
+        {
+          "left": "model",
+          "right": "DiT 模型名。**不传=用当前已加载模型（省 500 积分）**",
+          "extra": "不传"
+        },
+        {
+          "left": "no_switch",
+          "right": "不切换模型（model 不传时自动 true）",
+          "extra": "true"
+        },
+        {
+          "left": "操作",
+          "right": "不传 model（默认）",
+          "extra": "传 model（切换）"
+        }
+      ],
+      "preview": "# Soundao — AI 音乐生成\n\n## 音乐生成引擎对比\n\n| 引擎 | 端点 | 特点 | 计费（积分/首） |\n|---|---|---|---|\n| ACE-Step 1.5 | POST /v1/acestep15/generate | 旗舰，LoRA 叠加，不传 model 省 500 | 2000 |\n| HeartMuLa 3B | POST /v1/heartmula/generate | 歌词控制+多语言，段落级风格 | 1500 |\n| Stable Audio 3 | POST /v1/stable-audio3/generate | 变长生成，inpainting，<2s 推理 | 1000 |\n| Muse | POST /v1/muse/generate | Qwen3 轻量，段落级风格控制 | 1000 |\n\n## ACE-Step 1.5 XL SFT（4B 旗舰）\n\n- POST /v1/acestep15/generate — 文本/歌词生成音乐\n- GET /v1/acestep15/health — 子服务健康检查\n\n### 参数\n\n| 参数 | 说明 | 默认值 |\n|---|---|---|\n| prompt | 音乐描述（英文 caption 效果更好） | 必填 |\n| lyrics | 歌词（用 [verse]/[chorus]/[bridge] 段落标签） | 空 |\n| audio_duration | 时长秒数（10-300） | 30 |\n| bpm | BPM（0=自动，否则 60-200） | 0 |\n| key_scale | 调式（C major / A minor 等，不需要则不传） | 不传 |\n| inference_steps | 推理步数（默认 28，更多=更精细但更慢） | 28 |\n| guidance_scale | 引导强度（建议 5-10） | 7.0 |\n| shift | 时间步偏移（1.0-5.0） | 3.0 |\n| lora_stack | LoRA 风格叠加 `[{lora_id, scale}]` | 不传 |\n| audio_format | wav / mp3 / flac / opus / aac | wav |\n| model | DiT 模型名。**不传=用当前已加载模型（省 500 积分）** | 不传 |\n| no_switch | 不切换模型（model 不传时自动 true） | true |\n\n### 快速生成（最简调用）\n\n```bash\n# 用当前已加载模型，省 500 积分（2000 积分/首）\ncurl -X POST {base_url}/v1/acestep15/generate \\\n  -H \"Authorization: Bearer <jwt>\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"prompt\": \"upbeat summer pop with bright piano, energetic female vocals\",\n    \"lyrics\": \"[verse]\\n夏天来了\\n阳光灿烂\\n\\n[chorus]\\n一起奔跑\\n在金色的田野\",\n    \"audio_duration\": 60,\n    \"audio_format\": \"mp3\"\n  }' -o song.mp3\n```\n\n### 全包编排（Agent 用 LLM 自动生成全套参数）\n\nAgent 拿到用户一句话需求后，用自己的 LLM 扩展为完整 caption + 歌词 + 参数，再提交生成。\n以下是推荐的系统提示词，Agent 直接复制使用：\n\n``"
+    },
+    "/llms/sfx.txt": {
+      "path": "/llms/sfx.txt",
+      "local_path": "G:\\opencodespace\\Soundao\\Soundao_Agent_Workspace\\04_文档\\云端文档\\llms__sfx.txt.md",
+      "status": 200,
+      "content_type": "text/plain; charset=utf-8",
+      "headings": [
+        "Soundao — AI 音效生成",
+        "引擎对比",
+        "MOSS-SoundEffect v2.0",
+        "参数",
+        "num_inference_steps 推荐值（重要）",
+        "示例"
+      ],
+      "table": [
+        {
+          "left": "MOSS-SoundEffect v2.0",
+          "right": "POST /v1/soundeffect/generate",
+          "extra": "1.3B DiT+Flow Matching，最长 30s / 500"
+        },
+        {
+          "left": "Woosh (Sony AI)",
+          "right": "POST /v1/woosh/generate",
+          "extra": "T2A+V2A（视频生音效），Flow Matching / 500"
+        },
+        {
+          "left": "Stable Audio 3 SFX",
+          "right": "POST /v1/stable-audio3/generate",
+          "extra": "433M 轻量，变长 / 1000"
+        },
+        {
+          "left": "Ming-Omni",
+          "right": "POST /v1/ming-omni/generate",
+          "extra": "统一 TTS+音效+音乐，0.5B / 300"
+        },
+        {
+          "left": "参数",
+          "right": "说明",
+          "extra": "推荐值"
+        },
+        {
+          "left": "prompt",
+          "right": "音效描述（中文或英文）",
+          "extra": "—"
+        },
+        {
+          "left": "seconds",
+          "right": "时长（1-30）",
+          "extra": "按需"
+        },
+        {
+          "left": "num_inference_steps",
+          "right": "推理步数",
+          "extra": "见下表"
+        },
+        {
+          "left": "cfg_scale",
+          "right": "引导强度",
+          "extra": "4.0"
+        },
+        {
+          "left": "sigma_shift",
+          "right": "sigma 偏移",
+          "extra": "5.0"
+        },
+        {
+          "left": "seed",
+          "right": "随机种子（0=随机）",
+          "extra": "0"
+        },
+        {
+          "left": "negative_prompt",
+          "right": "负面提示",
+          "extra": "—"
+        },
+        {
+          "left": "audio_format",
+          "right": "输出格式",
+          "extra": "wav / mp3"
+        },
+        {
+          "left": "声音类型",
+          "right": "推荐步数",
+          "extra": "说明"
+        },
+        {
+          "left": "冲击型（爆炸、狗叫、碎玻璃）",
+          "right": "**30-50**",
+          "extra": "少步保留瞬态锐度，多步会过平滑"
+        },
+        {
+          "left": "环境型（雨声、风声、海浪）",
+          "right": "**100-150**",
+          "extra": "多步让持续音更平滑自然"
+        },
+        {
+          "left": "复合型（脚步、引擎、人群）",
+          "right": "**80-100**",
+          "extra": "兼顾瞬态和持续"
+        },
+        {
+          "left": "快速预览",
+          "right": "**20-40**",
+          "extra": "先听效果再细调"
+        }
+      ],
+      "preview": "# Soundao — AI 音效生成\n\n## 引擎对比\n\n| 引擎 | 端点 | 特点 | 计费（积分/次） |\n|---|---|---|---|\n| MOSS-SoundEffect v2.0 | POST /v1/soundeffect/generate | 1.3B DiT+Flow Matching，最长 30s | 500 |\n| Woosh (Sony AI) | POST /v1/woosh/generate | T2A+V2A（视频生音效），Flow Matching | 500 |\n| Stable Audio 3 SFX | POST /v1/stable-audio3/generate | 433M 轻量，变长 | 1000 |\n| Ming-Omni | POST /v1/ming-omni/generate | 统一 TTS+音效+音乐，0.5B | 300 |\n\n## MOSS-SoundEffect v2.0\n\n- POST /v1/soundeffect/generate — 文本生成音效（48kHz，最长 30s，500 积分/次）\n- GET /v1/soundeffect/health — 健康检查\n\n## 参数\n\n| 参数 | 说明 | 推荐值 |\n|---|---|---|\n| prompt | 音效描述（中文或英文） | — |\n| seconds | 时长（1-30） | 按需 |\n| num_inference_steps | 推理步数 | 见下表 |\n| cfg_scale | 引导强度 | 4.0 |\n| sigma_shift | sigma 偏移 | 5.0 |\n| seed | 随机种子（0=随机） | 0 |\n| negative_prompt | 负面提示 | — |\n| audio_format | 输出格式 | wav / mp3 |\n\n## num_inference_steps 推荐值（重要）\n\n步数不是越多越好。Flow Matching 模型中，不同声音类型有最佳步数范围：\n\n| 声音类型 | 推荐步数 | 说明 |\n|---|---|---|\n| 冲击型（爆炸、狗叫、碎玻璃） | **30-50** | 少步保留瞬态锐度，多步会过平滑 |\n| 环境型（雨声、风声、海浪） | **100-150** | 多步让持续音更平滑自然 |\n| 复合型（脚步、引擎、人群） | **80-100** | 兼顾瞬态和持续 |\n| 快速预览 | **20-40** | 先听效果再细调 |\n\n## 示例\n\n```bash\ncurl -X POST {base_url}/v1/soundeffect/generate \\\n  -H \"Authorization: Bearer <jwt>\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"prompt\":\"gentle rain on roof\",\"seconds\":10,\"num_inference_steps\":120,\"audio_format\":\"mp3\"}' \\\n  -o rain.mp3\n```\n"
+    },
+    "/llms/media.txt": {
+      "path": "/llms/media.txt",
+      "local_path": "G:\\opencodespace\\Soundao\\Soundao_Agent_Workspace\\04_文档\\云端文档\\llms__media.txt.md",
+      "status": 200,
+      "content_type": "text/plain; charset=utf-8",
+      "headings": [
+        "Soundao — 媒体处理（视频流水线）",
+        "字幕翻译",
+        "视频配音",
+        "MKV 封装"
+      ],
+      "table": [],
+      "preview": "# Soundao — 媒体处理（视频流水线）\n\n## 字幕翻译\n\n- 多语言字幕翻译，支持术语库、风格分析、子句级时间戳对齐\n- **字幕规范**：不出现停顿标点（。、，！？等），仅必要时用引号/书名号，单行 ≤20 字\n\n## 视频配音\n\n- 字幕对齐 + 多语言 TTS 配音\n- 支持 VoxCPM / Edge TTS / MOSS-TTS 等引擎\n\n## MKV 封装\n\n- 多音轨 MKV 封装（原音 + 配音 + 字幕）\n"
+    },
+    "/llms/assets.txt": {
+      "path": "/llms/assets.txt",
+      "local_path": "G:\\opencodespace\\Soundao\\Soundao_Agent_Workspace\\04_文档\\云端文档\\llms__assets.txt.md",
+      "status": 200,
+      "content_type": "text/plain; charset=utf-8",
+      "headings": [
+        "Soundao — 资产编号系统",
+        "API",
+        "资产 JSON 格式（用户粘贴给你的）",
+        "Agent 取回示例",
+        "扣费 50 积分，返回音频文件",
+        "有效期"
+      ],
+      "table": [
+        {
+          "left": "POST /v1/assets/register",
+          "right": "注册资产（UI 圈i 按钮调用）",
+          "extra": "—"
+        },
+        {
+          "left": "GET /v1/assets/{asset_id}",
+          "right": "**取回音频文件**",
+          "extra": "50 积分/次"
+        },
+        {
+          "left": "GET /v1/assets/{asset_id}/meta",
+          "right": "查看元数据",
+          "extra": "免费"
+        },
+        {
+          "left": "GET /v1/assets/mine",
+          "right": "列出我的资产",
+          "extra": "免费"
+        },
+        {
+          "left": "DELETE /v1/assets/{asset_id}",
+          "right": "删除资产",
+          "extra": "免费"
+        }
+      ],
+      "preview": "# Soundao — 资产编号系统\n\n用户在平台 UI 上生成音频后，可点击 ⓘ 按钮将音频注册为\"资产\"，获得一个资产 JSON（自动复制到剪贴板）。\nAgent 收到此 JSON 后，可通过 API 取回音频文件。\n\n## API\n\n| 端点 | 说明 | 费用 |\n|---|---|---|\n| POST /v1/assets/register | 注册资产（UI 圈i 按钮调用） | — |\n| GET /v1/assets/{asset_id} | **取回音频文件** | 50 积分/次 |\n| GET /v1/assets/{asset_id}/meta | 查看元数据 | 免费 |\n| GET /v1/assets/mine | 列出我的资产 | 免费 |\n| DELETE /v1/assets/{asset_id} | 删除资产 | 免费 |\n\n## 资产 JSON 格式（用户粘贴给你的）\n\n```json\n{\n  \"asset_id\": \"sd-music-8a2b3c\",\n  \"type\": \"music\",\n  \"engine\": \"acestep15\",\n  \"prompt\": \"...\",\n  \"params\": { ... },\n  \"retrieve\": \"GET /v1/assets/sd-music-8a2b3c\"\n}\n```\n\n## Agent 取回示例\n\n```bash\ncurl {base_url}/v1/assets/sd-music-8a2b3c \\\n  -H \"Authorization: Bearer <jwt>\" \\\n  -o asset.wav\n# 扣费 50 积分，返回音频文件\n```\n\n## 有效期\n\n资产有效期 **2 天**，随时可能被清理。取回后请及时保存。\n"
+    }
+  },
+  "features": [
+    {
+      "id": "tts",
+      "title": "语音合成与声音克隆",
+      "tagline": "10 个 TTS 引擎，覆盖快速试听、中文克隆、情绪控制、多语言配音。",
+      "doc": "/llms/tts.txt",
+      "bestFor": [
+        "小说配音",
+        "播客旁白",
+        "角色对白",
+        "广告口播",
+        "多语言语音"
+      ],
+      "engines": [
+        "VoxCPM",
+        "Edge TTS",
+        "IndexTTS2",
+        "MOSS-TTS",
+        "Qwen3-TTS",
+        "OmniVoice",
+        "CosyVoice3"
+      ],
+      "recommended": "不确定时用 VoxCPM；只要快速预览就用 Edge TTS；中文克隆和长文本可评估 MOSS。"
+    },
+    {
+      "id": "audio_analysis",
+      "title": "音频分析与转写",
+      "tagline": "转写、时间戳、说话人、情绪、SRT 辅助和裁剪点定位。",
+      "doc": "/llms/audio-tools.txt",
+      "bestFor": [
+        "访谈整理",
+        "字幕制作",
+        "会议纪要",
+        "素材切条",
+        "说话人分离"
+      ],
+      "engines": [
+        "ASR",
+        "Audio Analyze",
+        "Speaker Diarization",
+        "Emotion"
+      ],
+      "recommended": "只要文本用 ASR；要字幕、时间戳、说话人就用 audio/analyze。"
+    },
+    {
+      "id": "audio_cleanup",
+      "title": "音频清理与音轨分离",
+      "tagline": "降噪、背景音乐处理、参考音频准备和音轨分离工作流。",
+      "doc": "/llms/audio-tools.txt",
+      "bestFor": [
+        "参考音清理",
+        "人声提取",
+        "播客修复",
+        "旧录音增强"
+      ],
+      "engines": [
+        "ClearerVoice",
+        "NoiseReduce",
+        "UVR5",
+        "Demucs"
+      ],
+      "recommended": "克隆前优先准备 3-10 秒完整、干净的人声参考音。"
+    },
+    {
+      "id": "music",
+      "title": "AI 音乐生成",
+      "tagline": "歌曲、BGM、歌词控制、段落风格和变长音乐生成。",
+      "doc": "/llms/music.txt",
+      "bestFor": [
+        "短视频配乐",
+        "节目片头",
+        "广告 BGM",
+        "歌词成歌",
+        "氛围音乐"
+      ],
+      "engines": [
+        "ACE-Step 1.5",
+        "HeartMuLa",
+        "Stable Audio 3",
+        "Muse"
+      ],
+      "recommended": "旗舰音乐用 ACE-Step；歌词和段落风格可看 HeartMuLa；轻量变长用 Stable Audio 3。"
+    },
+    {
+      "id": "sfx",
+      "title": "AI 音效生成",
+      "tagline": "文本生成音效、视频生音效、转场和环境声设计。",
+      "doc": "/llms/sfx.txt",
+      "bestFor": [
+        "短剧音效",
+        "游戏音效",
+        "转场氛围",
+        "环境声",
+        "视频拟音"
+      ],
+      "engines": [
+        "MOSS-SoundEffect",
+        "Woosh",
+        "Stable Audio 3 SFX",
+        "Ming-Omni"
+      ],
+      "recommended": "常规音效用 MOSS-SoundEffect；视频画面配音效可看 Woosh。"
+    },
+    {
+      "id": "media",
+      "title": "视频字幕与多语言配音",
+      "tagline": "字幕翻译、字幕规范、多语言配音和 MKV 多轨封装。",
+      "doc": "/llms/media.txt",
+      "bestFor": [
+        "视频本地化",
+        "课程翻译",
+        "多语言短视频",
+        "字幕规范化"
+      ],
+      "engines": [
+        "Subtitle Translation",
+        "Dubbing",
+        "MKV Packaging"
+      ],
+      "recommended": "字幕要遵守单行 ≤20 字、停顿不使用中文标点的规范。"
+    },
+    {
+      "id": "assets",
+      "title": "资产编号取回",
+      "tagline": "把平台 UI 生成的资产交给 Agent，后续通过 API 取回音频。",
+      "doc": "/llms/assets.txt",
+      "bestFor": [
+        "复用平台成品",
+        "跨任务传递素材",
+        "用户贴资产 JSON"
+      ],
+      "engines": [
+        "Asset Register",
+        "Asset Retrieve",
+        "Asset Metadata"
+      ],
+      "recommended": "用户从平台复制资产 JSON 后，Agent 可按 asset_id 取回音频。"
+    }
+  ],
+  "quick_start": [
+    "如果只想快速听效果，选择 Edge TTS。",
+    "如果要做角色配音，先准备 3-10 秒干净参考音，再选择 MOSS、VoxCPM 或 IndexTTS2。",
+    "如果要做字幕或剪辑点，使用音频分析而不是普通 ASR。",
+    "如果你不确定选哪个功能，填写职业和目标，让 Agent 给你方案。"
+  ]
+}

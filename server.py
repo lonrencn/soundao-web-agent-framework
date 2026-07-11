@@ -137,8 +137,14 @@ class BridgeHandler(SimpleHTTPRequestHandler):
         if path == "/demo":
             self.send_file(WEB / "demo_interaction.html")
             return
+        if path == "/soundao":
+            self.send_file(WEB / "soundao_intro.html")
+            return
         if path == "/web-agent-bridge.js":
             self.send_file(WEB / "web-agent-bridge.js")
+            return
+        if path == "/soundao-docs.json":
+            self.send_file(WEB / "soundao_docs.json")
             return
         if path == "/api/health":
             self.send_json({"ok": True, "root": str(ROOT), "time": utc_now()})
