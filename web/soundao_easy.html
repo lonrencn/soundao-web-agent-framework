@@ -1,0 +1,732 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>零门槛音频工作台</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #231d15;
+        --muted: #6d6253;
+        --line: #eadcc5;
+        --paper: #fffaf0;
+        --cream: #f5e7ca;
+        --blue: #246bfe;
+        --green: #0f9f7a;
+        --amber: #d98213;
+        --rose: #db3b63;
+        --violet: #8157f0;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          "Microsoft YaHei", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at 18% 8%, rgba(255, 255, 255, 0.72), transparent 28%),
+          linear-gradient(180deg, #f3e6c9 0, #f8efdc 310px, #fffaf0 100%);
+      }
+
+      main {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 24px 18px 52px;
+      }
+
+      .top {
+        display: block;
+      }
+
+      .hero,
+      .ask,
+      .panel {
+        border: 1px solid rgba(172, 139, 84, 0.28);
+        border-radius: 8px;
+        background: rgba(255, 250, 240, 0.9);
+        box-shadow: 0 16px 40px rgba(91, 69, 35, 0.1);
+      }
+
+      .hero {
+        position: relative;
+        min-height: 320px;
+        padding: 24px;
+        color: #fff7e8;
+        background:
+          linear-gradient(135deg, rgba(92, 64, 28, 0.96), rgba(42, 50, 62, 0.94)),
+          repeating-linear-gradient(90deg, rgba(255, 244, 219, 0.1) 0 1px, transparent 1px 58px);
+      }
+
+      .brand-row {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 22px;
+      }
+
+      .brand-logo {
+        display: block;
+        width: min(210px, 58vw);
+        height: auto;
+        filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.28));
+      }
+
+      .back-link {
+        display: inline-flex;
+        align-items: center;
+        min-height: 32px;
+        border: 1px solid rgba(255, 244, 219, 0.34);
+        border-radius: 6px;
+        padding: 0 10px;
+        color: #fff7e8;
+        background: rgba(255, 250, 240, 0.14);
+        font-size: 13px;
+        font-weight: 800;
+        text-decoration: none;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin: 0;
+      }
+
+      h1 {
+        max-width: 700px;
+        font-size: clamp(25px, 3.1vw, 42px);
+        line-height: 1.15;
+        letter-spacing: 0;
+      }
+
+      .lead {
+        max-width: 720px;
+        margin-top: 16px;
+        color: #f0ddbd;
+        font-size: 16px;
+        line-height: 1.75;
+      }
+
+      .promise {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 28px;
+      }
+
+      .promise div {
+        position: relative;
+        overflow: hidden;
+        min-height: 72px;
+        border: 1px solid rgba(255, 244, 219, 0.24);
+        border-radius: 8px;
+        padding: 13px 92px 13px 13px;
+        background: rgba(255, 250, 240, 0.1);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+        animation: promiseGlow 3s linear infinite;
+      }
+
+      .promise div::before {
+        content: "";
+        position: absolute;
+        inset: -60% -20%;
+        background: linear-gradient(
+          110deg,
+          transparent 0 34%,
+          rgba(255, 255, 255, 0.28) 45%,
+          transparent 58% 100%
+        );
+        transform: translateX(-80%);
+        opacity: 0;
+        animation: promiseSweep 3s linear infinite;
+        pointer-events: none;
+      }
+
+      .promise div:nth-child(2),
+      .promise div:nth-child(2)::before {
+        animation-delay: 1s;
+      }
+
+      .promise div:nth-child(3),
+      .promise div:nth-child(3)::before {
+        animation-delay: 2s;
+      }
+
+      @keyframes promiseGlow {
+        0%,
+        30% {
+          border-color: rgba(255, 180, 74, 0.98);
+          background: rgba(255, 156, 56, 0.2);
+          box-shadow:
+            0 0 0 1px rgba(255, 189, 92, 0.48),
+            0 0 18px rgba(255, 156, 56, 0.62),
+            0 0 34px rgba(255, 105, 46, 0.3);
+          transform: translateY(-1px);
+        }
+
+        40%,
+        100% {
+          border-color: rgba(255, 244, 219, 0.24);
+          background: rgba(255, 250, 240, 0.1);
+          box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes promiseSweep {
+        0%,
+        30% {
+          opacity: 1;
+          transform: translateX(80%);
+        }
+
+        40%,
+        100% {
+          opacity: 0;
+          transform: translateX(80%);
+        }
+      }
+
+      .promise strong {
+        display: block;
+        color: #fffaf0;
+        font-size: 18px;
+      }
+
+      .promise span {
+        display: block;
+        margin-top: 5px;
+        color: #e8d4b2;
+        font-size: 12px;
+        line-height: 1.45;
+      }
+
+      .promise-robot {
+        position: absolute;
+        right: 10px;
+        bottom: 7px;
+        z-index: 1;
+        width: 76px;
+        height: 76px;
+        border-radius: 8px;
+        object-fit: cover;
+        transform: rotate(3deg);
+        filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.18));
+        pointer-events: none;
+      }
+
+      .promise div:nth-child(2) .promise-robot {
+        transform: rotate(-2deg);
+      }
+
+      .promise div:nth-child(3) .promise-robot {
+        transform: rotate(4deg);
+      }
+
+      .hero-art-row {
+        display: block;
+        margin-top: 18px;
+        text-align: right;
+        color: #ead8ba;
+        font-size: 13px;
+        font-weight: 760;
+      }
+
+      .slogan-art {
+        display: block;
+        width: min(760px, 100%);
+        height: 176px;
+        margin-left: auto;
+        margin-right: -24px;
+        object-fit: contain;
+        object-position: right center;
+      }
+
+      .ask {
+        width: 100%;
+        padding: 20px;
+      }
+
+      .ask-section {
+        margin-top: 28px;
+      }
+
+      .ask h2,
+      .section-title h2 {
+        font-size: 18px;
+      }
+
+      .hint {
+        margin-top: 8px;
+        color: var(--muted);
+        line-height: 1.58;
+      }
+
+      label {
+        display: block;
+        margin: 13px 0 7px;
+        color: #4b3e2e;
+        font-size: 14px;
+        font-weight: 760;
+      }
+
+      textarea,
+      input,
+      select {
+        width: 100%;
+        border: 1px solid #e3d5bd;
+        border-radius: 6px;
+        padding: 10px 11px;
+        color: var(--ink);
+        background: #fffdf8;
+        font: inherit;
+        outline: none;
+      }
+
+      textarea:focus,
+      input:focus,
+      select:focus {
+        border-color: var(--blue);
+        box-shadow: 0 0 0 3px rgba(36, 107, 254, 0.13);
+      }
+
+      textarea {
+        min-height: 142px;
+        resize: vertical;
+      }
+
+      button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        min-height: 44px;
+        margin-top: 15px;
+        border: 1px solid #1658db;
+        border-radius: 6px;
+        color: #ffffff;
+        background: linear-gradient(135deg, #246bfe, #0f9fcb);
+        font: inherit;
+        font-weight: 850;
+        cursor: pointer;
+      }
+
+      .section-title {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 16px;
+        margin: 28px 0 14px;
+      }
+
+      .guide-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .guide {
+        --accent: var(--blue);
+        min-height: 166px;
+        border: 1px solid color-mix(in srgb, var(--accent) 22%, #eadfcd);
+        border-radius: 8px;
+        padding: 15px;
+        background:
+          linear-gradient(180deg, color-mix(in srgb, var(--accent) 10%, #fff8ea) 0, #fffdf8 112px),
+          #fffdf8;
+      }
+
+      .guide.has-art {
+        min-height: 206px;
+      }
+
+      .guide-visual {
+        float: right;
+        width: 86px;
+        height: 86px;
+        margin: 0 0 8px 12px;
+        border-radius: 8px;
+        object-fit: cover;
+        box-shadow: 0 10px 22px rgba(91, 69, 35, 0.13);
+      }
+
+      .guide:nth-child(2) {
+        --accent: var(--green);
+      }
+
+      .guide:nth-child(3) {
+        --accent: var(--amber);
+      }
+
+      .guide:nth-child(4) {
+        --accent: var(--rose);
+      }
+
+      .guide:nth-child(5) {
+        --accent: var(--violet);
+      }
+
+      .guide:nth-child(6) {
+        --accent: #52637a;
+      }
+
+      .guide-mark {
+        display: grid;
+        place-items: center;
+        width: 38px;
+        height: 38px;
+        border-radius: 8px;
+        color: #ffffff;
+        background: var(--accent);
+        font-size: 18px;
+        font-weight: 850;
+      }
+
+      .guide h3 {
+        margin-top: 12px;
+        font-size: 17px;
+      }
+
+      .guide p {
+        margin-top: 8px;
+        color: #675d4e;
+        line-height: 1.6;
+      }
+
+      .result {
+        margin-top: 16px;
+        padding: 16px;
+      }
+
+      .embedded-result {
+        border: 1px solid #e5d8c3;
+        border-radius: 8px;
+        background:
+          linear-gradient(180deg, rgba(255, 246, 228, 0.84), rgba(255, 253, 248, 0.96)),
+          #fffdf8;
+      }
+
+      .status-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        min-height: 28px;
+        border-radius: 6px;
+        padding: 0 9px;
+        color: #275076;
+        background: #edf5ff;
+        font-size: 13px;
+        font-weight: 800;
+        white-space: nowrap;
+      }
+
+      .progress {
+        flex: 1;
+        height: 12px;
+        overflow: hidden;
+        border: 1px solid #e2d2b8;
+        border-radius: 6px;
+        background: #f3eadc;
+      }
+
+      .progress > div {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #246bfe, #22c3ee, #0f9f7a);
+        transition: width 180ms ease;
+      }
+
+      #progressText {
+        min-height: 38px;
+        margin-top: 12px;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.55;
+      }
+
+      #answer {
+        min-height: 150px;
+        max-height: 380px;
+        overflow: auto;
+        white-space: pre-wrap;
+        border: 1px solid #e5d8c3;
+        border-radius: 8px;
+        padding: 15px;
+        color: #40382d;
+        background: #fffdf8;
+        line-height: 1.68;
+      }
+
+      @media (max-width: 940px) {
+        .top,
+        .guide-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 620px) {
+        main {
+          padding: 16px 12px 36px;
+        }
+
+        .promise {
+          grid-template-columns: 1fr;
+        }
+
+        .hero {
+          min-height: auto;
+          padding: 20px;
+        }
+
+        .hero-art-row {
+          align-items: flex-start;
+        }
+
+        .hero-art {
+          width: 78px;
+          height: 78px;
+        }
+
+        .slogan-art {
+          width: min(258px, calc(100% - 90px));
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="top">
+        <div class="hero">
+          <div class="brand-row">
+            <img class="brand-logo" src="/assets/Soundao-logo.png" alt="声岛" />
+            <a class="back-link" href="/soundao">返回专业页面</a>
+          </div>
+          <h1>告诉你要什么，全包在我身上</h1>
+          <p class="lead">
+            你不用懂工具，不用挑型号，不用看复杂说明。只要用自己的话说清楚想做什么、已有些什么、希望听起来怎样，后面的步骤交给助手安排。
+          </p>
+          <div class="promise">
+            <div>
+              <strong>不用学</strong>
+              <span>说明书先挪走，直接说你想做成什么。</span>
+              <img class="promise-robot" src="/assets/easy-robot-no-learn.webp" alt="" />
+            </div>
+            <div>
+              <strong>不用选</strong>
+              <span>你不用挑方案，助手会自己安排顺序。</span>
+              <img class="promise-robot" src="/assets/easy-robot-no-choose.webp" alt="" />
+            </div>
+            <div>
+              <strong>说人话</strong>
+              <span>像聊天一样讲需求，结果回到这个页面。</span>
+              <img class="promise-robot" src="/assets/easy-robot-plain-talk.webp" alt="" />
+            </div>
+          </div>
+          <div class="hero-art-row">
+            <img class="slogan-art" src="/assets/easy-spotlight-slogan.png" alt="我负责潜心打磨，你负责高光时刻。" />
+          </div>
+        </div>
+
+      </section>
+
+      <section>
+        <div class="section-title">
+          <h2>你可以这样提需求</h2>
+        </div>
+        <div class="guide-grid">
+          <article class="guide has-art">
+            <img class="guide-visual" src="/assets/easy-decor-clean.webp" alt="" />
+            <div class="guide-mark">配</div>
+            <h3>把文字变成配音</h3>
+            <p>适合小说、课程、广告、解说、旁白。你说清楚角色、语气和用途就行。</p>
+          </article>
+          <article class="guide has-art">
+            <img class="guide-visual" src="/assets/easy-decor-clean-wave.webp" alt="" />
+            <div class="guide-mark">清</div>
+            <h3>让录音更清楚</h3>
+            <p>适合有底噪、回声、杂音、音量忽大忽小的录音。</p>
+          </article>
+          <article class="guide has-art">
+            <img class="guide-visual" src="/assets/easy-decor-transcript.webp" alt="" />
+            <div class="guide-mark">字</div>
+            <h3>从录音里整理文字</h3>
+            <p>适合访谈、会议、播客、课程录音，可以继续整理成字幕或重点。</p>
+          </article>
+          <article class="guide has-art">
+            <img class="guide-visual" src="/assets/easy-decor-music.webp" alt="" />
+            <div class="guide-mark">乐</div>
+            <h3>做背景音乐</h3>
+            <p>适合短片、课程、故事、活动开场。你描述气氛，助手来安排。</p>
+          </article>
+          <article class="guide has-art">
+            <img class="guide-visual" src="/assets/easy-decor-sfx.webp" alt="" />
+            <div class="guide-mark">效</div>
+            <h3>加声音效果</h3>
+            <p>适合脚步声、门声、环境声、转场声，让内容更有画面感。</p>
+          </article>
+          <article class="guide has-art">
+            <img class="guide-visual" src="/assets/easy-decor-celebrate.webp" alt="" />
+            <div class="guide-mark">片</div>
+            <h3>做完整音频成品</h3>
+            <p>适合从文稿、录音、音乐到最终文件的一整套制作。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="ask-section">
+        <form id="easyForm" class="ask">
+          <h2>直接说需求</h2>
+          <p class="hint">写得越像平时说话越好。比如：“我想把一章小说做成男女双人配音，要有情绪，最后给我音频文件。”</p>
+
+          <label for="need">你想做什么</label>
+          <textarea id="need" name="need" placeholder="例如：我想把一段课程稿做成温和、清楚、适合学习的讲解声音。"></textarea>
+
+          <label for="material">你现在有什么</label>
+          <textarea id="material" name="material" placeholder="例如：有文字稿，有一段参考声音，想加一点轻音乐。"></textarea>
+
+          <label for="style">你希望听起来怎样</label>
+          <input id="style" name="style" placeholder="例如：自然、亲切、稳重、像真人说话" />
+
+          <label for="priority">最在意什么</label>
+          <select id="priority" name="priority">
+            <option value="先保证好听">先保证好听</option>
+            <option value="先尽快看到结果">先尽快看到结果</option>
+            <option value="先少花成本">先少花成本</option>
+            <option value="先适合批量制作">先适合批量制作</option>
+          </select>
+
+          <button type="submit">交给助手</button>
+
+          <div class="result embedded-result">
+            <div class="status-row">
+              <span class="badge" id="status">等待你的需求</span>
+              <div class="progress"><div id="progress"></div></div>
+            </div>
+            <div id="progressText">提交需求后，助手会把进度写在这里。</div>
+            <div id="answer">结果会显示在这里。</div>
+          </div>
+        </form>
+      </section>
+
+
+    </main>
+    <script src="/web-agent-bridge.js"></script>
+    <script>
+      const easyForm = document.getElementById("easyForm");
+      const statusBox = document.getElementById("status");
+      const progress = document.getElementById("progress");
+      const progressText = document.getElementById("progressText");
+      const answer = document.getElementById("answer");
+      let currentResultId = "";
+
+      function statusLabel(status) {
+        if (status === "processing") return "正在处理";
+        if (status === "done") return "已完成";
+        if (status === "error") return "没有完成";
+        if (status === "cancelled") return "已停止";
+        return "等待你的需求";
+      }
+
+      function friendlyProgress(body) {
+        const outcome = body.outcome || {};
+        if (outcome.public_message) return outcome.public_message;
+        if (body.status === "processing" && outcome.elapsed_sec) {
+          return `正在处理，已经用了 ${Math.round(outcome.elapsed_sec)} 秒。`;
+        }
+        return body.message || "正在处理。";
+      }
+
+      function cleanResult(text) {
+        return String(text || "")
+          .split(/\r?\n/)
+          .filter((line) => !/[A-Za-z]:\\/.test(line))
+          .filter((line) => !/(manifest|stderr|stdout|prompt_path|final_path|\.json|\.log|API|TTS|Agent|WebUI)/i.test(line))
+          .join("\n")
+          .trim();
+      }
+
+      async function loadAnswer(body) {
+        const outcome = body.outcome || {};
+        const manifest = outcome.deliverable || {};
+        const primaryPath = manifest.primary_path || outcome.final_path || "";
+        if (!primaryPath) {
+          answer.textContent = cleanResult(outcome.final_preview || body.message || "");
+          return;
+        }
+        const response = await fetch(
+          `/api/agent-output?session_id=${encodeURIComponent(window.SoundaoAgentBridge.sessionId)}&path=${encodeURIComponent(primaryPath)}`,
+        );
+        if (!response.ok) {
+          answer.textContent = cleanResult(outcome.final_preview || "暂时无法读取结果。");
+          return;
+        }
+        const output = await response.json();
+        answer.textContent = cleanResult(output.content);
+      }
+
+      easyForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const form = new FormData(easyForm);
+        const need = String(form.get("need") || "").trim() || "用户想做一个音频成品，但还没有写清楚具体需求。";
+        const material = String(form.get("material") || "").trim() || "用户没有说明已有素材。";
+        const style = String(form.get("style") || "").trim() || "自然、清楚、容易听懂。";
+        const priority = String(form.get("priority") || "").trim();
+        const task = [
+          "请根据用户需求，给出完全零技术交流的执行方案和下一步结果。",
+          `用户想做：${need}`,
+          `已有素材：${material}`,
+          `希望效果：${style}`,
+          `最在意：${priority}`,
+          "要求：最终写给用户看的内容必须是纯中文，不出现英文缩写、接口、引擎名、本地路径、文件路径、命令、代码、原始返回。不要让用户选择技术方案，只告诉用户你会怎么做、还需要他补充什么、下一步能得到什么。",
+        ].join("\n");
+        statusBox.textContent = "已交给助手";
+        progressText.textContent = "已经收到需求，正在整理下一步。";
+        progress.style.width = "8%";
+        answer.textContent = "";
+        const saved = await window.SoundaoAgentBridge.result({
+          status: "submitted",
+          step: "soundao_easy_request",
+          payload: {
+            action: "agent_request",
+            task,
+            need,
+            material,
+            style,
+            priority,
+            source: "soundao_easy",
+          },
+        });
+        currentResultId = saved.record?.id || "";
+      });
+
+      window.SoundaoAgentBridge.pollLatestCommand({
+        intervalMs: 1000,
+        onCommand(command) {
+          const body = command.body || {};
+          if (!currentResultId) return;
+          if (body.result_id && body.result_id !== currentResultId) return;
+          statusBox.textContent = statusLabel(body.status);
+          progressText.textContent = friendlyProgress(body);
+          progress.style.width = `${Math.max(0, Math.min(100, Number(body.progress || 0)))}%`;
+          if (body.status === "done" || body.status === "error") {
+            loadAnswer(body).catch((error) => {
+              answer.textContent = `读取结果失败：${error.message}`;
+            });
+          }
+        },
+      });
+    </script>
+  </body>
+</html>

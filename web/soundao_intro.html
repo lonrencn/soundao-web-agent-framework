@@ -7,257 +7,628 @@
     <style>
       :root {
         color-scheme: light;
-        --ink: #17212b;
-        --muted: #5d6b7a;
-        --line: #d7dee8;
-        --soft: #f6f8fb;
-        --blue: #1d4ed8;
-        --green: #067647;
-        --red: #b42318;
+        --ink: #132033;
+        --muted: #6f6658;
+        --line: #eadfcd;
+        --panel: #fffaf0;
+        --page: #f7efdf;
+        --dark: #312817;
+        --blue: #246bfe;
+        --green: #0f9f7a;
+        --amber: #d98213;
+        --rose: #db3b63;
+        --violet: #8157f0;
+        --indigo: #5367e8;
+        --slate: #52637a;
       }
+
       * {
         box-sizing: border-box;
       }
+
       body {
         margin: 0;
         font-family:
           Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-          sans-serif;
+          "Microsoft YaHei", sans-serif;
         color: var(--ink);
-        background: #ffffff;
+        background:
+          radial-gradient(circle at 18% 8%, rgba(255, 255, 255, 0.72), transparent 28%),
+          linear-gradient(180deg, #f3e6c9 0, #f8efdc 310px, #fffaf0 100%);
       }
+
       main {
-        max-width: 1180px;
+        max-width: 1220px;
         margin: 0 auto;
-        padding: 28px 20px 48px;
+        padding: 24px 18px 52px;
       }
-      header {
+
+      .hero {
         display: grid;
-        grid-template-columns: minmax(0, 1.3fr) minmax(320px, 0.7fr);
-        gap: 28px;
-        align-items: start;
-        padding-bottom: 20px;
-        border-bottom: 1px solid var(--line);
+        grid-template-columns: minmax(0, 1.22fr) minmax(310px, 0.78fr);
+        gap: 16px;
+        align-items: stretch;
       }
-      h1 {
-        margin: 0 0 10px;
-        font-size: 32px;
-        line-height: 1.15;
+
+      .hero-main,
+      .quick-panel,
+      .consult-form,
+      .result-panel {
+        border: 1px solid rgba(172, 139, 84, 0.28);
+        border-radius: 8px;
+        background: rgba(255, 250, 240, 0.88);
+        box-shadow: 0 16px 40px rgba(91, 69, 35, 0.1);
       }
-      h2 {
-        margin: 28px 0 12px;
-        font-size: 20px;
+
+      .hero-main {
+        position: relative;
+        overflow: hidden;
+        min-height: 270px;
+        padding: 24px;
+        color: #fff7e8;
+        background:
+          linear-gradient(135deg, rgba(92, 64, 28, 0.96), rgba(42, 50, 62, 0.94)),
+          repeating-linear-gradient(90deg, rgba(255, 244, 219, 0.1) 0 1px, transparent 1px 58px);
       }
-      h3 {
-        margin: 0 0 8px;
-        font-size: 16px;
+
+      .hero-main::after {
+        content: "";
+        position: absolute;
+        inset: auto 24px 24px auto;
+        width: 180px;
+        height: 80px;
+        border-right: 1px solid rgba(255, 244, 219, 0.22);
+        border-bottom: 1px solid rgba(255, 244, 219, 0.22);
+        pointer-events: none;
       }
+
+      .brand-logo {
+        display: block;
+        width: min(220px, 58vw);
+        height: auto;
+        filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.28));
+      }
+
+      .brand-row {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 22px;
+      }
+
+      .plain-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        min-height: 32px;
+        border: 1px solid rgba(255, 244, 219, 0.34);
+        border-radius: 6px;
+        padding: 0 10px;
+        color: #fff7e8;
+        background: rgba(255, 250, 240, 0.14);
+        font-size: 13px;
+        font-weight: 800;
+        text-decoration: none;
+      }
+
+      .plain-link:hover {
+        background: rgba(255, 250, 240, 0.22);
+      }
+
+      .plain-link-emphasis {
+        display: inline-flex;
+        align-items: center;
+        min-height: 24px;
+        border-radius: 5px;
+        padding: 0 8px;
+        color: #2f1c06;
+        background: linear-gradient(135deg, #ffd064, #ff8b2b);
+        box-shadow:
+          0 0 0 1px rgba(255, 225, 145, 0.65),
+          0 0 16px rgba(255, 139, 43, 0.48);
+        font-size: 15px;
+        font-weight: 950;
+      }
+
+      h1,
+      h2,
+      h3,
       p {
         margin: 0;
-        color: var(--muted);
-        line-height: 1.65;
       }
+
+      h1 {
+        max-width: 780px;
+        font-size: clamp(24px, 3vw, 40px);
+        line-height: 1.16;
+        letter-spacing: 0;
+      }
+
       .summary {
-        max-width: 760px;
-        font-size: 16px;
-      }
-      .meta {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
+        max-width: 780px;
         margin-top: 16px;
+        color: #f0ddbd;
+        font-size: 16px;
+        line-height: 1.72;
       }
-      .pill {
+
+      .hero-metrics {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+        max-width: 680px;
+        margin-top: 28px;
+      }
+
+      .metric {
+        min-height: 72px;
+        border: 1px solid rgba(255, 244, 219, 0.2);
+        border-radius: 8px;
+        padding: 12px;
+        background: rgba(255, 250, 240, 0.12);
+      }
+
+      .metric strong {
+        display: block;
+        color: #fffaf0;
+        font-size: 20px;
+      }
+
+      .metric span {
+        display: block;
+        margin-top: 4px;
+        color: #e8d4b2;
+        font-size: 12px;
+        line-height: 1.35;
+      }
+
+      .quick-panel {
+        padding: 18px;
+      }
+
+      .panel-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+
+      .panel-title h2,
+      .section-title h2 {
+        font-size: 18px;
+        line-height: 1.2;
+      }
+
+      .sync-pill {
         display: inline-flex;
         align-items: center;
         min-height: 26px;
-        border: 1px solid var(--line);
+        border: 1px solid #e3d3b8;
         border-radius: 6px;
         padding: 0 8px;
-        color: #334155;
-        background: var(--soft);
-        font-size: 13px;
+        color: #6b4e25;
+        background: #fff6e4;
+        font-size: 12px;
+        white-space: nowrap;
       }
-      .panel {
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        padding: 14px;
-        background: var(--soft);
-      }
-      .panel strong {
-        display: block;
-        margin-bottom: 8px;
-      }
+
       .quick-list {
         display: grid;
-        gap: 8px;
+        gap: 10px;
         padding: 0;
         margin: 0;
         list-style: none;
       }
+
       .quick-list li {
-        padding-left: 14px;
-        border-left: 3px solid var(--blue);
-        color: #334155;
+        position: relative;
+        padding: 11px 11px 11px 36px;
+        border: 1px solid #ecdfca;
+        border-radius: 8px;
+        color: #514536;
+        background: #fffdf7;
         line-height: 1.5;
       }
+
+      .quick-list li::before {
+        content: "";
+        position: absolute;
+        left: 14px;
+        top: 17px;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--blue);
+      }
+
+      .meta-strip {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 14px;
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        min-height: 28px;
+        border-radius: 6px;
+        padding: 0 9px;
+        color: #5e4b31;
+        background: #fff4db;
+        font-size: 12px;
+        font-weight: 650;
+      }
+
+      .section-title {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 16px;
+        margin: 28px 0 14px;
+      }
+
+      .section-title p {
+        max-width: 640px;
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
       .feature-grid {
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 14px;
       }
+
       .feature {
-        border: 1px solid var(--line);
+        --accent: var(--blue);
+        --accent-soft: #eff6ff;
+        position: relative;
+        min-height: 300px;
+        overflow: hidden;
+        border: 1px solid color-mix(in srgb, var(--accent) 24%, #eadfcd);
         border-radius: 8px;
-        padding: 14px;
-        background: #ffffff;
+        padding: 15px;
+        background:
+          linear-gradient(180deg, color-mix(in srgb, var(--accent) 10%, #fff8ea) 0, #fffdf8 128px),
+          #fffdf8;
       }
-      .feature p {
+
+      .feature::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: var(--accent);
+      }
+
+      .feature-top {
+        display: flex;
+        align-items: start;
+        justify-content: space-between;
+        gap: 12px;
         min-height: 52px;
       }
+
+      .feature-icon {
+        display: grid;
+        place-items: center;
+        flex: 0 0 38px;
+        width: 38px;
+        height: 38px;
+        border-radius: 8px;
+        color: #ffffff;
+        background: var(--accent);
+        font-size: 18px;
+        font-weight: 800;
+      }
+
+      .feature h3 {
+        font-size: 17px;
+        line-height: 1.35;
+      }
+
+      .doc-link {
+        flex: 0 0 auto;
+        border: 1px solid color-mix(in srgb, var(--accent) 26%, #cfdbea);
+        border-radius: 6px;
+        padding: 5px 8px;
+        color: color-mix(in srgb, var(--accent) 76%, #24384d);
+        background: rgba(255, 252, 244, 0.82);
+        font-size: 12px;
+        font-weight: 750;
+      }
+
+      .feature p {
+        min-height: 72px;
+        margin-top: 12px;
+        color: #675d4e;
+        line-height: 1.62;
+      }
+
+      .label {
+        margin-top: 13px;
+        color: #4d4233;
+        font-size: 12px;
+        font-weight: 800;
+      }
+
       .tags {
         display: flex;
         flex-wrap: wrap;
         gap: 6px;
-        margin-top: 12px;
+        margin-top: 8px;
       }
-      .tag {
+
+      .tag,
+      .engine {
         border-radius: 6px;
-        padding: 4px 7px;
-        background: #edf4ff;
-        color: #1849a9;
+        padding: 5px 7px;
         font-size: 12px;
+        line-height: 1.1;
       }
+
+      .tag {
+        color: color-mix(in srgb, var(--accent) 76%, #1f3348);
+        background: color-mix(in srgb, var(--accent) 12%, #fffdf8);
+      }
+
+      .engine {
+        color: #354962;
+        background: #f3eadc;
+      }
+
       .recommend {
-        color: #3f4b5b;
-        margin-top: 12px;
-        padding-top: 10px;
-        border-top: 1px solid var(--line);
+        margin-top: 13px;
+        padding-top: 12px;
+        border-top: 1px solid color-mix(in srgb, var(--accent) 18%, #eadfcd);
+        color: #554838;
         font-size: 14px;
+        line-height: 1.58;
       }
+
+      .feature[data-feature-id="tts"] {
+        --accent: #246bfe;
+      }
+
+      .feature[data-feature-id="audio_analysis"] {
+        --accent: #0f9f7a;
+      }
+
+      .feature[data-feature-id="audio_cleanup"] {
+        --accent: #d98213;
+      }
+
+      .feature[data-feature-id="music"] {
+        --accent: #db3b63;
+      }
+
+      .feature[data-feature-id="sfx"] {
+        --accent: #8157f0;
+      }
+
+      .feature[data-feature-id="media"] {
+        --accent: #5367e8;
+      }
+
+      .feature[data-feature-id="assets"] {
+        --accent: #52637a;
+      }
+
       .consult {
         display: grid;
-        grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+        grid-template-columns: minmax(320px, 0.82fr) minmax(0, 1.18fr);
         gap: 16px;
         align-items: start;
       }
+
+      .consult-form,
+      .result-panel {
+        padding: 18px;
+      }
+
       label {
         display: block;
-        margin: 10px 0 6px;
-        font-weight: 650;
+        margin: 13px 0 7px;
+        color: #4b3e2e;
+        font-size: 14px;
+        font-weight: 760;
       }
+
       input,
       textarea,
       select {
         width: 100%;
-        border: 1px solid var(--line);
+        border: 1px solid #e3d5bd;
         border-radius: 6px;
-        padding: 9px 10px;
+        padding: 10px 11px;
+        color: var(--ink);
+        background: #fffdf8;
         font: inherit;
+        outline: none;
       }
+
+      input:focus,
+      textarea:focus,
+      select:focus {
+        border-color: var(--blue);
+        box-shadow: 0 0 0 3px rgba(36, 107, 254, 0.13);
+      }
+
       textarea {
-        min-height: 116px;
+        min-height: 112px;
         resize: vertical;
       }
+
       button {
-        min-height: 38px;
-        margin-top: 12px;
-        border: 1px solid var(--blue);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        min-height: 42px;
+        margin-top: 15px;
+        border: 1px solid #1658db;
         border-radius: 6px;
-        padding: 0 12px;
         color: #ffffff;
-        background: var(--blue);
+        background: linear-gradient(135deg, #246bfe, #0f9fcb);
         font: inherit;
-        font-weight: 650;
+        font-weight: 800;
+        cursor: pointer;
       }
+
+      button:hover {
+        filter: brightness(1.03);
+      }
+
       .status-row {
         display: flex;
         align-items: center;
         gap: 10px;
-        margin-top: 12px;
       }
+
       .badge {
         display: inline-flex;
         align-items: center;
-        min-height: 24px;
+        min-height: 28px;
         border-radius: 6px;
-        padding: 0 8px;
-        background: #eef2f7;
+        padding: 0 9px;
+        color: #275076;
+        background: #e8f1ff;
         font-size: 13px;
-        font-weight: 650;
+        font-weight: 800;
+        white-space: nowrap;
       }
+
       .progress {
         flex: 1;
-        border: 1px solid var(--line);
-        border-radius: 6px;
+        height: 12px;
         overflow: hidden;
-        background: #eef2f7;
+        border: 1px solid #e2d2b8;
+        border-radius: 6px;
+        background: #f3eadc;
       }
+
       .progress > div {
-        min-height: 10px;
+        height: 100%;
         width: 0%;
-        background: var(--blue);
+        background: linear-gradient(90deg, #246bfe, #22c3ee, #0f9f7a);
         transition: width 180ms ease;
       }
+
       #progressText {
-        margin-top: 8px;
+        min-height: 42px;
+        margin-top: 12px;
         color: var(--muted);
         font-size: 14px;
+        line-height: 1.55;
       }
+
       #recommendation {
-        min-height: 220px;
-        max-height: 520px;
+        min-height: 286px;
+        max-height: 560px;
         overflow: auto;
         white-space: pre-wrap;
-        border: 1px solid var(--line);
+        border: 1px solid #e5d8c3;
         border-radius: 8px;
-        padding: 14px;
-        background: #ffffff;
-        line-height: 1.6;
+        padding: 15px;
+        color: #40382d;
+        background: #fffdf8;
+        line-height: 1.68;
       }
+
       #debugCommand {
         display: none;
       }
-      @media (max-width: 820px) {
-        header,
-        .consult,
+
+      @media (max-width: 1020px) {
         .feature-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 820px) {
+        main {
+          padding: 16px 12px 36px;
+        }
+
+        .hero,
+        .consult,
+        .feature-grid,
+        .hero-metrics {
           grid-template-columns: 1fr;
+        }
+
+        .hero-main {
+          min-height: auto;
+          padding: 20px;
+        }
+
+        .section-title {
+          align-items: start;
+          flex-direction: column;
+        }
+
+        .feature {
+          min-height: auto;
         }
       }
     </style>
   </head>
   <body>
     <main>
-      <header>
-        <section>
-          <h1>Soundao 本地 Agent 入口</h1>
+      <header class="hero">
+        <section class="hero-main">
+          <div class="brand-row">
+            <img class="brand-logo" src="/assets/Soundao-logo.png" alt="Soundao" />
+            <a class="plain-link" href="/soundao-easy">
+              别让我看见英文和术语！！ &gt;&gt;
+              <span class="plain-link-emphasis">说人话版</span>
+            </a>
+          </div>
+          <h1>Soundao 无门槛的专业音频工作台</h1>
           <p class="summary">
-            这里把 Soundao 云端的音频能力整理成本地可用入口。你可以直接浏览功能，也可以告诉
-            Agent 你的职业、素材和目标，让它推荐一套更具体的方案。
+            这里把 Soundao 的 TTS、声音克隆、音频分析、清理、分离、音乐、音效和媒资能力整理成清晰入口。
+            你可以先浏览能力菜单，也可以直接告诉 Agent 你的职业、素材和目标，让它给出可执行方案。
           </p>
-          <div class="meta">
-            <span class="pill" id="fetchedAt">文档同步中</span>
+          <div class="hero-metrics">
+            <div class="metric"><strong id="featureCount">7</strong><span>能力模块</span></div>
+            <div class="metric"><strong>Agent</strong><span>进度与交付物回写页面</span></div>
+            <div class="metric"><strong>Local</strong><span>本地工作区保存关键结果</span></div>
+          </div>
+        </section>
+        <aside class="quick-panel">
+          <div class="panel-title">
+            <h2>快速决策</h2>
+            <span class="sync-pill" id="fetchedAt">文档同步中</span>
+          </div>
+          <ul class="quick-list" id="quickStart"></ul>
+          <div class="meta-strip">
             <span class="pill">本地 Web UI</span>
             <span class="pill">Python requests 调 API</span>
             <span class="pill">Agent 进度回写</span>
           </div>
-        </section>
-        <aside class="panel">
-          <strong>不知道从哪开始？</strong>
-          <ul class="quick-list" id="quickStart"></ul>
         </aside>
       </header>
 
       <section>
-        <h2>能力菜单</h2>
+        <div class="section-title">
+          <h2>能力菜单</h2>
+          <p>每张卡片对应一类可调用能力，颜色用于区分任务域：蓝色偏合成，绿色偏分析，暖色偏修复，紫色偏创作与媒体。</p>
+        </div>
         <div class="feature-grid" id="featureGrid"></div>
       </section>
 
       <section>
-        <h2>让 Agent 帮你推荐方案</h2>
+        <div class="section-title">
+          <h2>让 Agent 推荐方案</h2>
+          <p>不想逐条读文档时，填入你的身份、目标和已有素材，Agent 会结合云端文档生成一套下一步操作建议。</p>
+        </div>
         <div class="consult">
-          <form id="consultForm" class="panel">
+          <form id="consultForm" class="consult-form">
             <label for="role">你的职业或角色</label>
             <input id="role" name="role" placeholder="例如：短视频创作者、小说作者、课程老师、播客剪辑师" />
 
@@ -272,7 +643,7 @@
             <textarea
               id="material"
               name="material"
-              placeholder="例如：有一段参考人声、2 千字脚本、需要背景音乐和音效。"
+              placeholder="例如：有一段参考人声、3 千字脚本、需要背景音乐和音效。"
             ></textarea>
 
             <label for="priority">优先考虑</label>
@@ -285,7 +656,7 @@
 
             <button type="submit">请 Agent 推荐方案</button>
           </form>
-          <section>
+          <section class="result-panel">
             <div class="status-row">
               <span class="badge" id="agentStatus">等待咨询</span>
               <div class="progress"><div id="agentProgress"></div></div>
@@ -307,16 +678,48 @@
       const agentProgress = document.getElementById("agentProgress");
       const progressText = document.getElementById("progressText");
       const recommendation = document.getElementById("recommendation");
+      const featureCount = document.getElementById("featureCount");
       let currentResultId = "";
+
+      const featureIcons = {
+        tts: "声",
+        audio_analysis: "析",
+        audio_cleanup: "净",
+        music: "乐",
+        sfx: "效",
+        media: "媒",
+        assets: "库",
+      };
+
+      function escapeHtml(value) {
+        return String(value ?? "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      function renderChips(items, className) {
+        return (items || []).map((item) => `<span class="${className}">${escapeHtml(item)}</span>`).join("");
+      }
 
       function renderFeature(feature) {
         const el = document.createElement("article");
         el.className = "feature";
+        el.dataset.featureId = feature.id || "";
         el.innerHTML = `
-          <h3>${feature.title}</h3>
-          <p>${feature.tagline}</p>
-          <div class="tags">${feature.bestFor.map((item) => `<span class="tag">${item}</span>`).join("")}</div>
-          <div class="recommend">${feature.recommended}</div>
+          <div class="feature-top">
+            <div class="feature-icon" aria-hidden="true">${escapeHtml(featureIcons[feature.id] || "能")}</div>
+            <span class="doc-link">${escapeHtml(feature.doc || "云端文档")}</span>
+          </div>
+          <h3>${escapeHtml(feature.title)}</h3>
+          <p>${escapeHtml(feature.tagline)}</p>
+          <div class="label">适合场景</div>
+          <div class="tags">${renderChips(feature.bestFor, "tag")}</div>
+          <div class="label">推荐引擎</div>
+          <div class="tags">${renderChips(feature.engines, "engine")}</div>
+          <div class="recommend">${escapeHtml(feature.recommended)}</div>
         `;
         return el;
       }
@@ -324,9 +727,11 @@
       async function loadDocs() {
         const response = await fetch("/soundao-docs.json");
         const docs = await response.json();
-        fetchedAt.textContent = `云端文档已同步：${new Date(docs.fetched_at).toLocaleString()}`;
-        quickStart.innerHTML = docs.quick_start.map((item) => `<li>${item}</li>`).join("");
-        featureGrid.replaceChildren(...docs.features.map(renderFeature));
+        const fetchedDate = new Date(docs.fetched_at);
+        fetchedAt.textContent = `已同步：${fetchedDate.toLocaleString()}`;
+        quickStart.innerHTML = (docs.quick_start || []).map((item) => `<li>${escapeHtml(item)}</li>`).join("");
+        featureGrid.replaceChildren(...(docs.features || []).map(renderFeature));
+        featureCount.textContent = String((docs.features || []).length);
         return docs;
       }
 
@@ -414,6 +819,7 @@
         intervalMs: 1000,
         onCommand(command) {
           const body = command.body || {};
+          if (!currentResultId) return;
           if (currentResultId && body.result_id && body.result_id !== currentResultId) return;
           agentStatus.textContent = statusLabel(body.status);
           progressText.textContent = friendlyProgress(body);
@@ -427,8 +833,8 @@
       });
 
       loadDocs().catch((error) => {
-        fetchedAt.textContent = "云端文档读取失败";
-        quickStart.innerHTML = `<li>${error.message}</li>`;
+        fetchedAt.textContent = "文档读取失败";
+        quickStart.innerHTML = `<li>${escapeHtml(error.message)}</li>`;
       });
     </script>
   </body>

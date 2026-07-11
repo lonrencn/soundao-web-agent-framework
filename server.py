@@ -27,6 +27,8 @@ LATEST_RESULT = ROOT / "latest_result.json"
 LATEST_COMMAND = ROOT / "latest_agent_command.json"
 SESSION_RE = re.compile(r"[^A-Za-z0-9_.-]+")
 
+mimetypes.add_type("image/webp", ".webp")
+
 
 def utc_now() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="milliseconds")
@@ -140,11 +142,24 @@ class BridgeHandler(SimpleHTTPRequestHandler):
         if path == "/soundao":
             self.send_file(WEB / "soundao_intro.html")
             return
+        if path == "/soundao-easy":
+            self.send_file(WEB / "soundao_easy.html")
+            return
         if path == "/web-agent-bridge.js":
             self.send_file(WEB / "web-agent-bridge.js")
             return
         if path == "/soundao-docs.json":
             self.send_file(WEB / "soundao_docs.json")
+            return
+        if path.startswith("/assets/"):
+            base = (WEB / "assets").resolve()
+            candidate = (base / path.removeprefix("/assets/")).resolve()
+            try:
+                candidate.relative_to(base)
+            except ValueError:
+                self.send_error(403)
+                return
+            self.send_file(candidate)
             return
         if path == "/api/health":
             self.send_json({"ok": True, "root": str(ROOT), "time": utc_now()})
