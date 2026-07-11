@@ -26,6 +26,7 @@ ROOT = Path(__file__).resolve().parent
 RUNS = ROOT / "runs"
 LATEST_RESULT = ROOT / "latest_result.json"
 STATE = ROOT / ".agent_loop_state.json"
+WORKSPACE = Path(os.environ.get("SOUNDAO_AGENT_WORKSPACE", ROOT.parent / "Soundao_Agent_Workspace")).resolve()
 
 
 def now() -> str:
@@ -246,6 +247,12 @@ def handle_edge_fast_tts(result: dict[str, Any], out_dir: Path) -> dict[str, Any
 
     duration = meta.get("ffprobe", {}).get("duration", "unknown")
     bitrate = meta.get("ffprobe", {}).get("bit_rate", "unknown")
+    archive_dir = WORKSPACE / "02_工作成果" / "01-TTS合成" / "Edge_TTS" / safe_name(result.get("id"), "result")
+    archive_dir.mkdir(parents=True, exist_ok=True)
+    archive_audio_path = archive_dir / audio_path.name
+    archive_meta_path = archive_dir / meta_path.name
+    shutil.copy2(audio_path, archive_audio_path)
+    shutil.copy2(meta_path, archive_meta_path)
     deliverable_path.write_text(
         "\n".join(
             [
@@ -257,6 +264,7 @@ def handle_edge_fast_tts(result: dict[str, Any], out_dir: Path) -> dict[str, Any
                 "- Web 选择音色：edge_fast",
                 f"- 实际调用音色：{voice}",
                 f"- 主音频文件：`{audio_path}`",
+                f"- 工作区归档：`{archive_audio_path}`",
                 f"- 时长：{duration} 秒",
                 f"- 比特率：{bitrate}",
                 "",
@@ -272,7 +280,15 @@ def handle_edge_fast_tts(result: dict[str, Any], out_dir: Path) -> dict[str, Any
         "title": "Edge Fast 配音交付物",
         "summary": "已生成 Web 表单请求的中文 Edge Fast 配音音频。",
         "primary_path": str(deliverable_path),
-        "files": [str(audio_path), str(deliverable_path), str(manifest_path), str(meta_path), str(request_path)],
+        "files": [
+            str(audio_path),
+            str(archive_audio_path),
+            str(deliverable_path),
+            str(manifest_path),
+            str(meta_path),
+            str(archive_meta_path),
+            str(request_path),
+        ],
     }
     write_json(manifest_path, manifest)
     return {
@@ -355,6 +371,9 @@ def build_agent_prompt(result: dict[str, Any], out_dir: Path, cwd: Path) -> str:
 输出目录：
 {out_dir}
 
+Agent 工作区：
+{WORKSPACE}
+
 要求：
 1. 根据 `user_task` 和 `web_result_json` 判断下一步应该做什么。
 2. 需要写文件、改代码、生成报告、运行脚本时，直接在工作目录或输出目录内完成。
@@ -370,15 +389,21 @@ def build_agent_prompt(result: dict[str, Any], out_dir: Path, cwd: Path) -> str:
    - message 必须是用户能看懂的一句话。
    - 不要在 message 里放代码、JSON、日志、本地路径、token、接口原始响应。
    - 长任务建议在开始、关键阶段、等待云端异步任务、即将完成时各调用一次。
-6. 必须给用户一个明确交付物。除非用户明确要求其他格式，否则把主交付物写到输出目录的 `deliverable.md`。
-7. 必须在输出目录创建 `deliverable_manifest.json`，格式如下：
+6. 工作区使用规则：
+   - 用户参考素材放在 `{WORKSPACE / "01_参考数据"}`，不要自动删除或覆盖。
+   - 临时下载、上传和缓存放在 `{WORKSPACE / "_temp"}`。
+   - TTS、音频分析、音乐等成果按类型归档到 `{WORKSPACE / "02_工作成果"}`。
+   - 关键音色、模板、偏好和历史记录放在 `{WORKSPACE / "03_关键数据"}`。
+   - 日志和审计记录放在 `{WORKSPACE / "05_日志"}`。
+7. 必须给用户一个明确交付物。除非用户明确要求其他格式，否则把主交付物写到输出目录的 `deliverable.md`。
+8. 必须在输出目录创建 `deliverable_manifest.json`，格式如下：
    {{
      "title": "交付物标题",
      "summary": "一句话说明交付物",
      "primary_path": "主交付物的绝对路径",
      "files": ["相关文件绝对路径"]
    }}
-8. 最后用中文简要说明你做了什么，以及用户应该查看哪个结果文件。
+9. 最后用中文简要说明你做了什么，以及用户应该查看哪个结果文件。
 
 user_task:
 {user_task}

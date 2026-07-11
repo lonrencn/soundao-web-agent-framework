@@ -11,6 +11,30 @@
 - `agent_loop.py`：Agent 侧轮询器，读取 `latest_result.json` 并执行 allowlist 动作。
 - `runs/`：每个 session 的事件、结果和 Agent 输出。
 
+## Agent 工作区
+
+源码目录和用户数据目录分离：
+
+```text
+G:\opencodespace\Soundao\web_agent_framework          # 本框架源码，可提交 Git
+G:\opencodespace\Soundao\Soundao_Agent_Workspace     # 用户素材、成果、日志、临时数据
+```
+
+默认工作区路径为源码目录同级的 `Soundao_Agent_Workspace`，也可以用环境变量覆盖：
+
+```powershell
+$env:SOUNDAO_AGENT_WORKSPACE="G:\path\to\Soundao_Agent_Workspace"
+```
+
+Agent 运行时应遵守工作区策略：
+
+- 用户参考素材：`01_参考数据/`
+- Agent 成果：`02_工作成果/`
+- 长期关键数据：`03_关键数据/`
+- 文档：`04_文档/`
+- 日志与审计：`05_日志/`
+- 可清理临时数据：`_temp/`
+
 ## 快速启动
 
 ```powershell
