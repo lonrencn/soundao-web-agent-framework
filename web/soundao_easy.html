@@ -263,6 +263,93 @@
         font-size: 18px;
       }
 
+      .ask-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+      }
+
+      .ask-tabs {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        border: 1px solid #e3d5bd;
+        border-radius: 8px;
+        padding: 4px;
+        background: #fff7e8;
+      }
+
+      .ask-tab {
+        width: auto;
+        min-height: 32px;
+        margin: 0;
+        border: 1px solid transparent;
+        border-radius: 6px;
+        padding: 0 12px;
+        color: #6a5435;
+        background: transparent;
+        font-size: 13px;
+        font-weight: 850;
+        white-space: nowrap;
+      }
+
+      .ask-tab.active {
+        border-color: rgba(255, 159, 64, 0.56);
+        color: #2f1c06;
+        background: linear-gradient(135deg, #ffd66f, #ff9b3d);
+        box-shadow: 0 0 14px rgba(255, 139, 43, 0.3);
+      }
+
+      .ask-panel {
+        display: none;
+      }
+
+      .ask-panel.active {
+        display: block;
+      }
+
+      .radio-template {
+        min-height: 276px;
+        font-family: inherit;
+        line-height: 1.68;
+      }
+
+      .radio-tip {
+        margin-top: 9px;
+        color: #7a5b2a;
+        font-size: 13px;
+        line-height: 1.55;
+      }
+
+      .radio-cache-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        justify-content: flex-end;
+        margin-top: 9px;
+      }
+
+      .restore-default,
+      .revision-toggle {
+        width: auto;
+        min-height: 34px;
+        margin-top: 0;
+        border-color: #d8b17a;
+        padding: 0 12px;
+        color: #6d4612;
+        background: #fff8ea;
+        font-size: 13px;
+      }
+
+      .radio-revision-panel {
+        margin-top: 10px;
+      }
+
+      .radio-revision-panel.collapsed {
+        display: none;
+      }
+
       .hint {
         margin-top: 8px;
         color: var(--muted);
@@ -316,6 +403,11 @@
         font: inherit;
         font-weight: 850;
         cursor: pointer;
+      }
+
+      .radio-submit {
+        background: linear-gradient(135deg, #ff9b3d, #df5f1f);
+        border-color: #c94f16;
       }
 
       .section-title {
@@ -419,6 +511,22 @@
         gap: 10px;
       }
 
+      .stop-button {
+        display: none;
+        width: auto;
+        min-height: 30px;
+        margin: 0;
+        border-color: #b42318;
+        padding: 0 10px;
+        background: linear-gradient(135deg, #d92d20, #9b1c13);
+        font-size: 13px;
+        white-space: nowrap;
+      }
+
+      .stop-button.visible {
+        display: inline-flex;
+      }
+
       .badge {
         display: inline-flex;
         align-items: center;
@@ -456,6 +564,90 @@
         line-height: 1.55;
       }
 
+      .progress-message {
+        color: var(--muted);
+      }
+
+      .progress-slogan {
+        display: inline;
+        margin-left: 18px;
+        color: #b85a12;
+        font-size: 15px;
+        font-weight: 900;
+      }
+
+      .asset-list {
+        display: none;
+        margin-top: 12px;
+        border: 1px solid #ead6b8;
+        border-radius: 8px;
+        padding: 12px;
+        background: #fffaf0;
+      }
+
+      .asset-list.visible {
+        display: block;
+      }
+
+      .asset-list-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        color: #4a3520;
+        font-size: 14px;
+        font-weight: 900;
+      }
+
+      .asset-toggle {
+        display: inline-flex;
+        align-items: center;
+        width: auto;
+        min-height: 28px;
+        margin: 0;
+        border: 1px solid #e1c79d;
+        border-radius: 6px;
+        padding: 0 9px;
+        color: #6b4214;
+        background: #fff3d8;
+        font-size: 12px;
+        font-weight: 850;
+      }
+
+      .asset-items {
+        display: grid;
+        gap: 8px;
+        margin-top: 9px;
+      }
+
+      .asset-list.collapsed .asset-items {
+        display: none;
+      }
+
+      .asset-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        border: 1px solid #eadfcd;
+        border-radius: 7px;
+        padding: 8px 10px;
+        color: #514536;
+        background: #fffdf8;
+        font-size: 13px;
+      }
+
+      .asset-item a {
+        color: #8a4a08;
+        font-weight: 850;
+        text-decoration: none;
+      }
+
+      .asset-item audio {
+        width: min(360px, 48%);
+        height: 32px;
+      }
+
       #answer {
         min-height: 150px;
         max-height: 380px;
@@ -467,6 +659,206 @@
         color: #40382d;
         background: #fffdf8;
         line-height: 1.68;
+      }
+
+      .deliverable-card {
+        display: grid;
+        gap: 12px;
+        white-space: normal;
+      }
+
+      .deliverable-title {
+        font-size: 17px;
+        font-weight: 900;
+      }
+
+      .deliverable-copy {
+        white-space: pre-wrap;
+      }
+
+      .audio-deliverable {
+        display: grid;
+        gap: 8px;
+        border: 1px solid #ead6b8;
+        border-radius: 8px;
+        padding: 12px;
+        background: linear-gradient(180deg, #fff7e8, #fffdf8);
+      }
+
+      .audio-deliverable strong {
+        color: #4a3520;
+      }
+
+      .audio-deliverable audio {
+        width: 100%;
+      }
+
+      .timeline-actions,
+      .asset-actions {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .timeline-download {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: fit-content;
+        min-height: 34px;
+        border: 1px solid #d9943b;
+        border-radius: 7px;
+        padding: 0 12px;
+        color: #8a4a08;
+        background: #fffdf8;
+        font-size: 13px;
+        font-weight: 900;
+        text-decoration: none;
+      }
+
+      .copy-path-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: auto;
+        min-height: 34px;
+        margin: 0;
+        border: 1px solid #cfc0aa;
+        border-radius: 7px;
+        padding: 0 12px;
+        color: #55442f;
+        background: #fffaf0;
+        font-size: 13px;
+        font-weight: 900;
+      }
+
+      .copy-path-button.copied {
+        border-color: #54a76b;
+        color: #1e6b36;
+        background: #ecfff0;
+      }
+
+      .feedback-panel {
+        display: grid;
+        gap: 9px;
+        margin-top: 12px;
+        border: 1px solid #ead6b8;
+        border-radius: 8px;
+        padding: 12px;
+        color: #4a3520;
+        background: #fff8ea;
+      }
+
+      .feedback-panel strong {
+        font-size: 14px;
+        font-weight: 900;
+      }
+
+      .feedback-panel p {
+        color: #7b6240;
+        font-size: 13px;
+        line-height: 1.5;
+      }
+
+      .feedback-panel textarea {
+        width: 100%;
+        min-height: 72px;
+        resize: vertical;
+        border: 1px solid #e5d8c3;
+        border-radius: 7px;
+        padding: 10px;
+        color: #31271d;
+        background: #fffdf8;
+        font: inherit;
+        line-height: 1.5;
+      }
+
+      .feedback-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .feedback-actions button {
+        width: auto;
+        min-height: 36px;
+        padding: 0 14px;
+        border-radius: 7px;
+        font-size: 13px;
+      }
+
+      .feedback-status {
+        color: #8a4a08;
+        font-size: 13px;
+        font-weight: 760;
+      }
+
+      .playback-options-row {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px 16px;
+        margin-top: 10px;
+      }
+
+      .playback-options {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #5f4a2e;
+        font-size: 13px;
+        font-weight: 760;
+      }
+
+      .playback-options input {
+        width: 16px;
+        height: 16px;
+        margin: 0;
+        accent-color: #df7b22;
+      }
+
+      .credit-widget {
+        position: fixed;
+        right: 18px;
+        bottom: 18px;
+        z-index: 10;
+        display: grid;
+        grid-template-columns: auto auto;
+        gap: 7px 12px;
+        min-width: 184px;
+        border: 1px solid rgba(211, 137, 44, 0.42);
+        border-radius: 8px;
+        padding: 11px 12px;
+        color: #4a3520;
+        background: rgba(255, 248, 234, 0.94);
+        box-shadow: 0 14px 34px rgba(91, 69, 35, 0.16);
+        backdrop-filter: blur(10px);
+        font-size: 13px;
+      }
+
+      .credit-widget strong {
+        grid-column: 1 / -1;
+        font-size: 13px;
+        font-weight: 900;
+      }
+
+      .credit-label {
+        color: #7b6240;
+        font-weight: 760;
+      }
+
+      .credit-value {
+        justify-self: end;
+        color: #b85a12;
+        font-weight: 950;
+      }
+
+      .credit-note {
+        grid-column: 1 / -1;
+        color: #80694a;
+        font-size: 12px;
+        line-height: 1.35;
       }
 
       @media (max-width: 940px) {
@@ -587,41 +979,116 @@
 
       <section class="ask-section">
         <form id="easyForm" class="ask">
-          <h2>直接说需求</h2>
+          <div class="ask-head">
+            <h2>直接说需求</h2>
+            <div class="ask-tabs" aria-label="需求类型">
+              <button class="ask-tab active" type="button" data-tab="plain">直接说</button>
+              <button class="ask-tab" type="button" data-tab="radio">AI 电台</button>
+            </div>
+          </div>
           <p class="hint">写得越像平时说话越好。比如：“我想把一章小说做成男女双人配音，要有情绪，最后给我音频文件。”</p>
 
-          <label for="need">你想做什么</label>
-          <textarea id="need" name="need" placeholder="例如：我想把一段课程稿做成温和、清楚、适合学习的讲解声音。"></textarea>
+          <div class="ask-panel active" data-panel="plain">
+            <label for="need">你想做什么</label>
+            <textarea id="need" name="need" placeholder="例如：我想把一段课程稿做成温和、清楚、适合学习的讲解声音。"></textarea>
 
-          <label for="material">你现在有什么</label>
-          <textarea id="material" name="material" placeholder="例如：有文字稿，有一段参考声音，想加一点轻音乐。"></textarea>
+            <label for="material">你现在有什么</label>
+            <textarea id="material" name="material" placeholder="例如：有文字稿，有一段参考声音，想加一点轻音乐。"></textarea>
 
-          <label for="style">你希望听起来怎样</label>
-          <input id="style" name="style" placeholder="例如：自然、亲切、稳重、像真人说话" />
+            <label for="style">你希望听起来怎样</label>
+            <input id="style" name="style" placeholder="例如：自然、亲切、稳重、像真人说话" />
 
-          <label for="priority">最在意什么</label>
-          <select id="priority" name="priority">
-            <option value="先保证好听">先保证好听</option>
-            <option value="先尽快看到结果">先尽快看到结果</option>
-            <option value="先少花成本">先少花成本</option>
-            <option value="先适合批量制作">先适合批量制作</option>
-          </select>
+            <label for="priority">最在意什么</label>
+            <select id="priority" name="priority">
+              <option value="先保证好听">先保证好听</option>
+              <option value="先尽快看到结果">先尽快看到结果</option>
+              <option value="先少花成本">先少花成本</option>
+              <option value="先适合批量制作">先适合批量制作</option>
+            </select>
 
-          <button type="submit">交给助手</button>
+            <button type="submit" data-mode="plain">交给助手</button>
+          </div>
+
+          <div class="ask-panel" data-panel="radio">
+            <label for="radioPrompt">AI 电台节目提示词</label>
+            <textarea id="radioPrompt" class="radio-template" name="radioPrompt">请制作一档电台广播节目。
+
+节目长度：{5分钟}
+电台名称：{Soundao FM}
+主播声音：{女声，温暖自然}
+听众所在地区：{山东·烟台}
+开场播报:{天气预报|当地新闻|历史上的今天}
+节目话题：{卓越的自己}
+配乐风格：{轻松、温暖、有城市夜晚感}
+结尾安排：{以一首30秒配歌结束}
+
+节目要求：
+开场要像真实电台主持人在和听众打招呼；
+中间要围绕话题展开，不要像念说明书；
+声音要有情绪起伏，语气自然，适合夜晚或通勤收听；
+结尾要有一句让人舒服的收束和祝福；
+最终请给我可以直接听的音频成品。</textarea>
+            <p class="radio-tip">把大括号里的默认内容换成你的想法，再交给助手。</p>
+            <div class="radio-cache-actions">
+              <button class="restore-default" id="restoreRadioDefaults" type="button">新建项目</button>
+              <button class="revision-toggle" id="showRadioRevision" type="button">填写修改意见</button>
+            </div>
+            <div class="radio-revision-panel collapsed" id="radioRevisionPanel">
+              <label for="radioRevisionNotes">修改意见</label>
+              <textarea id="radioRevisionNotes" name="radioRevisionNotes" placeholder="不改变上面的任务要求，只写你想让助手基于上一版怎么改。填写这里就是修改模式。"></textarea>
+              <p class="radio-tip">不改变任务要求，提意见，就是修改模式。</p>
+            </div>
+            <button class="radio-submit" type="submit" data-mode="radio">交给助手</button>
+          </div>
 
           <div class="result embedded-result">
             <div class="status-row">
               <span class="badge" id="status">等待你的需求</span>
               <div class="progress"><div id="progress"></div></div>
+              <button class="stop-button" id="stopAgent" type="button">强制停止</button>
             </div>
             <div id="progressText">提交需求后，助手会把进度写在这里。</div>
+            <div class="playback-options-row">
+              <label class="playback-options" for="autoPlayFinal">
+                <input id="autoPlayFinal" type="checkbox" checked />
+                <span>完成后自动播放</span>
+              </label>
+              <label class="playback-options" for="exportTimelineXml">
+                <input id="exportTimelineXml" type="checkbox" />
+                <span>导出时间线轨道</span>
+              </label>
+            </div>
+            <div class="asset-list collapsed" id="assetList">
+              <div class="asset-list-title">
+                <span id="assetTitle">已产出的过程资产</span>
+                <button class="asset-toggle" id="assetToggle" type="button">展开查看</button>
+              </div>
+              <div class="asset-items" id="assetItems"></div>
+            </div>
             <div id="answer">结果会显示在这里。</div>
+            <div class="feedback-panel">
+              <strong>评价</strong>
+              <p>我将会以评价来整理经验，让下次做的更好（笑脸）</p>
+              <textarea id="feedbackText" placeholder="哪里满意，哪里不满意，或者下次想怎么改，都可以直接写。"></textarea>
+              <div class="feedback-actions">
+                <button id="submitFeedback" type="button">提交评价</button>
+                <span class="feedback-status" id="feedbackStatus"></span>
+              </div>
+            </div>
           </div>
         </form>
       </section>
 
 
     </main>
+    <div class="credit-widget" aria-live="polite">
+      <strong>积分</strong>
+      <span class="credit-label">本次扣除</span>
+      <span class="credit-value" id="creditDeducted">待返回</span>
+      <span class="credit-label">剩余积分</span>
+      <span class="credit-value" id="creditRemaining">待返回</span>
+      <span class="credit-note" id="creditNote"></span>
+    </div>
     <script src="/web-agent-bridge.js"></script>
     <script>
       const easyForm = document.getElementById("easyForm");
@@ -629,10 +1096,109 @@
       const progress = document.getElementById("progress");
       const progressText = document.getElementById("progressText");
       const answer = document.getElementById("answer");
+      const askTabs = document.querySelectorAll(".ask-tab");
+      const askPanels = document.querySelectorAll(".ask-panel");
+      const radioPrompt = document.getElementById("radioPrompt");
+      const restoreRadioDefaults = document.getElementById("restoreRadioDefaults");
+      const showRadioRevision = document.getElementById("showRadioRevision");
+      const radioRevisionPanel = document.getElementById("radioRevisionPanel");
+      const stopAgent = document.getElementById("stopAgent");
+      const assetList = document.getElementById("assetList");
+      const assetItems = document.getElementById("assetItems");
+      const assetTitle = document.getElementById("assetTitle");
+      const assetToggle = document.getElementById("assetToggle");
+      const autoPlayFinal = document.getElementById("autoPlayFinal");
+      const exportTimelineXml = document.getElementById("exportTimelineXml");
+      const radioRevisionNotes = document.getElementById("radioRevisionNotes");
+      const creditDeducted = document.getElementById("creditDeducted");
+      const creditRemaining = document.getElementById("creditRemaining");
+      const creditNote = document.getElementById("creditNote");
+      const feedbackText = document.getElementById("feedbackText");
+      const submitFeedback = document.getElementById("submitFeedback");
+      const feedbackStatus = document.getElementById("feedbackStatus");
       let currentResultId = "";
+      let loadedResultId = "";
+      let lastAssetSignature = "";
+      const radioPromptDefault = radioPrompt.value;
+      const radioRevisionNotesDefault = radioRevisionNotes.value;
+      const radioPromptCacheKey = "soundao_easy_radio_prompt";
+      const radioRevisionCacheKey = "soundao_easy_radio_revision_notes";
+
+      function loadRadioDraftCache() {
+        const cachedPrompt = localStorage.getItem(radioPromptCacheKey);
+        const cachedRevisionNotes = localStorage.getItem(radioRevisionCacheKey);
+        if (cachedPrompt !== null) radioPrompt.value = cachedPrompt;
+        if (cachedRevisionNotes !== null) {
+          radioRevisionNotes.value = cachedRevisionNotes;
+          if (cachedRevisionNotes.trim()) radioRevisionPanel.classList.remove("collapsed");
+        }
+      }
+
+      function saveRadioDraftCache() {
+        localStorage.setItem(radioPromptCacheKey, radioPrompt.value);
+        localStorage.setItem(radioRevisionCacheKey, radioRevisionNotes.value);
+      }
+
+      function restoreRadioDefaultPrompt() {
+        localStorage.removeItem(radioPromptCacheKey);
+        localStorage.removeItem(radioRevisionCacheKey);
+        radioPrompt.value = radioPromptDefault;
+        radioRevisionNotes.value = radioRevisionNotesDefault;
+        radioRevisionPanel.classList.add("collapsed");
+        showRadioRevision.textContent = "填写修改意见";
+      }
+
+      const progressSlogans = {
+        操作指引型: [
+          "要想出一个好问题",
+          "不试试，怎么知道",
+          "需要声音，你就需要我",
+          "唱个小曲给你听",
+          "带给你一支 Hard Rock",
+          "来首 blues",
+          "一段冥想的旋律",
+          "山水中国风",
+          "重要的会议！来分析分析",
+          "缺音效，还是 BGM？",
+        ],
+        情绪价值型: [
+          "马上就好",
+          "喝杯咖啡先",
+          "好东西值得等",
+          "你歇着，它干着",
+          "慢工出细活",
+          "快了快了",
+          "先深呼吸一下",
+          "等待也是一种陪伴，感谢有你",
+        ],
+        缓解焦虑型: [
+          "AI 是工具，不是对手",
+          "你在前面，AI 在后面",
+          "擅长用工具的人最值钱",
+          "你在掌控，AI 在执行",
+          "它干活，你思考",
+          "人做判断，AI 跑腿",
+          "别怕，老板需要能与AI说上话的你",
+        ],
+        轻科普型: [
+          "一秒读完一本书",
+          "你的指令就是代码",
+          "它在一步一步想",
+          "你也可以追问它",
+          "教训我，我都在听，情绪稳定",
+          "骂我能让你平复，我能接受",
+        ],
+        平台理念型: [
+          "需要你学，算我们输",
+          "工具等人，不是人等工具",
+          "好工具不用说明书",
+          "你只管用，剩下的我来",
+        ],
+      };
 
       function statusLabel(status) {
         if (status === "processing") return "正在处理";
+        if (status === "stopping") return "正在停止";
         if (status === "done") return "已完成";
         if (status === "error") return "没有完成";
         if (status === "cancelled") return "已停止";
@@ -648,6 +1214,19 @@
         return body.message || "正在处理。";
       }
 
+      function randomSlogan() {
+        const groups = Object.values(progressSlogans);
+        const all = groups.flat();
+        return all[Math.floor(Math.random() * all.length)] || "";
+      }
+
+      function setProgressMessage(message, withSlogan = true) {
+        const slogan = withSlogan ? randomSlogan() : "";
+        progressText.innerHTML = `<span class="progress-message">${escapeHtml(message)}</span>${
+          slogan ? `<span class="progress-slogan">${escapeHtml(slogan)}</span>` : ""
+        }`;
+      }
+
       function cleanResult(text) {
         return String(text || "")
           .split(/\r?\n/)
@@ -655,6 +1234,296 @@
           .filter((line) => !/(manifest|stderr|stdout|prompt_path|final_path|\.json|\.log|API|TTS|Agent|WebUI)/i.test(line))
           .join("\n")
           .trim();
+      }
+
+      function escapeHtml(value) {
+        return String(value ?? "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      function agentFileUrl(path, download = false) {
+        const url = `/api/agent-file?session_id=${encodeURIComponent(window.SoundaoAgentBridge.sessionId)}&path=${encodeURIComponent(path)}`;
+        return download ? `${url}&download=1` : url;
+      }
+
+      function isAudioPath(path) {
+        return /\.(mp3|wav|m4a|aac|ogg|flac)$/i.test(String(path || ""));
+      }
+
+      function formatSize(bytes) {
+        const size = Number(bytes || 0);
+        if (size >= 1024 * 1024) return `${(size / 1024 / 1024).toFixed(1)} MB`;
+        if (size >= 1024) return `${Math.round(size / 1024)} KB`;
+        return `${size} B`;
+      }
+
+      function firstNumber(...values) {
+        for (const value of values) {
+          if (value === null || value === undefined || value === "") continue;
+          const number = Number(value);
+          if (Number.isFinite(number)) return number;
+        }
+        return null;
+      }
+
+      function formatCredits(value) {
+        if (value === null || value === undefined) return "待返回";
+        const number = Number(value);
+        if (!Number.isFinite(number)) return "待返回";
+        return Number.isInteger(number) ? String(number) : number.toFixed(2).replace(/\.?0+$/, "");
+      }
+
+      function extractCredits(...sources) {
+        const stack = sources.filter(Boolean);
+        while (stack.length) {
+          const source = stack.shift();
+          if (!source || typeof source !== "object") continue;
+          const deducted = firstNumber(
+            source.deducted,
+            source.deducted_points,
+            source.points_deducted,
+            source.used,
+            source.used_points,
+            source.cost,
+            source.cost_points,
+            source.charge,
+            source.credits_used,
+          );
+          const remaining = firstNumber(
+            source.remaining,
+            source.remaining_points,
+            source.balance,
+            source.balance_after,
+            source.after_balance,
+            source.points_remaining,
+            source.credits_remaining,
+          );
+          const note = source.note || source.error || "";
+          if (deducted !== null || remaining !== null || note) return { deducted, remaining, note };
+          for (const key of ["credits", "credit", "points", "billing", "usage", "cost", "balance"]) {
+            if (source[key] && typeof source[key] === "object") stack.push(source[key]);
+          }
+        }
+        return null;
+      }
+
+      function renderCredits(...sources) {
+        const credits = extractCredits(...sources);
+        if (!credits) return;
+        creditDeducted.textContent = formatCredits(credits.deducted);
+        creditRemaining.textContent = formatCredits(credits.remaining);
+        creditNote.textContent = credits.note ? String(credits.note) : "";
+      }
+
+      function prettyAssetName(name) {
+        return String(name || "")
+          .replace(/\.(mp3|wav|m4a|aac|ogg|flac|md|txt|json|xml|srt)$/i, "")
+          .replace(/[_-]+/g, " ");
+      }
+
+      function renderAssets(assets) {
+        const list = Array.isArray(assets) ? assets : [];
+        const signature = list
+          .map((asset) => `${asset.path || ""}:${asset.size || 0}:${asset.mtime || 0}`)
+          .join("|");
+        if (signature === lastAssetSignature) return;
+        lastAssetSignature = signature;
+        if (!list.length) {
+          assetList.classList.remove("visible");
+          assetItems.replaceChildren();
+          return;
+        }
+        assetList.classList.add("visible");
+        assetTitle.textContent = `已产出的过程资产（${list.length}）`;
+        assetItems.innerHTML = list
+          .map((asset) => {
+            const name = prettyAssetName(asset.name);
+            const servable = String(asset.path || "").includes("\\agent_outputs\\") || String(asset.path || "").includes("/agent_outputs/");
+            const playable = servable && (asset.type === "audio" || /\.(mp3|wav|m4a|aac|ogg|flac)$/i.test(asset.name || ""));
+            const isXml = /\.xml$/i.test(asset.name || asset.path || "");
+            const viewUrl = agentFileUrl(asset.path);
+            const downloadUrl = agentFileUrl(asset.path, true);
+            const url = isXml ? viewUrl : agentFileUrl(asset.path);
+            const sizeText = Number(asset.size || 0) > 0 ? formatSize(asset.size) : "";
+            const xmlActions = `<div class="asset-actions">
+              <a href="${escapeHtml(viewUrl)}" target="_blank" rel="noreferrer">查看 XML</a>
+              <a href="${escapeHtml(downloadUrl)}" download="${escapeHtml(asset.name || "timeline_tracks.xml")}">下载 XML</a>
+              <button class="copy-path-button" type="button" data-copy-path="${escapeHtml(asset.path || "")}">复制路径</button>
+            </div>`;
+            const fileActions = `<div class="asset-actions">
+              <a href="${escapeHtml(url)}" target="_blank" rel="noreferrer">${escapeHtml(name)}</a>
+              <button class="copy-path-button" type="button" data-copy-path="${escapeHtml(asset.path || "")}">复制路径</button>
+            </div>`;
+            return `<div class="asset-item">
+              ${servable ? (isXml ? xmlActions : fileActions) : `<span>${escapeHtml(name)}</span>`}
+              ${playable ? `<audio controls preload="metadata" src="${escapeHtml(url)}"></audio>` : `<span>${escapeHtml(sizeText || "已归档")}</span>`}
+            </div>`;
+          })
+          .join("");
+      }
+
+      assetToggle.addEventListener("click", () => {
+        const collapsed = assetList.classList.toggle("collapsed");
+        assetToggle.textContent = collapsed ? "展开查看" : "收起";
+      });
+
+      async function copyTextToClipboard(text) {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(text);
+          return;
+        }
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        textarea.setAttribute("readonly", "");
+        textarea.style.position = "fixed";
+        textarea.style.left = "-9999px";
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        textarea.remove();
+      }
+
+      document.addEventListener("click", async (event) => {
+        const button = event.target.closest("[data-copy-path]");
+        if (!button) return;
+        const path = button.dataset.copyPath || "";
+        if (!path) return;
+        const originalText = button.textContent;
+        try {
+          await copyTextToClipboard(path);
+          button.textContent = "已复制";
+          button.classList.add("copied");
+        } catch {
+          button.textContent = "复制失败";
+        } finally {
+          window.setTimeout(() => {
+            button.textContent = originalText;
+            button.classList.remove("copied");
+          }, 1400);
+        }
+      });
+
+      function setWorkingState(isWorking) {
+        stopAgent.classList.toggle("visible", isWorking);
+        stopAgent.disabled = !isWorking;
+      }
+
+      function assetsFromManifest(manifest) {
+        return (manifest.files || [])
+          .filter((file) => /\.(mp3|wav|m4a|aac|ogg|flac|md|txt|json|xml|srt)$/i.test(file))
+          .map((file) => {
+            const name = String(file).split(/[\\/]/).pop();
+            return {
+              name,
+              path: file,
+              size: 0,
+              type: /\.(mp3|wav|m4a|aac|ogg|flac)$/i.test(file) ? "audio" : "file",
+            };
+          });
+      }
+
+      function chooseTimelineXml(manifest, files) {
+        const candidates = [
+          manifest.timeline_xml_path,
+          ...(manifest.files || []),
+          ...files,
+        ].filter(Boolean);
+        return (
+          candidates.find((file) => /timeline|时间线|轨道/i.test(String(file).split(/[\\/]/).pop() || "") && /\.xml$/i.test(file)) ||
+          candidates.find((file) => /\.xml$/i.test(file)) ||
+          ""
+        );
+      }
+
+      function chooseAssets(outcomeAssets, manifest) {
+        const liveAssets = Array.isArray(outcomeAssets) ? outcomeAssets : [];
+        const manifestAssets = assetsFromManifest(manifest || {});
+        const merged = [];
+        const seen = new Set();
+        [...liveAssets, ...manifestAssets].forEach((asset) => {
+          const key = String(asset.path || asset.name || "");
+          if (!key || seen.has(key)) return;
+          seen.add(key);
+          merged.push(asset);
+        });
+        return merged;
+      }
+
+      function choosePlayableAudio(audioFiles, manifest) {
+        const candidates = [...audioFiles].filter(Boolean);
+        const preferred = [manifest.final_audio_path, manifest.audio_path, manifest.output_audio_path]
+          .filter(Boolean)
+          .find((file) => isAudioPath(file));
+        if (preferred) return preferred;
+        return (
+          candidates.find((file) => /成品|最终|节目|5分钟|Soundao_FM|final|output|deliver/i.test(String(file).split(/[\\/]/).pop() || "")) ||
+          candidates.find((file) => String(file).includes("\\agent_outputs\\") || String(file).includes("/agent_outputs/")) ||
+          ""
+        );
+      }
+
+      function playFinalAudioIfWanted() {
+        if (!autoPlayFinal.checked) return;
+        const audio = answer.querySelector("audio");
+        if (!audio) return;
+        audio.play().catch(() => {
+          setProgressMessage("浏览器拦截了自动播放，可以手动点播放。", false);
+        });
+      }
+
+      function renderDeliverable(text, manifest, assets, shouldAutoPlay = false) {
+        const cleanText = cleanResult(text) || "音频已经制作完成。";
+        const visibleAssets = chooseAssets(assets, manifest);
+        const manifestFiles = [...(manifest.files || [])];
+        if (manifest.primary_path && isAudioPath(manifest.primary_path) && !manifestFiles.includes(manifest.primary_path)) {
+          manifestFiles.push(manifest.primary_path);
+        }
+        const assetAudioFiles = visibleAssets
+          .filter((asset) => asset.type === "audio" || isAudioPath(asset.name || asset.path || ""))
+          .map((asset) => asset.path);
+        const audioFiles = [
+          ...manifestFiles.filter((file) => isAudioPath(file)),
+          ...assetAudioFiles,
+        ];
+        const playableAudio = choosePlayableAudio(audioFiles, manifest);
+        const timelineXml = chooseTimelineXml(manifest, [
+          ...manifestFiles,
+          ...visibleAssets.map((asset) => asset.path || ""),
+        ]);
+        const title = manifest.title || "交付物";
+        const summary = manifest.summary || "";
+        const audioHtml = playableAudio
+          ? `<div class="audio-deliverable">
+              <strong>可以直接试听</strong>
+              <audio controls preload="metadata" src="${escapeHtml(agentFileUrl(playableAudio))}"></audio>
+              <div class="timeline-actions">
+                <button class="copy-path-button" type="button" data-copy-path="${escapeHtml(playableAudio)}">复制成品路径</button>
+              </div>
+              ${
+                timelineXml
+                  ? `<div class="timeline-actions">
+                      <a class="timeline-download" href="${escapeHtml(agentFileUrl(timelineXml))}" target="_blank" rel="noreferrer">查看时间线 XML</a>
+                      <a class="timeline-download" href="${escapeHtml(agentFileUrl(timelineXml, true))}" download="timeline_tracks.xml">下载时间线 XML</a>
+                      <button class="copy-path-button" type="button" data-copy-path="${escapeHtml(timelineXml)}">复制 XML 路径</button>
+                    </div>`
+                  : ""
+              }
+            </div>`
+          : "";
+        answer.innerHTML = `
+          <div class="deliverable-card">
+            <div class="deliverable-title">${escapeHtml(title)}</div>
+            ${summary ? `<div>${escapeHtml(summary)}</div>` : ""}
+            ${audioHtml}
+            <div class="deliverable-copy">${escapeHtml(cleanText)}</div>
+          </div>
+        `;
+        renderAssets(visibleAssets);
+        if (shouldAutoPlay) playFinalAudioIfWanted();
       }
 
       async function loadAnswer(body) {
@@ -665,6 +1534,24 @@
           answer.textContent = cleanResult(outcome.final_preview || body.message || "");
           return;
         }
+        if (isAudioPath(primaryPath)) {
+          renderCredits(manifest.credits, outcome.credits);
+          renderDeliverable(manifest.summary || body.message || "音频已经制作完成。", manifest, outcome.assets || [], body.status === "done");
+          return;
+        }
+        const manifestPath = primaryPath.replace(/[^\\/]+$/, "deliverable_manifest.json");
+        let manifestFromFile = manifest;
+        try {
+          const manifestResponse = await fetch(
+            `/api/agent-output?session_id=${encodeURIComponent(window.SoundaoAgentBridge.sessionId)}&path=${encodeURIComponent(manifestPath)}`,
+          );
+          if (manifestResponse.ok) {
+            const manifestOutput = await manifestResponse.json();
+            manifestFromFile = JSON.parse(manifestOutput.content);
+          }
+        } catch {
+          manifestFromFile = manifest;
+        }
         const response = await fetch(
           `/api/agent-output?session_id=${encodeURIComponent(window.SoundaoAgentBridge.sessionId)}&path=${encodeURIComponent(primaryPath)}`,
         );
@@ -673,12 +1560,39 @@
           return;
         }
         const output = await response.json();
-        answer.textContent = cleanResult(output.content);
+        if (output.is_binary) {
+          renderCredits(manifestFromFile.credits, outcome.credits);
+          renderDeliverable(manifestFromFile.summary || body.message || "音频已经制作完成。", manifestFromFile, outcome.assets || [], body.status === "done");
+          return;
+        }
+        renderCredits(manifestFromFile.credits, outcome.credits);
+        renderDeliverable(output.content, manifestFromFile, outcome.assets || [], body.status === "done");
       }
 
-      easyForm.addEventListener("submit", async (event) => {
-        event.preventDefault();
-        const form = new FormData(easyForm);
+      function activateAskTab(tabName) {
+        askTabs.forEach((tab) => {
+          tab.classList.toggle("active", tab.dataset.tab === tabName);
+        });
+        askPanels.forEach((panel) => {
+          panel.classList.toggle("active", panel.dataset.panel === tabName);
+        });
+      }
+
+      askTabs.forEach((tab) => {
+        tab.addEventListener("click", () => activateAskTab(tab.dataset.tab));
+      });
+
+      loadRadioDraftCache();
+      radioPrompt.addEventListener("input", saveRadioDraftCache);
+      radioRevisionNotes.addEventListener("input", saveRadioDraftCache);
+      restoreRadioDefaults.addEventListener("click", restoreRadioDefaultPrompt);
+      showRadioRevision.addEventListener("click", () => {
+        const collapsed = radioRevisionPanel.classList.toggle("collapsed");
+        showRadioRevision.textContent = collapsed ? "填写修改意见" : "收起修改意见";
+        if (!collapsed) radioRevisionNotes.focus();
+      });
+
+      function buildPlainTask(form) {
         const need = String(form.get("need") || "").trim() || "用户想做一个音频成品，但还没有写清楚具体需求。";
         const material = String(form.get("material") || "").trim() || "用户没有说明已有素材。";
         const style = String(form.get("style") || "").trim() || "自然、清楚、容易听懂。";
@@ -691,13 +1605,8 @@
           `最在意：${priority}`,
           "要求：最终写给用户看的内容必须是纯中文，不出现英文缩写、接口、引擎名、本地路径、文件路径、命令、代码、原始返回。不要让用户选择技术方案，只告诉用户你会怎么做、还需要他补充什么、下一步能得到什么。",
         ].join("\n");
-        statusBox.textContent = "已交给助手";
-        progressText.textContent = "已经收到需求，正在整理下一步。";
-        progress.style.width = "8%";
-        answer.textContent = "";
-        const saved = await window.SoundaoAgentBridge.result({
-          status: "submitted",
-          step: "soundao_easy_request",
+        return {
+          task,
           payload: {
             action: "agent_request",
             task,
@@ -707,20 +1616,143 @@
             priority,
             source: "soundao_easy",
           },
+        };
+      }
+
+      function buildRadioTask() {
+        const prompt = String(radioPrompt.value || "").trim();
+        const revisionNotes = String(radioRevisionNotes.value || "").trim();
+        const requestMode = revisionNotes ? "modification" : "new";
+        const shouldExportTimelineXml = Boolean(exportTimelineXml.checked);
+        const timelineRequirement = shouldExportTimelineXml
+          ? "时间线导出要求：最后必须同时交付一个可编辑的多轨道 XML 文件，文件名建议为 timeline_tracks.xml。XML 里至少包含主持人口播轨、背景音乐轨、结尾配歌轨和字幕轨；字幕轨要按时间码写入对应字幕文本，便于用户后续剪辑编辑。"
+          : "时间线导出要求：用户未勾选导出时间线轨道，本次不强制生成多轨道 XML。";
+        const revisionRequirement = revisionNotes
+          ? `修改意见：${revisionNotes}\n本次是修改模式。不要把修改意见当成新的任务要求重写全部内容；请先对比上一版，尽量复用未变化资产，只重做受影响部分。`
+          : "本次是全新创作模式。";
+        const task = [
+          "请作为 Soundao 音频制作助手，根据下面的节目提示词，制作一档电台广播节目。",
+          "用户填写的节目提示词：",
+          prompt,
+          "",
+          revisionRequirement,
+          "",
+          "默认电台设置：节目总时长按用户填写内容执行，默认 5 分钟；需要先写出适合播出的节目稿，再安排配音和配乐，最后给用户可直接听的音频成品。",
+          "配音要求：不要使用 MOSS。优先使用支持情绪设计、语气控制或标签表达的 TTS 能力。需要男声/女声时按用户填写内容执行；没有填写时默认使用温暖自然的女声。",
+          "配乐要求：按用户填写的配乐风格调用 Soundao 云端音乐能力生成背景音乐和结尾配歌，音量不要压过人声。不要用本地合成、蜂鸣、正弦波、噪声、简单循环来假装音乐；如果云端音乐生成失败，只能交付阶段资产并明确提示需要重试配乐，不能把无背景音乐版本当成最终成品。",
+          timelineRequirement,
+          "过程展示要求：每生成一个可给用户查看的资产，就尽快写入输出目录，并调用用户通知工具更新进度。资产包括节目稿、主持人音频、背景音乐、结尾配歌、阶段混音、最终成品。",
+          "交付要求：最终写给用户看的内容必须是纯中文，不出现接口、路径、命令、代码、原始返回；只说明节目已经怎么制作、还需要用户补充什么、最终音频在哪里听。",
+        ].join("\n");
+        return {
+          task,
+          payload: {
+            action: "agent_request",
+            mode: "ai_radio_program",
+            task,
+            radio_prompt: prompt,
+            revision_notes: revisionNotes,
+            request_mode: requestMode,
+            export_timeline_xml: shouldExportTimelineXml,
+            timeline_xml_policy: shouldExportTimelineXml ? "multi_track_xml_with_subtitle_track" : "not_required",
+            tts_policy: "no_moss_use_emotion_or_tag_capable_tts",
+            source: "soundao_easy_radio",
+          },
+        };
+      }
+
+      easyForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const mode = event.submitter?.dataset.mode || "plain";
+        const form = new FormData(easyForm);
+        const request = mode === "radio" ? buildRadioTask() : buildPlainTask(form);
+        statusBox.textContent = "已交给助手";
+        setProgressMessage(mode === "radio" ? "已经收到电台节目需求，正在安排节目制作。" : "已经收到需求，正在整理下一步。");
+        progress.style.width = "8%";
+        answer.textContent = "";
+        creditDeducted.textContent = "待返回";
+        creditRemaining.textContent = "待返回";
+        creditNote.textContent = "";
+        feedbackText.value = "";
+        feedbackStatus.textContent = "";
+        lastAssetSignature = "";
+        renderAssets([]);
+        assetList.classList.add("collapsed");
+        assetToggle.textContent = "展开查看";
+        setWorkingState(true);
+        loadedResultId = "";
+        const saved = await window.SoundaoAgentBridge.result({
+          status: "submitted",
+          step: mode === "radio" ? "soundao_easy_radio_request" : "soundao_easy_request",
+          payload: request.payload,
         });
         currentResultId = saved.record?.id || "";
+      });
+
+      submitFeedback.addEventListener("click", async () => {
+        const feedback = feedbackText.value.trim();
+        const resultId = currentResultId || loadedResultId;
+        if (!resultId) {
+          feedbackStatus.textContent = "还没有可评价的结果。";
+          return;
+        }
+        if (!feedback) {
+          feedbackStatus.textContent = "先写一句评价。";
+          feedbackText.focus();
+          return;
+        }
+        submitFeedback.disabled = true;
+        feedbackStatus.textContent = "正在保存评价。";
+        try {
+          const response = await fetch("/api/agent-feedback", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              session_id: window.SoundaoAgentBridge.sessionId,
+              result_id: resultId,
+              feedback,
+              source: "soundao_easy",
+            }),
+          });
+          if (!response.ok) throw new Error("save failed");
+          feedbackStatus.textContent = "已保存，助手下次会参考。";
+        } catch {
+          feedbackStatus.textContent = "保存失败，稍后再试。";
+        } finally {
+          submitFeedback.disabled = false;
+        }
+      });
+
+      stopAgent.addEventListener("click", async () => {
+        if (!currentResultId) return;
+        stopAgent.disabled = true;
+        statusBox.textContent = "正在停止";
+        setProgressMessage("正在强制停止，本次过程将全部清除。", false);
+        await fetch("/api/agent-cancel", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            session_id: window.SoundaoAgentBridge.sessionId,
+            result_id: currentResultId,
+            reason: "用户在页面点击强制停止。",
+          }),
+        });
       });
 
       window.SoundaoAgentBridge.pollLatestCommand({
         intervalMs: 1000,
         onCommand(command) {
           const body = command.body || {};
-          if (!currentResultId) return;
+          if (!currentResultId && body.result_id) currentResultId = body.result_id;
           if (body.result_id && body.result_id !== currentResultId) return;
           statusBox.textContent = statusLabel(body.status);
-          progressText.textContent = friendlyProgress(body);
+          setProgressMessage(friendlyProgress(body), body.status !== "stopping");
           progress.style.width = `${Math.max(0, Math.min(100, Number(body.progress || 0)))}%`;
-          if (body.status === "done" || body.status === "error") {
+          renderCredits((body.outcome || {}).deliverable?.credits, (body.outcome || {}).credits);
+          renderAssets((body.outcome || {}).assets || []);
+          setWorkingState(body.status === "processing" || body.status === "stopping");
+          if ((body.status === "done" || body.status === "error") && body.result_id !== loadedResultId) {
+            loadedResultId = body.result_id || currentResultId;
             loadAnswer(body).catch((error) => {
               answer.textContent = `读取结果失败：${error.message}`;
             });

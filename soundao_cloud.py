@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import sys
 import time
 from pathlib import Path
 from typing import Any
@@ -19,6 +20,10 @@ import requests
 
 
 DEFAULT_BASE_URL = "https://sd.daoson.work:8443"
+
+
+class MissingCredentialsError(RuntimeError):
+    pass
 
 
 def write_bytes(path: Path, data: bytes) -> None:
@@ -44,8 +49,12 @@ def make_session(args: argparse.Namespace) -> tuple[requests.Session, dict[str, 
     if api_key:
         return session, {"X-API-Key": api_key}, base_url
 
-    username = args.username or os.environ.get("SOUNDAO_USER", "testpay")
-    password = args.password or os.environ.get("SOUNDAO_PASS", "test123")
+    username = args.username or os.environ.get("SOUNDAO_USER")
+    password = args.password or os.environ.get("SOUNDAO_PASS")
+    if not username or not password:
+        raise MissingCredentialsError(
+            "Missing Soundao credentials. Configure SOUNDAO_API_KEY or SOUNDAO_USER/SOUNDAO_PASS in the project environment."
+        )
     response = session.post(
         f"{base_url}/v1/auth/login",
         json={"username": username, "password": password},
@@ -57,8 +66,15 @@ def make_session(args: argparse.Namespace) -> tuple[requests.Session, dict[str, 
 
 
 def command_llms(args: argparse.Namespace) -> int:
-    session, headers, base_url = make_session(args)
-    response = session.get(f"{base_url}{args.path}", headers=headers, timeout=args.timeout)
+    base_url = args.base_url.rstrip("/")
+    session = requests.Session()
+    session.headers.update(
+        {
+            "User-Agent": "python-requests soundao-local-agent",
+            "Prefer": "ai-agent",
+        }
+    )
+    response = session.get(f"{base_url}{args.path}", timeout=args.timeout)
     response.raise_for_status()
     if args.out:
         Path(args.out).write_text(response.text, encoding="utf-8")
@@ -76,6 +92,129 @@ def command_feedback(args: argparse.Namespace) -> int:
         payload["feedback"] = [
             item for item in payload.get("feedback", []) if item.get("category") == args.category
         ]
+    if args.out:
+        write_json(Path(args.out), payload)
+    else:
+        print(json.dumps(payload, ensure_ascii=False, indent=2))
+    return 0
+
+
+def extract_credits(payload: Any) -> int | float | None:
+    if isinstance(payload, dict):
+        for key in (
+            "credits",
+            "balance",
+            "remaining",
+            "remaining_points",
+            "points_remaining",
+            "credits_remaining",
+        ):
+            value = payload.get(key)
+            if isinstance(value, (int, float)):
+                return value
+            if isinstance(value, str):
+                try:
+                    return float(value)
+                except ValueError:
+                    pass
+        for key in ("user", "account", "data", "result", "me", "login"):
+            nested = payload.get(key)
+            value = extract_credits(nested)
+            if value is not None:
+                return value
+    return None
+
+
+def normalize_balance_payload(raw_payload: Any, credits: int | float | None, source: str) -> dict[str, Any]:
+    return {
+        "ok": credits is not None,
+        "source": source,
+        "credits": credits,
+        "balance": credits,
+        "remaining": credits,
+        "remaining_points": credits,
+        "raw": redact_sensitive(raw_payload),
+    }
+
+
+def redact_sensitive(value: Any) -> Any:
+    if isinstance(value, dict):
+        redacted: dict[str, Any] = {}
+        for key, item in value.items():
+            if key.lower() in {"token", "access_token", "refresh_token", "api_key", "password"}:
+                redacted[key] = "[redacted]"
+            else:
+                redacted[key] = redact_sensitive(item)
+        return redacted
+    if isinstance(value, list):
+        return [redact_sensitive(item) for item in value]
+    return value
+
+
+def command_balance(args: argparse.Namespace) -> int:
+    base_url = args.base_url.rstrip("/")
+    api_key = args.api_key or os.environ.get("SOUNDAO_API_KEY")
+    session = requests.Session()
+    session.headers.update(
+        {
+            "User-Agent": "python-requests soundao-local-agent",
+            "Prefer": "ai-agent",
+        }
+    )
+    if api_key:
+        response = session.post(
+            f"{base_url}/v1/auth/balance",
+            json={"api_key": api_key},
+            timeout=args.timeout,
+        )
+        response.raise_for_status()
+        raw_payload = response.json()
+        credits = extract_credits(raw_payload)
+        payload = normalize_balance_payload(raw_payload, credits, "api_key_balance")
+    else:
+        username = args.username or os.environ.get("SOUNDAO_USER")
+        password = args.password or os.environ.get("SOUNDAO_PASS")
+        if not username or not password:
+            payload = {
+                "ok": False,
+                "error": "missing_credentials",
+                "message": "缺少 Soundao 用户凭证。请把登录凭证或 API Key 发到主 Codex 窗口，由主 Agent 配置到项目环境中。",
+                "credits": None,
+                "balance": None,
+                "remaining_points": None,
+            }
+            if args.out:
+                write_json(Path(args.out), payload)
+            else:
+                print(json.dumps(payload, ensure_ascii=False, indent=2))
+            return 2
+        login_response = session.post(
+            f"{base_url}/v1/auth/login",
+            json={"username": username, "password": password},
+            timeout=args.timeout,
+        )
+        login_response.raise_for_status()
+        login_payload = login_response.json()
+        token = login_payload["token"]
+        headers = {"Authorization": f"Bearer {token}"}
+        credits = extract_credits(login_payload)
+        source = "login_user"
+        me_payload: Any | None = None
+        try:
+            me_response = session.get(f"{base_url}/v1/auth/me", headers=headers, timeout=args.timeout)
+            if me_response.ok:
+                me_payload = me_response.json()
+                me_credits = extract_credits(me_payload)
+                if me_credits is not None:
+                    credits = me_credits
+                    source = "auth_me"
+        except requests.RequestException:
+            me_payload = None
+        payload = normalize_balance_payload(
+            {"login": login_payload, "me": me_payload},
+            credits,
+            source,
+        )
     if args.out:
         write_json(Path(args.out), payload)
     else:
@@ -243,6 +382,10 @@ def build_parser() -> argparse.ArgumentParser:
     feedback.add_argument("--out", default="")
     feedback.set_defaults(func=command_feedback)
 
+    balance = sub.add_parser("balance", help="Read account balance without writing credentials.")
+    balance.add_argument("--out", default="")
+    balance.set_defaults(func=command_balance)
+
     edge = sub.add_parser("edge-tts", help="Run Edge TTS via Python requests.")
     edge.add_argument("--text", required=True)
     edge.add_argument("--out", required=True)
@@ -279,7 +422,22 @@ def build_parser() -> argparse.ArgumentParser:
 def main() -> int:
     parser = build_parser()
     args = parser.parse_args()
-    return int(args.func(args) or 0)
+    try:
+        return int(args.func(args) or 0)
+    except MissingCredentialsError as exc:
+        print(
+            json.dumps(
+                {
+                    "ok": False,
+                    "error": "missing_credentials",
+                    "message": str(exc),
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            file=sys.stderr,
+        )
+        return 2
 
 
 if __name__ == "__main__":
