@@ -95,6 +95,7 @@ Soundao trial
 ---
 
 **General users usually do not need to read the technical sections below. Ask your Agent to clone the project locally, provide your Soundao login credentials, and let the Agent guide the rest.**
+<img width="1457" height="3153" alt="未标题-2" src="https://github.com/user-attachments/assets/814a3710-383b-4bad-a6bc-e0a05d2ccd6a" />
 
 ## Local Web Entrypoints
 
