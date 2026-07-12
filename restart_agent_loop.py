@@ -29,7 +29,8 @@ def find_agent_loop_pids() -> list[str]:
             executable = (proc.info.get("name") or "").lower()
             is_python = "python" in executable
             runs_agent_loop = any(Path(arg).name == "agent_loop.py" for arg in command)
-            if is_python and runs_agent_loop:
+            same_workspace = Path(proc.cwd()).resolve() == ROOT.resolve()
+            if is_python and runs_agent_loop and same_workspace:
                 pids.append(str(proc.info["pid"]))
         except (psutil.NoSuchProcess, psutil.AccessDenied):
             continue
