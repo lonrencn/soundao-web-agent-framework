@@ -28,7 +28,7 @@ def get_workspace_path(required: bool = False) -> Path | None:
     if not value:
         if required:
             raise RuntimeError(
-                "Soundao 工作路径未配置。请让主 Agent 在 web_agent_framework/.env 中设置 "
+                "Soundao 工作路径未配置。请让主 Agent 在项目根目录的 .env 中设置 "
                 "SOUNDAO_AGENT_WORKSPACE=<你的工作区绝对路径> 后再启动。"
             )
         return None

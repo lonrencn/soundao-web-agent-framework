@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
-"""Local web-to-agent bridge for Codex workflows.
+"""Local web-to-agent bridge for opencode workflows.
 
 Run this server, open the dashboard, interact with a local web page, and save
-structured results under this directory so Codex or another agent can inspect
-them and continue.
-"""
+structured results under this directory so opencode or another agent can inspect
+them and continue."""
 
 from __future__ import annotations
 
@@ -181,25 +180,31 @@ class BridgeHandler(SimpleHTTPRequestHandler):
                     if disposition:
                         self.send_header("Content-Disposition", disposition)
                     self.end_headers()
-                    with path.open("rb") as f:
-                        f.seek(start)
-                        remaining = length
-                        while remaining > 0:
-                            chunk = f.read(min(1024 * 512, remaining))
-                            if not chunk:
-                                break
-                            self.wfile.write(chunk)
-                            remaining -= len(chunk)
+                    try:
+                        with path.open("rb") as f:
+                            f.seek(start)
+                            remaining = length
+                            while remaining > 0:
+                                chunk = f.read(min(1024 * 512, remaining))
+                                if not chunk:
+                                    break
+                                self.wfile.write(chunk)
+                                remaining -= len(chunk)
+                    except (ConnectionAbortedError, ConnectionResetError, BrokenPipeError):
+                        pass
                     return
-        data = path.read_bytes()
-        self.send_response(200)
-        self.send_header("Content-Type", content_type)
-        self.send_header("Content-Length", str(len(data)))
-        self.send_header("Accept-Ranges", "bytes")
-        if disposition:
-            self.send_header("Content-Disposition", disposition)
-        self.end_headers()
-        self.wfile.write(data)
+        try:
+            data = path.read_bytes()
+            self.send_response(200)
+            self.send_header("Content-Type", content_type)
+            self.send_header("Content-Length", str(len(data)))
+            self.send_header("Accept-Ranges", "bytes")
+            if disposition:
+                self.send_header("Content-Disposition", disposition)
+            self.end_headers()
+            self.wfile.write(data)
+        except (ConnectionAbortedError, ConnectionResetError, BrokenPipeError):
+            pass
 
     def do_OPTIONS(self) -> None:
         self.send_response(204)
@@ -210,14 +215,11 @@ class BridgeHandler(SimpleHTTPRequestHandler):
         path = unquote(parsed.path)
         query = parse_qs(parsed.query)
 
-        if path in {"/", "/index.html"}:
-            self.send_file(WEB / "index.html")
+        if path in {"/", "/index.html", "/soundao-easy"}:
+            self.send_file(WEB / "soundao_easy.html")
             return
         if path == "/soundao":
             self.send_file(WEB / "soundao_intro.html")
-            return
-        if path == "/soundao-easy":
-            self.send_file(WEB / "soundao_easy.html")
             return
         if path == "/web-agent-bridge.js":
             self.send_file(WEB / "web-agent-bridge.js")
@@ -449,14 +451,19 @@ class BridgeHandler(SimpleHTTPRequestHandler):
         self.send_error(404)
 
 
+class BridgeHTTPServer(ThreadingHTTPServer):
+    allow_reuse_address = True
+    daemon_threads = True
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run the local web-agent bridge.")
     parser.add_argument("--host", default="127.0.0.1")
-    parser.add_argument("--port", default=8765, type=int)
+    parser.add_argument("--port", default=8766, type=int)
     args = parser.parse_args()
 
     RUNS.mkdir(parents=True, exist_ok=True)
-    httpd = ThreadingHTTPServer((args.host, args.port), BridgeHandler)
+    httpd = BridgeHTTPServer((args.host, args.port), BridgeHandler)
     print(f"Web-agent bridge: http://{args.host}:{args.port}/")
     print(f"Result folder:    {RUNS}")
     httpd.serve_forever()

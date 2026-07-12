@@ -7,14 +7,6 @@ import sys
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-if str(PROJECT_ROOT) not in sys.path:
-    sys.path.insert(0, str(PROJECT_ROOT))
-
-from project_config import get_workspace_path
-
-FALLBACK_SAMPLE_RATE = 48000
-
 
 def probe_duration(path: Path) -> float:
     result = subprocess.run(
@@ -33,43 +25,6 @@ def probe_duration(path: Path) -> float:
         check=True,
     )
     return float(json.loads(result.stdout)["format"]["duration"])
-
-
-def probe_audio_metadata(path: Path) -> dict[str, int | str | None]:
-    result = subprocess.run(
-        [
-            "ffprobe",
-            "-v",
-            "error",
-            "-select_streams",
-            "a:0",
-            "-show_entries",
-            "stream=sample_rate,channels,codec_name",
-            "-of",
-            "json",
-            str(path),
-        ],
-        capture_output=True,
-        text=True,
-        check=True,
-    )
-    streams = json.loads(result.stdout).get("streams") or []
-    stream = streams[0] if streams else {}
-    sample_rate = stream.get("sample_rate")
-    channels = stream.get("channels")
-    return {
-        "sample_rate": int(sample_rate) if str(sample_rate or "").isdigit() else None,
-        "channels": int(channels) if str(channels or "").isdigit() else None,
-        "codec_name": stream.get("codec_name"),
-    }
-
-
-def sample_rate_for(path: Path) -> int:
-    try:
-        value = probe_audio_metadata(path).get("sample_rate")
-    except Exception:
-        value = None
-    return int(value or FALLBACK_SAMPLE_RATE)
 
 
 def read_sections(script_path: Path) -> list[tuple[str, str]]:
@@ -130,7 +85,7 @@ def media_file(parent: ET.Element, file_id: str, path: Path, duration_frames: in
     audio = elem(media, "audio")
     sample = elem(audio, "samplecharacteristics")
     elem(sample, "depth", 16)
-    elem(sample, "samplerate", sample_rate_for(path))
+    elem(sample, "samplerate", 44100)
     elem(audio, "channelcount", 2)
 
 
@@ -183,7 +138,6 @@ def retime_host(result_dir: Path) -> Path:
     source = result_dir / "host_voice_full.mp3"
     target = result_dir / "host_voice_retimed.mp3"
     source_duration = probe_duration(source)
-    source_sample_rate = sample_rate_for(source)
     target_duration = 269.0
     tempo = source_duration / target_duration
     subprocess.run(
@@ -195,7 +149,7 @@ def retime_host(result_dir: Path) -> Path:
             "-filter:a",
             f"atempo={tempo:.6f}",
             "-ar",
-            str(source_sample_rate),
+            "48000",
             "-ac",
             "2",
             "-c:a",
@@ -215,8 +169,8 @@ def update_json_references(result_dir: Path, xml_path: Path) -> None:
     project_root = Path(__file__).resolve().parents[2]
     files = [
         result_dir / "deliverable_manifest.json",
-        project_root / "web_agent_framework" / "latest_agent_command.json",
-        project_root / "web_agent_framework" / "runs" / "default" / "agent_command.latest.json",
+        project_root / "soundao-web-agent-framework" / "latest_agent_command.json",
+        project_root / "soundao-web-agent-framework" / "runs" / "default" / "agent_command.latest.json",
     ]
     for path in files:
         if not path.exists():
@@ -296,7 +250,7 @@ def build(result_dir: Path) -> None:
     audio_fmt = elem(audio, "format")
     audio_sample = elem(audio_fmt, "samplecharacteristics")
     elem(audio_sample, "depth", 16)
-    elem(audio_sample, "samplerate", sample_rate_for(host_retimed))
+    elem(audio_sample, "samplerate", 44100)
     outputs = elem(audio, "outputs")
     for index in [1, 2]:
         group = elem(outputs, "group")
@@ -332,9 +286,14 @@ def build(result_dir: Path) -> None:
 
     update_json_references(result_dir, xml_path)
 
-    workspace = get_workspace_path(required=False)
-    archive_dir = workspace / "02_工作成果" / "AI电台节目" / result_dir.name if workspace else None
-    if archive_dir and archive_dir.exists():
+    archive_dir = (
+        Path(__file__).resolve().parents[2]
+        / "Soundao_Agent_Workspace"
+        / "02_工作成果"
+        / "AI电台节目"
+        / result_dir.name
+    )
+    if archive_dir.exists():
         shutil.copy2(xml_path, archive_dir / xml_path.name)
         shutil.copy2(host_retimed, archive_dir / host_retimed.name)
 
