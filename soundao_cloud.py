@@ -18,6 +18,14 @@ from typing import Any
 
 import requests
 
+try:  # load .env automatically when python-dotenv is available
+    from dotenv import load_dotenv
+    _ENV_PATH = Path(__file__).resolve().parent / ".env"
+    if _ENV_PATH.exists():
+        load_dotenv(_ENV_PATH, override=False)
+except ImportError:  # pragma: no cover - dotenv is optional
+    pass
+
 
 DEFAULT_BASE_URL = "https://sd.daoson.work:8443"
 

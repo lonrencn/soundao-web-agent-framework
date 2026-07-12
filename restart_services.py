@@ -6,12 +6,10 @@ from __future__ import annotations
 import subprocess
 import sys
 import time
-from pathlib import Path
 
 import psutil
 
-
-ROOT = Path(__file__).resolve().parent
+from config import HOST, PORT, ROOT
 
 
 def kill_matching(script_name: str) -> list[int]:
@@ -44,7 +42,7 @@ def start(script_name: str, *args: str) -> int:
 
 def main() -> int:
     killed = kill_matching("agent_loop.py") + kill_matching("server.py")
-    server_pid = start("server.py", "--host", "127.0.0.1", "--port", "8765")
+    server_pid = start("server.py", "--host", HOST, "--port", str(PORT))
     loop_pid = start("agent_loop.py", "--interval", "1")
     time.sleep(1)
     print(f"killed={killed}")

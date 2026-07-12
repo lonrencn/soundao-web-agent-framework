@@ -23,12 +23,20 @@ from typing import Any
 
 import requests
 
-
-ROOT = Path(__file__).resolve().parent
-RUNS = ROOT / "runs"
-LATEST_RESULT = ROOT / "latest_result.json"
-STATE = ROOT / ".agent_loop_state.json"
-WORKSPACE = Path(os.environ.get("SOUNDAO_AGENT_WORKSPACE", ROOT.parent / "Soundao_Agent_Workspace")).resolve()
+from config import (
+    ALLOW_SHELL,
+    CWD as DEFAULT_CWD,
+    HOST,
+    LOOP_INTERVAL,
+    LOOP_STATE,
+    LATEST_COMMAND,
+    LATEST_RESULT,
+    PORT,
+    ROOT,
+    RUNS,
+    WORKBUDDY_MODE,
+    WORKSPACE,
+)
 
 
 def now() -> str:
@@ -268,7 +276,7 @@ def run_final_delivery_check(out_dir: Path, task_context_path: Path, manifest_pa
             "--out",
             str(report_path),
         ],
-        cwd=str(ROOT.parent),
+        cwd=str(DEFAULT_CWD),
         capture_output=True,
         text=True,
         encoding="utf-8",
@@ -375,7 +383,7 @@ def handle_write_file(result: dict[str, Any], out_dir: Path) -> dict[str, Any]:
 
 
 def handle_shell(result: dict[str, Any], out_dir: Path, cwd: Path) -> dict[str, Any]:
-    if os.environ.get("WEB_AGENT_ALLOW_SHELL") != "1":
+    if not ALLOW_SHELL:
         return {
             "ok": False,
             "message": "Shell action refused. Set WEB_AGENT_ALLOW_SHELL=1 only for trusted local pages.",
@@ -581,6 +589,22 @@ def should_handle_edge_fast_tts(result: dict[str, Any]) -> bool:
     return bool(text.strip())
 
 
+def is_workbuddy_mode() -> bool:
+    """Detect if we are running inside a WorkBuddy environment.
+
+    Uses the WORKBUDDY_MODE flag from config.py (loaded from .env).
+    If explicitly set, that value is authoritative. If not set, falls back
+    to checking whether Codex CLI is available.
+    """
+    if WORKBUDDY_MODE:
+        return True
+    # Implicit: if Codex CLI is not found, we're likely in a WorkBuddy-only env
+    cmd = codex_command()
+    if cmd == ["codex"] and not shutil.which("codex") and not shutil.which("codex.exe"):
+        return True
+    return False
+
+
 def codex_command() -> list[str]:
     env_bin = os.environ.get("WEB_AGENT_CODEX_BIN")
     if env_bin and Path(env_bin).exists():
@@ -754,6 +778,45 @@ web_result_json:
 {json.dumps(result, ensure_ascii=False, indent=2)}
 ```
 """
+
+
+def handle_workbuddy_request(result: dict[str, Any], out_dir: Path, cwd: Path) -> dict[str, Any]:
+    """Mark result as pending WorkBuddy agent processing.
+
+    In WorkBuddy mode, we don't launch a Codex CLI subprocess OR write an
+    intermediate workbuddy_task.json. The WorkBuddy main agent (the
+    conversational AI) directly reads latest_result.json and processes it.
+
+    This function simply:
+    1. Writes the task context so WorkBuddy can find structured info
+    2. Returns a status indicating "pending" — not "done"
+    3. The WorkBuddy agent will process the result in its own turn
+    """
+    session_id = str(result.get("session_id") or "default")
+    result_id = str(result.get("id") or "result")
+    task_context_path = write_task_context(out_dir, result)
+
+    from config import has_soundao_credentials, credential_status_message
+
+    if not has_soundao_credentials():
+        cred_msg = credential_status_message()
+        return {
+            "ok": False,
+            "mode": "workbuddy",
+            "status": "needs_credentials",
+            "message": cred_msg,
+            "task_context_path": str(task_context_path),
+            "out_dir": str(out_dir),
+        }
+
+    return {
+        "ok": True,
+        "mode": "workbuddy",
+        "status": "pending_agent",
+        "message": "任务文件已经生成提交，请让 WorkBuddy 开始执行。",
+        "task_context_path": str(task_context_path),
+        "out_dir": str(out_dir),
+    }
 
 
 def handle_agent_request(result: dict[str, Any], out_dir: Path, cwd: Path) -> dict[str, Any]:
@@ -1134,7 +1197,7 @@ def write_agent_command(session_id: str, command: dict[str, Any]) -> None:
     with (run / "agent_commands.jsonl").open("a", encoding="utf-8") as f:
         f.write(json.dumps(record, ensure_ascii=False) + "\n")
     write_json(run / "agent_command.latest.json", record)
-    write_json(ROOT / "latest_agent_command.json", record)
+    write_json(LATEST_COMMAND, record)
 
 
 def make_command(
@@ -1157,7 +1220,7 @@ def make_command(
 
 
 def process_once(cwd: Path) -> dict[str, Any]:
-    state = read_json(STATE, {})
+    state = read_json(LOOP_STATE, {})
     result = read_json(LATEST_RESULT)
     if not result:
         return {"ok": False, "message": "No latest_result.json yet."}
@@ -1191,15 +1254,26 @@ def process_once(cwd: Path) -> dict[str, Any]:
             write_agent_command(session_id, progress_command)
             outcome = handle_edge_fast_tts(result, out_dir)
         elif action in {"agent_request", "codex_agent", "demo_user_decision"}:
-            progress_command = make_command(
-                result,
-                action,
-                "processing",
-                35,
-                "正在启动 Codex 子 Agent 处理你的要求。",
-            )
-            write_agent_command(session_id, progress_command)
-            outcome = handle_agent_request(result, out_dir, cwd)
+            if is_workbuddy_mode():
+                progress_command = make_command(
+                    result,
+                    action,
+                    "processing",
+                    20,
+                    "WorkBuddy Agent 模式：任务已写入文件，等待主 Agent 处理。",
+                )
+                write_agent_command(session_id, progress_command)
+                outcome = handle_workbuddy_request(result, out_dir, cwd)
+            else:
+                progress_command = make_command(
+                    result,
+                    action,
+                    "processing",
+                    35,
+                    "正在启动 Codex 子 Agent 处理你的要求。",
+                )
+                write_agent_command(session_id, progress_command)
+                outcome = handle_agent_request(result, out_dir, cwd)
         elif action in {"write_summary", "manual_review"}:
             outcome = handle_write_summary(result, out_dir)
         elif action == "write_file":
@@ -1210,26 +1284,43 @@ def process_once(cwd: Path) -> dict[str, Any]:
             outcome = handle_write_summary(result, out_dir)
             outcome["message"] = f"Unknown action '{action}', wrote summary instead."
         deliverable = outcome.get("deliverable")
-        manifest_path = out_dir / "deliverable_manifest.json"
-        task_context_path = out_dir / "task_context.json"
-        if deliverable and manifest_is_complete_for_result(result, deliverable) and not outcome.get("final_delivery_check"):
-            final_check = run_final_delivery_check(out_dir, task_context_path, manifest_path)
-            outcome["final_delivery_check"] = final_check
-            outcome["final_delivery_check_path"] = str(out_dir / "final_delivery_check.json")
-            if not final_check.get("ok"):
+        # In WorkBuddy mode, the task is delegated to the main agent — no local deliverable yet
+        if outcome.get("mode") == "workbuddy":
+            status = "processing"
+            progress = 20
+            message = outcome.get("message") or "WorkBuddy 模式：任务已写入，等待主 Agent 处理。"
+        else:
+            manifest_path = out_dir / "deliverable_manifest.json"
+            task_context_path = out_dir / "task_context.json"
+            if deliverable and manifest_is_complete_for_result(result, deliverable) and not outcome.get("final_delivery_check"):
+                final_check = run_final_delivery_check(out_dir, task_context_path, manifest_path)
+                outcome["final_delivery_check"] = final_check
+                outcome["final_delivery_check_path"] = str(out_dir / "final_delivery_check.json")
+                if not final_check.get("ok"):
+                    outcome["ok"] = False
+                    outcome["stage_only"] = True
+                    outcome["message"] = "Final delivery check did not pass; deliverable is not ready to submit."
+            if is_audio_delivery_task(result) and deliverable and not manifest_is_complete_for_result(result, deliverable):
                 outcome["ok"] = False
                 outcome["stage_only"] = True
-                outcome["message"] = "Final delivery check did not pass; deliverable is not ready to submit."
-        if is_audio_delivery_task(result) and deliverable and not manifest_is_complete_for_result(result, deliverable):
-            outcome["ok"] = False
-            outcome["stage_only"] = True
-            outcome["message"] = (
-                "Audio task deliverable did not pass final checks; playable audio, duration, or text integrity is invalid."
-            )
+                outcome["message"] = (
+                    "Audio task deliverable did not pass final checks; playable audio, duration, or text integrity is invalid."
+                )
         if outcome.get("cancelled"):
             status = "cancelled"
             progress = 0
             message = "已强制中止，本次过程已清除。"
+        elif outcome.get("mode") == "workbuddy":
+            if outcome.get("status") == "needs_credentials":
+                # No Soundao credentials — tell the user immediately
+                status = "error"
+                progress = 0
+                message = outcome.get("message") or "Soundao 凭证未配置，请提供 API Key 或加入 QQ 群申请试用。"
+            else:
+                # Keep processing status — WorkBuddy main agent will update when done
+                status = "processing"
+                progress = 20
+                message = outcome.get("message") or "WorkBuddy 模式：任务已写入，等待主 Agent 处理。"
         else:
             status = "done" if outcome.get("ok") else "error"
             progress = 100
@@ -1252,15 +1343,15 @@ def process_once(cwd: Path) -> dict[str, Any]:
     command = make_command(result, action, status, progress, message, outcome)
     write_json(out_dir / "latest_decision.json", command)
     write_agent_command(session_id, command)
-    write_json(STATE, {"last_result_id": result.get("id"), "processed_at": now()})
+    write_json(LOOP_STATE, {"last_result_id": result.get("id"), "processed_at": now()})
     return {"ok": True, "processed": command}
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Poll web-agent results.")
     parser.add_argument("--once", action="store_true", help="Process one pending result and exit.")
-    parser.add_argument("--interval", type=float, default=2.0)
-    parser.add_argument("--cwd", default=str(ROOT.parent), help="Working directory for optional shell actions.")
+    parser.add_argument("--interval", type=float, default=LOOP_INTERVAL, help="Polling interval in seconds.")
+    parser.add_argument("--cwd", default=str(DEFAULT_CWD), help="Working directory for optional shell actions.")
     args = parser.parse_args()
     cwd = Path(args.cwd).resolve()
 

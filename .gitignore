@@ -18,6 +18,14 @@ __pycache__/
 venv/
 env/
 
+# Environment config (contains local paths and credentials)
+.env
+.env.local
+
+# Workspace data (user assets, deliverables, logs)
+Soundao_Agent_Workspace/
+Soundado_Agent_Workspace/
+
 # OS/editor noise
 .DS_Store
 Thumbs.db

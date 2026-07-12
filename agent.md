@@ -1,5 +1,43 @@
 # Soundao Agent 接入说明
 
+Agent 启动后第一件事，必须检查本地是否已有 Soundao 登录凭证；如果没有，先请用户把 Soundao 用户名和密码发到主 WorkBuddy 窗口，由主 Agent 配置到项目环境中。用户还没有凭证时，提示用户加入 QQ 群 `1030846851` 申请试用，申请注明 `Soundao试用`。
+
+## WorkBuddy Agent 工作模式
+
+本项目的主 Agent 是 **WorkBuddy**（即对话中的 AI），不是 Codex CLI。
+
+### 自动处理（定时任务）
+
+WorkBuddy 支持定时任务（Automation）机制。项目已配置 `Soundao-Web-Agent-Poller` 自动化任务，每小时轮询 `latest_result.json`。发现 `agent_request` 任务后自动处理（读取文档、调用 Soundao API、撰写文案、配音配乐、混音、回写 Web UI）。
+
+### 手动处理（用户切回对话窗口）
+
+**当用户从 Web UI 切回 WorkBuddy 对话窗口时：**
+
+1. Agent 必须**立即停止**当前正在进行的自动化处理（如果有）。
+2. Agent 读取 `latest_result.json`，检查是否有 pending 状态的任务。
+3. 如果有 `agent_request` 任务，Agent 直接在对话中处理——**不需要用户再开口说"处理"**。
+4. Agent 处理完毕后，通过 `POST /api/agent-command` 把结果写回 Web UI（status=done, progress=100）。
+5. 更新 `.agent_loop_state.json` 标记已处理。
+
+**关键规则：**
+- 用户切回对话窗口 = 他卡住了或有新需求。Agent 必须主动检查并接管任务。
+- 不要在对话里等待用户说"处理"——agent_loop 已经把任务标记为 pending，Agent 直接接手。
+- 任务处理完成后，用户刷新 Web UI 页面就能看到结果。
+- 如果处理过程有阻塞问题（如凭证缺失、云端 API 失败），在对话里明确告知用户原因。
+
+### 完整工作流
+
+```
+用户在 Web UI 提交 → latest_result.json 写入 → agent_loop.py 标记 pending
+                            ↓
+          ┌─ Automation 每小时轮询 ──────→ 自动处理 → 回写 Web UI
+          │
+          └─ 用户切回对话 → Agent 立即接管 → 直接处理 → 回写 Web UI
+```
+
+用户在 Web UI 上操作完整闭环：**提交 → 等待 → 页面刷新看到结果**。不需要切到对话窗口拿结果。
+
 ## 启动前首要提示
 
 首次运行本项目，或用户开启一个以前没有处理过的新类型任务时，Agent 必须先全量读取 Soundao 云端公开文档，检查接口、参数、计费、限制和推荐流程是否与本地记忆或 skill 有变化。
@@ -15,6 +53,18 @@ python web_agent_framework/soundao_cloud.py llms --path /llms-full.txt --out <�
 如果本地没有可用用户凭证，Agent 不要尝试调用会消耗额度或需要登录的接口。应先通过页面进度提示告诉用户：请把 Soundao 登录凭证或 API Key 发到主 Codex 窗口，由主 Agent 配置到项目环境中；凭证配置完成前，只能读取公开文档、解释能力和整理方案。
 
 本文给后续 Agent 使用。进入本项目后，先读本文件，再根据用户需求读取云端文档和本地页面代码。
+
+## 本地工作路径
+
+项目源码中不得保存任何本机绝对工作路径。首次运行或迁移项目时，主 Agent 必须先在 `web_agent_framework/.env` 中配置：
+
+```text
+SOUNDAO_AGENT_WORKSPACE=<用户本机 Soundao Agent 工作区绝对路径>
+```
+
+也可以执行 `python configure_workspace.py <工作区路径>` 自动写入 `.env`。后续所有用户素材、成果、文档、日志、缓存和技能库路径都必须从该工作区根目录拼接，不能在代码、页面 JSON、README 或交付物模板里写死 `G:\...`、`C:\Users\...` 等本机路径。
+
+> WorkBuddy 兼容说明：本项目同时支持旧变量名 `SOUNDAO_WORKSPACE`（由 `config.py` 加载）和新变量名 `SOUNDAO_AGENT_WORKSPACE`（由 `project_config.py` 与 tools 加载）。`.env` 中同时配置两者指向同一目录即可。
 
 ## 云端入口
 
@@ -106,6 +156,9 @@ Agent 不能凭感觉临时拼接音频流程。处理 Soundao 任务时必须�
 - Agent 工作区技能库位于 `Soundao_Agent_Workspace/03_关键数据/技能库/`。
 - 制作 AI 电台、广播节目、口播节目、城市新闻电台、音乐电台或最终广播音频时，必须先完整读取并遵守：
   `Soundao_Agent_Workspace/03_关键数据/技能库/ai-radio-delivery/SKILL.md`
+- 任何任务只要要导出 `timeline_tracks.xml`、FCP7 XML、Premiere / PR 可导入时间线、字幕轨 XML，必须先完整读取并遵守：
+  `Soundao_Agent_Workspace/03_关键数据/技能库/premiere-xml-timeline/SKILL.md`
+  该 skill 只负责 XML 文件格式、媒体引用格式、采样率/声道/路径/字幕 generatoritem 等格式规则；节目结构、BGM 生成、结尾曲生成、字幕分配算法由具体业务 skill 或任务流程决定。
 - 如果项目里已有专用脚本，例如 `soundao_cloud.py`，优先使用脚本，不要另起一套随意流程。
 - 没有文档、skill 或脚本支撑的步骤，只能作为方案建议，不能直接生成。
 - 音乐、配音、音效、分析、清理、媒资取回都应使用 Soundao 云端对应能力；本地工具只用于文件整理、格式转换、混音、响度处理和结果归档。

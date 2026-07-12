@@ -6,10 +6,8 @@ from __future__ import annotations
 import subprocess
 import sys
 import time
-from pathlib import Path
 
-
-ROOT = Path(__file__).resolve().parent
+from config import ROOT
 
 
 def find_agent_loop_pids() -> list[str]:

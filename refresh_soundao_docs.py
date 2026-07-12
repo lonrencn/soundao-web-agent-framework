@@ -10,12 +10,9 @@ from typing import Any
 
 import requests
 
+from config import DOC_DIR, SOUNDAO_BASE_URL, WEB_JSON
 
-ROOT = Path(__file__).resolve().parent
-WORKSPACE = ROOT.parent / "Soundao_Agent_Workspace"
-DOC_DIR = WORKSPACE / "04_文档" / "云端文档"
-WEB_JSON = ROOT / "web" / "soundao_docs.json"
-BASE_URL = "https://sd.daoson.work:8443"
+BASE_URL = SOUNDAO_BASE_URL
 
 DOC_PATHS = [
     "/llms.txt",

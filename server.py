@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Local web-to-agent bridge for Codex workflows.
+"""Local web-to-agent bridge for WorkBuddy / agent workflows.
 
 Run this server, open the dashboard, interact with a local web page, and save
-structured results under this directory so Codex or another agent can inspect
+structured results under this directory so WorkBuddy or another agent can inspect
 them and continue.
 """
 
@@ -19,12 +19,19 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import parse_qs, quote, unquote, urlparse
 
+from config import (
+    HOST,
+    LATEST_COMMAND,
+    LATEST_RESULT,
+    PORT,
+    ROOT,
+    RUNS,
+    WEB,
+    credential_status_message,
+    has_soundao_credentials,
+)
 
-ROOT = Path(__file__).resolve().parent
-WEB = ROOT / "web"
-RUNS = ROOT / "runs"
-LATEST_RESULT = ROOT / "latest_result.json"
-LATEST_COMMAND = ROOT / "latest_agent_command.json"
+
 SESSION_RE = re.compile(r"[^A-Za-z0-9_.-]+")
 
 mimetypes.add_type("image/webp", ".webp")
@@ -242,6 +249,13 @@ class BridgeHandler(SimpleHTTPRequestHandler):
         if path == "/api/health":
             self.send_json({"ok": True, "root": str(ROOT), "time": utc_now()})
             return
+        if path == "/api/credential-status":
+            self.send_json({
+                "ok": True,
+                "has_credentials": has_soundao_credentials(),
+                "message": credential_status_message(),
+            })
+            return
         if path == "/api/latest-result":
             if LATEST_RESULT.exists():
                 self.send_file(LATEST_RESULT)
@@ -454,8 +468,8 @@ class BridgeHandler(SimpleHTTPRequestHandler):
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run the local web-agent bridge.")
-    parser.add_argument("--host", default="127.0.0.1")
-    parser.add_argument("--port", default=8765, type=int)
+    parser.add_argument("--host", default=HOST)
+    parser.add_argument("--port", default=PORT, type=int)
     args = parser.parse_args()
 
     RUNS.mkdir(parents=True, exist_ok=True)
@@ -463,6 +477,8 @@ def main() -> int:
     print(f"Web-agent bridge: http://{args.host}:{args.port}/")
     print(f"Demo page:        http://{args.host}:{args.port}/demo")
     print(f"Result folder:    {RUNS}")
+    print()
+    print(credential_status_message())
     httpd.serve_forever()
     return 0
 

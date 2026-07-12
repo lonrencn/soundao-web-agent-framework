@@ -11,8 +11,7 @@ from pathlib import Path
 from typing import Any
 
 
-ROOT = Path(__file__).resolve().parent
-RUNS = ROOT / "runs"
+from config import LATEST_COMMAND, ROOT, RUNS
 
 
 def now() -> str:
@@ -94,7 +93,7 @@ def main() -> int:
     run_dir = RUNS / session_id
     append_jsonl(run_dir / "agent_commands.jsonl", record)
     write_json(run_dir / "agent_command.latest.json", record)
-    write_json(ROOT / "latest_agent_command.json", record)
+    write_json(LATEST_COMMAND, record)
     print(json.dumps({"ok": True, "record": record}, ensure_ascii=False, indent=2))
     return 0
 

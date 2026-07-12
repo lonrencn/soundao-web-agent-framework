@@ -2,7 +2,7 @@
   "use strict";
 
   const currentScript = document.currentScript;
-  const defaultBase = currentScript ? new URL(currentScript.src).origin : "http://127.0.0.1:8765";
+  const defaultBase = currentScript ? new URL(currentScript.src).origin : "http://127.0.0.1:8766";
   const bridgeBase =
     (currentScript && currentScript.dataset.bridgeBase) ||
     window.WEB_AGENT_BRIDGE_BASE ||
