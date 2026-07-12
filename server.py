@@ -213,9 +213,6 @@ class BridgeHandler(SimpleHTTPRequestHandler):
         if path in {"/", "/index.html"}:
             self.send_file(WEB / "index.html")
             return
-        if path == "/demo":
-            self.send_file(WEB / "demo_interaction.html")
-            return
         if path == "/soundao":
             self.send_file(WEB / "soundao_intro.html")
             return
@@ -461,7 +458,6 @@ def main() -> int:
     RUNS.mkdir(parents=True, exist_ok=True)
     httpd = ThreadingHTTPServer((args.host, args.port), BridgeHandler)
     print(f"Web-agent bridge: http://{args.host}:{args.port}/")
-    print(f"Demo page:        http://{args.host}:{args.port}/demo")
     print(f"Result folder:    {RUNS}")
     httpd.serve_forever()
     return 0

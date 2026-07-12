@@ -7,7 +7,6 @@
 - `server.py`：本地 HTTP 服务，提供页面、事件接口、结果落盘接口。
 - `web/index.html`：控制台，可打开目标链接、手动保存结果、查看最新结果。
 - `web/web-agent-bridge.js`：嵌入任意本地 Web 页的 JS 桥。
-- `web/demo_interaction.html`：演示页面。
 - `agent_loop.py`：Agent 侧轮询器，读取 `latest_result.json` 并执行 allowlist 动作。
 - `runs/`：每个 session 的事件、结果和 Agent 输出。
 
@@ -46,12 +45,6 @@ python server.py --host 127.0.0.1 --port 8765
 
 ```text
 http://127.0.0.1:8765/
-```
-
-演示页：
-
-```text
-http://127.0.0.1:8765/demo
 ```
 
 ## 在你的本地 Web 页面里接入
@@ -151,7 +144,7 @@ web_agent_framework\runs\<session_id>\agent_outputs\deliverable_manifest.json
 web_agent_framework\runs\<session_id>\agent_outputs\codex_agent_final.md
 ```
 
-演示页会读取 `deliverable_manifest.json` 中的 `primary_path`，并把最终交付物内容直接显示在页面的“最终交付物”区域。
+页面可以读取 `deliverable_manifest.json` 中的 `primary_path`，并把最终交付物内容直接显示在“最终交付物”区域。
 
 Codex 自己也可以直接读取：
 
