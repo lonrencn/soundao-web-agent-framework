@@ -416,8 +416,10 @@ def handle_edge_fast_tts(result: dict[str, Any], out_dir: Path) -> dict[str, Any
         raise RuntimeError("No TTS text was provided.")
 
     base = os.environ.get("SOUNDAO_BASE", "https://sd.daoson.work:8443").rstrip("/")
-    username = os.environ.get("SOUNDAO_USER", "testpay")
-    password = os.environ.get("SOUNDAO_PASS", "test123")
+    username = os.environ.get("SOUNDAO_USER", "")
+    password = os.environ.get("SOUNDAO_PASS", "")
+    if not username or not password:
+        raise RuntimeError("Missing SOUNDAO_USER/SOUNDAO_PASS. Configure Soundao login credentials in local .env before calling cloud TTS.")
     voice = str(payload.get("edge_voice") or "zh-CN-YunxiNeural")
     audio_path = out_dir / "edge_fast_voiceover.mp3"
     meta_path = out_dir / "edge_fast_voiceover.meta.json"
