@@ -10,9 +10,11 @@ from typing import Any
 
 import requests
 
+from project_config import get_workspace_path, workspace_relative
+
 
 ROOT = Path(__file__).resolve().parent
-WORKSPACE = ROOT.parent / "Soundao_Agent_Workspace"
+WORKSPACE = get_workspace_path(required=True)
 DOC_DIR = WORKSPACE / "04_文档" / "云端文档"
 WEB_JSON = ROOT / "web" / "soundao_docs.json"
 BASE_URL = "https://sd.daoson.work:8443"
@@ -140,7 +142,7 @@ def main() -> int:
         local_path.write_text(text, encoding="utf-8")
         docs[path] = {
             "path": path,
-            "local_path": str(local_path),
+            "workspace_relative_path": workspace_relative(local_path, WORKSPACE),
             "status": response.status_code,
             "content_type": response.headers.get("content-type", ""),
             "headings": extract_headings(text),

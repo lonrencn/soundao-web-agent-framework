@@ -8,6 +8,8 @@ import sys
 import time
 from pathlib import Path
 
+from project_config import get_workspace_path
+
 
 ROOT = Path(__file__).resolve().parent
 
@@ -23,8 +25,11 @@ def find_agent_loop_pids() -> list[str]:
         try:
             if str(proc.info["pid"]) == current_pid:
                 continue
-            command = " ".join(proc.info.get("cmdline") or [])
-            if "agent_loop.py" in command:
+            command = proc.info.get("cmdline") or []
+            executable = (proc.info.get("name") or "").lower()
+            is_python = "python" in executable
+            runs_agent_loop = any(Path(arg).name == "agent_loop.py" for arg in command)
+            if is_python and runs_agent_loop:
                 pids.append(str(proc.info["pid"]))
         except (psutil.NoSuchProcess, psutil.AccessDenied):
             continue
@@ -32,6 +37,7 @@ def find_agent_loop_pids() -> list[str]:
 
 
 def main() -> int:
+    workspace = get_workspace_path(required=True)
     killed: list[str] = []
     for pid in find_agent_loop_pids():
         subprocess.run(["taskkill", "/PID", pid, "/F"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -46,6 +52,7 @@ def main() -> int:
     time.sleep(1)
     print(f"killed={killed}")
     print(f"started={proc.pid}")
+    print(f"workspace={workspace}")
     return 0
 
 

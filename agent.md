@@ -14,6 +14,16 @@ python web_agent_framework/soundao_cloud.py llms --path /llms-full.txt --out <�
 
 如果本地没有可用用户凭证，Agent 不要尝试调用会消耗额度或需要登录的接口。应先通过页面进度提示告诉用户：请把 Soundao 登录凭证或 API Key 发到主 Codex 窗口，由主 Agent 配置到项目环境中；凭证配置完成前，只能读取公开文档、解释能力和整理方案。
 
+## 本地工作路径
+
+项目源码中不得保存任何本机绝对工作路径。首次运行或迁移项目时，主 Agent 必须先在 `web_agent_framework/.env` 中配置：
+
+```text
+SOUNDAO_AGENT_WORKSPACE=<用户本机 Soundao Agent 工作区绝对路径>
+```
+
+也可以执行 `python configure_workspace.py <工作区路径>` 自动写入 `.env`。后续所有用户素材、成果、文档、日志、缓存和技能库路径都必须从该工作区根目录拼接，不能在代码、页面 JSON、README 或交付物模板里写死 `G:\...`、`C:\Users\...` 等本机路径。
+
 本文给后续 Agent 使用。进入本项目后，先读本文件，再根据用户需求读取云端文档和本地页面代码。
 
 ## 云端入口

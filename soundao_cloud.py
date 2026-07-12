@@ -18,6 +18,8 @@ from typing import Any
 
 import requests
 
+from project_config import load_project_env
+
 
 DEFAULT_BASE_URL = "https://sd.daoson.work:8443"
 
@@ -420,6 +422,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main() -> int:
+    load_project_env()
     parser = build_parser()
     args = parser.parse_args()
     try:

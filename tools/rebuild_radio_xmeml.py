@@ -7,6 +7,12 @@ import sys
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from project_config import get_workspace_path
+
 
 def probe_duration(path: Path) -> float:
     result = subprocess.run(
@@ -286,14 +292,9 @@ def build(result_dir: Path) -> None:
 
     update_json_references(result_dir, xml_path)
 
-    archive_dir = (
-        Path(__file__).resolve().parents[2]
-        / "Soundao_Agent_Workspace"
-        / "02_工作成果"
-        / "AI电台节目"
-        / result_dir.name
-    )
-    if archive_dir.exists():
+    workspace = get_workspace_path(required=False)
+    archive_dir = workspace / "02_工作成果" / "AI电台节目" / result_dir.name if workspace else None
+    if archive_dir and archive_dir.exists():
         shutil.copy2(xml_path, archive_dir / xml_path.name)
         shutil.copy2(host_retimed, archive_dir / host_retimed.name)
 

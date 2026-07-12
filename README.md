@@ -13,18 +13,19 @@
 
 ## Agent 工作区
 
-源码目录和用户数据目录分离：
+源码目录和用户数据目录分离。源码仓库不保存任何本机绝对工作路径，主 Agent 首次启动项目前需要在本地 `.env` 中配置工作区：
 
 ```text
-G:\opencodespace\Soundao\web_agent_framework          # 本框架源码，可提交 Git
-G:\opencodespace\Soundao\Soundao_Agent_Workspace     # 用户素材、成果、日志、临时数据
+SOUNDAO_AGENT_WORKSPACE=<你的 Soundao Agent 工作区绝对路径>
 ```
 
-默认工作区路径为源码目录同级的 `Soundao_Agent_Workspace`，也可以用环境变量覆盖：
+也可以让主 Agent 执行配置脚本：
 
-```powershell
-$env:SOUNDAO_AGENT_WORKSPACE="G:\path\to\Soundao_Agent_Workspace"
+```bash
+python configure_workspace.py <你的 Soundao Agent 工作区绝对路径>
 ```
+
+`.env` 是本机配置文件，已被 Git 忽略；仓库只提交 `.env.example`。
 
 Agent 运行时应遵守工作区策略：
 
@@ -37,9 +38,8 @@ Agent 运行时应遵守工作区策略：
 
 ## 快速启动
 
-```powershell
-cd G:\opencodespace\Soundao\web_agent_framework
-.\run.ps1
+```bash
+python server.py --host 127.0.0.1 --port 8765
 ```
 
 打开：
