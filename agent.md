@@ -118,6 +118,9 @@ Agent 不能凭感觉临时拼接音频流程。处理 Soundao 任务时必须�
 - Agent 工作区技能库位于 `Soundao_Agent_Workspace/03_关键数据/技能库/`。
 - 制作 AI 电台、广播节目、口播节目、城市新闻电台、音乐电台或最终广播音频时，必须先完整读取并遵守：
   `Soundao_Agent_Workspace/03_关键数据/技能库/ai-radio-delivery/SKILL.md`
+- 任何任务只要要导出 `timeline_tracks.xml`、FCP7 XML、Premiere / PR 可导入时间线、字幕轨 XML，必须先完整读取并遵守：
+  `Soundao_Agent_Workspace/03_关键数据/技能库/premiere-xml-timeline/SKILL.md`
+  该 skill 只负责 XML 文件格式、媒体引用格式、采样率/声道/路径/字幕 generatoritem 等格式规则；节目结构、BGM 生成、结尾曲生成、字幕分配算法由具体业务 skill 或任务流程决定。
 - 如果项目里已有专用脚本，例如 `soundao_cloud.py`，优先使用脚本，不要另起一套随意流程。
 - 没有文档、skill 或脚本支撑的步骤，只能作为方案建议，不能直接生成。
 - 音乐、配音、音效、分析、清理、媒资取回都应使用 Soundao 云端对应能力；本地工具只用于文件整理、格式转换、混音、响度处理和结果归档。
