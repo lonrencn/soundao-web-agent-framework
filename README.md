@@ -159,3 +159,7 @@ Codex 自己也可以直接读取：
 web_agent_framework\latest_result.json
 web_agent_framework\runs\<session_id>\result.latest.json
 ```
+
+## 开源协议
+
+本项目使用 MIT License 开源，详见 [LICENSE](LICENSE)。
