@@ -2,93 +2,103 @@
 
 # Soundao Web Agent Framework
 
-**Soundao Web Agent Framework | 解决音频创作场景中普通用户不会调 API、Agent 难以稳定交付成品的痛点；相比单纯脚本或网页工具，它提供本地 WebUI、Codex / Opencode / WorkBuddy 多 Agent 分支、云端能力接泊、过程资产展示和交付前检查，MIT 协议免费商用。**
+[中文说明](README-CN.md)
 
-Soundao Web Agent Framework 是 Soundao 的本地 Agent WebUI 接泊框架。
+**Soundao Web Agent Framework | An open-source local WebUI bridge for audio-production agents. It solves the gap between powerful cloud audio APIs and non-technical users who just want finished deliverables. Compared with a single script or a standalone web tool, it provides local WebUI interaction, Codex / Opencode / WorkBuddy branches, Soundao cloud capability docking, process asset visibility, final delivery checks, and MIT-licensed commercial use.**
 
-它不是 Soundao 云端平台源码，也不包含云端模型文件。它解决的是另一个问题：
+Soundao Web Agent Framework is a local Agent WebUI bridge for Soundao.
 
-> 让用户在本地页面里用人话提出音频需求，由 Agent 自动读取文档、调用 Soundao 云端能力、下载资产、检查结果并整理交付物。
+It is not the source code of the Soundao cloud platform, and it does not include cloud model files. It focuses on a different layer:
 
-Soundao 云端平台提供配音、声音克隆、音频分析、清理、音轨分离、AI 音乐、音效、媒资管理等能力；本仓库提供本地入口、Agent 协作流程、任务回写、交付物展示、工作区规范和不同 Agent 运行环境的适配框架。
+> Users describe audio needs in plain language on a local page; the Agent reads documentation, calls Soundao cloud capabilities, downloads assets, checks results, and packages the final deliverables.
 
-Soundao 云端入口：
+The Soundao cloud platform provides text-to-speech, voice cloning, audio analysis, cleanup, stem separation, AI music, sound effects, and media asset capabilities. This repository provides the local entry point, Agent collaboration flow, task handoff, result display, workspace conventions, and branch-specific adaptations for different Agent environments.
+
+Soundao cloud entry:
 
 ```text
 https://sd.daoson.work:8443
 ```
 
-如果你不知道 Soundao 能做什么，可以在本地页面里直接问 Agent：
+If you are not sure what Soundao can do, ask the Agent from the local page:
 
 ```text
-Soundao 能干嘛？
+What can Soundao do?
 ```
 
-Agent 会读取云端文档，并给出适合当前用户需求的功能说明和方案建议。
+The Agent will read the cloud documentation and return a practical feature overview and solution plan for your use case.
 
-## 分支选择
+## Branches
 
-本项目面向不同 Agent 运行环境提供不同分支。你可以根据自己使用的 Agent 选择对应版本。
+This project provides different branches for different Agent runtimes. Choose the branch that matches your Agent.
 
-| 分支 | 面向对象 | 说明 |
+| Branch | For | Description |
 | --- | --- | --- |
-| `main` | Codex 用户 | 当前主分支，提供 Codex 版本地 WebUI、任务回写、Agent 调度和交付检查框架。 |
-| `opencode` | Opencode 用户 | 面向 Opencode 使用习惯和运行方式的适配分支。 |
-| `workbuddy` | WorkBuddy 用户 | 面向 WorkBuddy 工作流的适配分支。 |
+| `main` | Codex users | The default branch. It provides the Codex-oriented local WebUI, task handoff, Agent loop, and final delivery check framework. |
+| `opencode` | Opencode users | Adapted for Opencode workflows and runtime behavior. |
+| `workbuddy` | WorkBuddy users | Adapted for WorkBuddy workflows. |
 
-如果你使用 Codex，直接使用 `main` 分支即可。
+If you use Codex, stay on `main`.
 
-如果你使用 Opencode 或 WorkBuddy，请切换到对应分支：
+If you use Opencode or WorkBuddy, switch to the matching branch:
 
 ```bash
 git checkout opencode
 ```
 
-或：
+or:
 
 ```bash
 git checkout workbuddy
 ```
 
-不同分支共享 Soundao 云端能力和总体工作区思想，但会根据 Agent 的运行方式调整启动、提示词、任务交接和本地工具调用方式。
+The branches share the same Soundao cloud capabilities and workspace philosophy, but the startup flow, prompts, task handoff, and local tool usage may differ by Agent.
 
-## 适合谁使用
+## Who It Is For
 
-| 用户类型 | 使用方式 |
+| User | How they use it |
 | --- | --- |
-| 普通用户 | 打开本地页面，用自然语言描述自己想要的音频结果。 |
-| 内容创作者 | 制作配音、电台节目、音频清理、音乐、音效、有声书、短剧旁白和成品交付。 |
-| Agent 用户 | 让 Codex、Opencode、WorkBuddy 等 Agent 读取任务、调用 Soundao 云端能力并整理成果。 |
-| 开发者 | 基于本地 WebUI 和 Agent 桥接机制扩展自己的工作流。 |
+| General users | Open the local page and describe the audio result they want in natural language. |
+| Content creators | Produce voiceovers, radio shows, cleaned audio, music, sound effects, audiobooks, drama narration, and final audio packages. |
+| Agent users | Let Codex, Opencode, WorkBuddy, or other Agents read tasks, call Soundao cloud capabilities, and organize deliverables. |
+| Developers | Extend the local WebUI and Agent bridge for custom workflows. |
 
-## 能做什么
+## What It Can Do
 
-通过 Soundao 云端能力和本地 Agent 协作，本项目可以承接这些任务：
+With Soundao cloud capabilities and a local Agent workflow, this project can support:
 
-- 文本配音、声音克隆、情绪化口播、多语种配音；
-- 录音转文字、音频分析、说话人整理、字幕生成；
-- 降噪、语音增强、人声伴奏分离；
-- AI 音乐、音效、背景配乐和完整音频成品；
-- 电台节目、播客、有声书、课程音频、短剧旁白等流程化制作；
-- 将产出资产回写到本地页面，支持试听、下载、复制本地路径；
-- 按需导出 Premiere 可导入的 FCP7 XML / xmeml 多轨时间线。
+- text-to-speech, voice cloning, emotional narration, and multilingual voiceover;
+- speech-to-text, audio analysis, speaker-aware organization, and subtitle output;
+- denoising, speech enhancement, and vocal/accompaniment separation;
+- AI music, sound effects, background music, and complete audio deliverables;
+- radio programs, podcasts, audiobooks, course audio, short-drama narration, and other production workflows;
+- local display of generated assets, including preview, download, and local path copy;
+- optional Premiere-importable FCP7 XML / xmeml multi-track timeline export.
 
-具体云端能力、接口参数、计费规则和限制条件以 Soundao 云端文档为准。Agent 首次运行或遇到新类型任务时，应先读取云端文档再执行。
+Cloud capabilities, API parameters, pricing, and limitations may change. Agents should read the current Soundao cloud documentation before first use or when starting a new task type.
 
-## 如果还没有账号，可以加入 QQ 群[国内]或发email[海外]：
+## Account Access
+
+If you do not have a Soundao account yet, you can request trial access:
 
 ```text
-1030846851
+China users: QQ group 1030846851
+Overseas users: email lonren1979@gmail.com
+```
 
-lonren1979@gmail.com
+When requesting access, mention:
+
+```text
+Soundao trial
 ```
 
 ---
-**以下内容普通用户没有必要看，只要让agent把项目克隆到本地，然后给他登录凭证，剩下的agent会告诉你怎么做**
 
-## 本地页面入口
+**General users usually do not need to read the technical sections below. Ask your Agent to clone the project locally, provide your Soundao login credentials, and let the Agent guide the rest.**
 
-启动本地服务后，可以访问：
+## Local Web Entrypoints
+
+After starting the local server, open the corresponding address:
 
 ```text
 Codex       http://127.0.0.1:8765/
@@ -96,62 +106,70 @@ OpenCode    http://127.0.0.1:8766/
 WorkBuddy   http://127.0.0.1:8767/
 ```
 
-常用页面：
+Common Codex pages:
 
 ```text
 http://127.0.0.1:8765/soundao
 http://127.0.0.1:8765/soundao-easy
 ```
 
-- `/soundao`：Soundao 功能介绍与能力入口。
-- `/soundao-easy`：说人话版任务入口，适合不想看英文、术语和参数的用户。
-- `/`：本地 Web Agent 控制台。
+- `/soundao`: Soundao feature overview and capability entry page.
+- `/soundao-easy`: plain-language task entry for users who do not want English terms, jargon, or technical parameters.
+- `/`: local Web Agent console.
 
-## 快速启动   在让Agent来启动项目
+## Quick Start
 
-进入项目目录：
+For the Codex branch:
 
 ```bash
 cd web_agent_framework
-```
-
-启动本地服务：
-
-```bash
 python server.py --host 127.0.0.1 --port 8765
 ```
 
-打开浏览器：
+Then open:
 
 ```text
 http://127.0.0.1:8765/
 ```
 
-Codex 版主分支默认以本地页面作为用户入口，用户在页面中提交任务，Agent 读取结构化任务并继续执行。
+The `main` branch is designed around a local page as the user-facing entry. The user submits a task in the WebUI, and the Agent reads the structured task and continues execution.
 
-## 配置本地工作区
+## Local Workspace
 
-源码目录和用户工作区是分开的。项目不应该把本机绝对路径写进代码，也不应该把用户素材、生成结果和临时文件提交到 Git。
+The source repository and the user workspace are separated. The project should not store local absolute paths in source code, and it should not commit user assets, generated outputs, or temporary files to Git.
 
-复制 `.env.example` 为 `.env`：
+Copy `.env.example` to `.env`:
 
 ```bash
 copy .env.example .env
 ```
 
-在 `.env` 中配置：
+Set the workspace path in `.env`:
 
 ```text
-SOUNDAO_AGENT_WORKSPACE=<你的 Soundao Agent 工作区绝对路径>
+SOUNDAO_AGENT_WORKSPACE=<absolute path to your Soundao Agent workspace>
 ```
 
-也可以让主 Agent 执行：
+The main Agent can also configure it:
 
 ```bash
-python configure_workspace.py <你的 Soundao Agent 工作区绝对路径>
+python configure_workspace.py <absolute path to your Soundao Agent workspace>
 ```
 
-推荐工作区结构：
+Recommended workspace layout:
+
+```text
+Soundao_Agent_Workspace/
+├── _agent/
+├── _temp/
+├── 01_Reference_Data/
+├── 02_Work_Outputs/
+├── 03_Key_Data/
+├── 04_Docs/
+└── 05_Logs/
+```
+
+The actual project may keep Chinese folder names for compatibility with local workflows:
 
 ```text
 Soundao_Agent_Workspace/
@@ -164,108 +182,100 @@ Soundao_Agent_Workspace/
 └── 05_日志/
 ```
 
-建议用途：
+Suggested usage:
 
-| 目录 | 用途 |
+| Directory | Purpose |
 | --- | --- |
-| `_agent/` | Agent 会话状态、任务队列、错误记录和技能记忆。 |
-| `_temp/` | 临时下载、上传、缓存和中间处理结果，可按规则清理。 |
-| `01_参考数据/` | 用户提供的参考音频、文本、音乐、图片等素材。 |
-| `02_工作成果/` | Agent 生成的音频、字幕、XML、报告、项目包和最终交付物。 |
-| `03_关键数据/` | 音色库、提示词模板、用户偏好、技能库、任务历史等长期数据。 |
-| `04_文档/` | 云端文档、本地流程说明、功能说明和架构说明。 |
-| `05_日志/` | 运行日志、任务历史和审计记录。 |
+| `_agent/` | Agent session state, task queues, error records, and skill memory. |
+| `_temp/` | Temporary downloads, uploads, caches, and intermediate results. |
+| `01_参考数据/` | User-provided reference audio, text, music, images, and other source materials. |
+| `02_工作成果/` | Generated audio, subtitles, XML, reports, project packages, and final deliverables. |
+| `03_关键数据/` | Voice library, prompt templates, user preferences, skill library, and task history. |
+| `04_文档/` | Cloud docs, local workflow notes, feature docs, and architecture notes. |
+| `05_日志/` | Run logs, task history, and audit records. |
 
-## 配置 Soundao 登录凭证
+## Soundao Credentials
 
-使用 Soundao 云端能力前，需要有效的 Soundao 登录凭证。
+Soundao cloud capabilities require valid Soundao login credentials.
 
-普通用户只需要提供：
-
-```text
-Soundao 用户名
-Soundao 密码
-```
-
-Agent 会负责换取调用所需的 Token。
-
-
-
-申请时注明：
+General users only need to provide:
 
 ```text
-Soundao试用
+Soundao username
+Soundao password
 ```
 
-本地 `.env` 示例：
+The Agent is responsible for exchanging them for the token needed for API calls.
+
+Local `.env` example:
 
 ```text
 SOUNDAO_USER=
 SOUNDAO_PASS=
 ```
 
-注意：
+Important:
 
-- 不要把用户名、密码、Token 或 API Key 写进 README、代码、日志或 Git 提交；
-- `.env` 是本地文件，应该被 Git 忽略；
-- 没有凭证时，Agent 只能读取公开文档、解释能力和整理方案，不能调用需要登录或会扣积分的云端接口。
+- Do not write usernames, passwords, tokens, or API keys into README files, source code, logs, or Git commits.
+- `.env` is a local-only file and should be ignored by Git.
+- Without credentials, the Agent may only read public documentation, explain capabilities, and prepare plans. It must not call cloud endpoints that require login or consume credits.
 
-## Agent 如何工作
+## Agent Workflow
 
-一次典型流程如下：
-
-```text
-用户在本地页面输入需求
-        ↓
-WebUI 保存结构化任务
-        ↓
-Agent 读取任务、读取 agent.md 和相关 skill
-        ↓
-首次任务或新能力任务时读取 Soundao 云端文档
-        ↓
-Agent 判断是新建项目还是修改上一版
-        ↓
-规划可复用资产和需要重做的资产
-        ↓
-调用 Soundao 云端能力或本地辅助脚本
-        ↓
-下载结果、检查质量、整理交付物
-        ↓
-交付前执行最终检查
-        ↓
-页面展示结果、资产、积分和下载入口
-```
-
-这个流程的核心不是让用户学习技术参数，而是让 Agent 替用户完成技术步骤。
-
-用户只需要说清楚目标，例如：
+A typical run looks like this:
 
 ```text
-请制作一档 5 分钟左右的电台广播节目。
-听众在山东烟台。
-主题是信念的力量。
-声音要温暖自然，适合通勤路上听。
-最后用一首 1 分钟左右的配歌结束。
+User enters a task in the local page
+        ↓
+WebUI saves a structured task
+        ↓
+Agent reads the task, agent.md, and relevant skills
+        ↓
+For first-time or new task types, Agent reads Soundao cloud docs
+        ↓
+Agent decides whether this is a new project or a revision
+        ↓
+Agent plans reusable assets and assets that must be regenerated
+        ↓
+Agent calls Soundao cloud capabilities or local helper scripts
+        ↓
+Agent downloads results, checks quality, and organizes deliverables
+        ↓
+Agent runs the final delivery check
+        ↓
+The page shows results, assets, credits, and download links
 ```
 
-Agent 应该把这类需求拆成可执行步骤，包括文案、配音、音乐、混音、验证和交付。
+The goal is not to make users learn technical parameters. The goal is to let the Agent do the technical work.
 
-## 云端文档入口
+For example, the user can simply ask:
 
-Soundao 云端服务地址：
+```text
+Please create a radio program of about 5 minutes.
+The audience is in Yantai, Shandong.
+The topic is the power of belief.
+The voice should be warm and natural, suitable for commuting.
+End with a song of about 1 minute.
+```
+
+The Agent should break this into executable steps: script writing, voice generation, music generation, mixing, validation, and delivery.
+
+## Cloud Documentation
+
+Soundao cloud base URL:
 
 ```text
 https://sd.daoson.work:8443
 ```
 
-Agent 应优先读取：
+Agents should read:
 
 ```text
 https://sd.daoson.work:8443/llms.txt
 https://sd.daoson.work:8443/llms-full.txt
 ```
 
-常用分模块文档：
+Common module docs:
 
 ```text
 https://sd.daoson.work:8443/llms/tts.txt
@@ -277,50 +287,50 @@ https://sd.daoson.work:8443/llms/media.txt
 https://sd.daoson.work:8443/llms/assets.txt
 ```
 
-建议使用项目内 Python 工具读取文档，避免在 Windows shell 中手写复杂请求：
+Use the project Python helper to read docs when possible, instead of manually composing complex shell requests:
 
 ```bash
 python soundao_cloud.py llms --path /llms-full.txt --out llms-full.txt
 ```
 
-云端接口、模型和计费规则可能更新。README 只保留稳定入口，具体调用参数应以运行时读取到的云端文档为准。
+Cloud endpoints, models, and pricing may change. This README keeps stable entry points only; runtime calls should follow the latest cloud documentation read by the Agent.
 
-## 交付前检查
+## Final Delivery Check
 
-Codex 版框架包含最终交付检查工具：
+The Codex framework includes a final delivery gate:
 
 ```bash
-python final_delivery_check.py --out-dir <输出目录> --task-context <任务上下文> --manifest <交付清单> --out <检查报告>
+python final_delivery_check.py --out-dir <output-dir> --task-context <task-context> --manifest <manifest> --out <check-report>
 ```
 
-检查重点包括：
+It checks:
 
-- 是否读取了任务全文和修改意见；
-- 主交付说明是否存在；
-- 中文文本是否 UTF-8 可读，不能出现 `????` 乱码；
-- 音频是否存在、可播放、时长是否符合任务要求；
-- XML 是否是 Premiere 可导入的 xmeml 结构；
-- 积分消耗和剩余积分是否写入交付清单。
+- whether the full task and revision notes were considered;
+- whether the primary delivery note exists;
+- whether Chinese text is UTF-8 readable and does not contain broken `????` text;
+- whether final audio exists, is playable, and matches the requested duration;
+- whether exported XML is a Premiere-importable xmeml structure;
+- whether credit usage and remaining credits are written to the manifest.
 
-检查不通过时，Agent 不应把阶段产物包装成“已完成”。
+If the check fails, the Agent should not present partial assets as a completed delivery.
 
-## Premiere XML 时间线
+## Premiere XML Timeline
 
-如果任务要求导出可在 Premiere / PR 中打开的多轨时间线，Agent 应读取并遵守 `premiere-xml-timeline` skill。
+If a task asks for a Premiere / PR editable multi-track timeline, the Agent should read and follow the `premiere-xml-timeline` skill.
 
-该 skill 只负责 XML 文件格式规则，例如：
+That skill is responsible only for XML file-format rules, such as:
 
-- FCP7 XML / xmeml 基础结构；
-- 媒体路径写法；
-- 音频采样率、声道数、位深与真实媒体一致；
-- 字幕轨的 generatoritem 结构；
-- 避免导入后无波形、静音线、乱码或无法解析。
+- FCP7 XML / xmeml base structure;
+- media path formatting;
+- matching actual media sample rate, channel count, and bit depth;
+- subtitle generatoritem structure;
+- avoiding silent flat waveforms, unreadable paths, broken text, or unparsable XML.
 
-节目结构、BGM 生成、结尾曲生成、字幕时间分配等属于具体业务 skill，不应写进 XML 格式 skill。
+Program structure, BGM generation, closing song generation, and subtitle timing allocation belong to the business-specific skill or task workflow, not to the XML format skill.
 
-## 运行时数据
+## Runtime Data
 
-这些内容属于本地运行时数据，不提交到 Git：
+These are runtime files and should not be committed:
 
 ```text
 runs/
@@ -332,38 +342,39 @@ latest_agent_command.json
 __pycache__/
 ```
 
-用户素材、生成结果、临时缓存和日志应放入本地工作区，不应混进源码仓库。
+User materials, generated results, temporary caches, and logs should live in the local workspace, not in the source repository.
 
-## 直接 API 接入
+## Direct API Access
 
-如果你是开发者或正在给 Agent 写自动化流程，也可以绕过本地页面，直接调用 Soundao 云端 API。
+Developers or Agent workflow authors may also bypass the local page and call the Soundao cloud API directly.
 
-推荐流程：
+Recommended flow:
 
 ```text
-读取 /llms.txt 或 /llms-full.txt
+Read /llms.txt or /llms-full.txt
         ↓
-确认认证方式和能力文档
+Confirm authentication and module docs
         ↓
-使用用户名密码换取 Token，或使用服务端 API Key
+Exchange username/password for a token, or use a server-side API key
         ↓
-调用对应能力接口
+Call the target capability endpoint
         ↓
-轮询异步任务状态
+Poll asynchronous task status
         ↓
-及时下载结果文件
+Download result files promptly
 ```
 
-不要把云端生成结果视为永久保存。任务完成后应及时下载到本地工作区，并把交付物路径回写给用户。
+Do not treat cloud-generated files as permanently stored. Download completed results to the local workspace and return the delivery path to the user.
 
-## 安全说明
+## Security
 
-- 本项目只提交源码、页面、脚本、说明和必要的示例配置；
-- 不提交账号、密码、Token、API Key、本地绝对路径、用户素材和生成结果；
-- Soundao 云端能力需要有效账号和额度；
-- 任何会扣积分的调用，Agent 应在调用前后查询余额，并在交付清单中写入本次扣除和剩余积分；
-- 云端接口、模型和计费规则可能更新，Agent 应以运行时读取的云端文档为准。
+- Commit only source code, pages, scripts, documentation, and safe example configuration.
+- Do not commit accounts, passwords, tokens, API keys, local absolute paths, user assets, or generated outputs.
+- Soundao cloud capabilities require a valid account and available credits.
+- For any credit-consuming call, the Agent should check balance before and after the call, then write deducted and remaining credits into the delivery manifest.
+- Cloud endpoints, models, and pricing may change; Agents should rely on the latest runtime cloud documentation.
 
-## 开源协议
+## License
 
-本项目使用 MIT License 开源。
+This project is open-source under the MIT License.
+
