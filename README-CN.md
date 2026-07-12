@@ -2,7 +2,7 @@
 
 # Soundao Web Agent Framework
 
-**Soundao Web Agent Framework | 解决音频创作场景中普通用户不会调 API、Agent 难以稳定交付成品的痛点；相比单纯脚本或网页工具，它提供本地 WebUI、Codex / Opencode / WorkBuddy 多 Agent 分支、云端能力接泊、过程资产展示和交付前检查，MIT 协议免费商用。**
+**Soundao Web Agent Framework | 解决音频创作场景中普通用户不会调 API、Agent 难以稳定交付成品的痛点；相比单纯脚本或网页工具，它提供中英日韩四国语 UI 切换、本地 WebUI、Codex / Opencode / WorkBuddy 多 Agent 分支、云端能力接泊、过程资产展示和交付前检查，MIT 协议免费商用。**
 
 Soundao Web Agent Framework 是 Soundao 的本地 Agent WebUI 接泊框架。
 
@@ -10,7 +10,7 @@ Soundao Web Agent Framework 是 Soundao 的本地 Agent WebUI 接泊框架。
 
 > 让用户在本地页面里用人话提出音频需求，由 Agent 自动读取文档、调用 Soundao 云端能力、下载资产、检查结果并整理交付物。
 
-Soundao 云端平台提供配音、声音克隆、音频分析、清理、音轨分离、AI 音乐、音效、媒资管理等能力；本仓库提供本地入口、Agent 协作流程、任务回写、交付物展示、工作区规范和不同 Agent 运行环境的适配框架。
+Soundao 云端平台提供配音、声音克隆、音频分析、清理、音轨分离、AI 音乐、音效、媒资管理等能力；本仓库提供支持中英日韩切换的本地入口、Agent 协作流程、任务回写、交付物展示、工作区规范和不同 Agent 运行环境的适配框架。
 
 Soundao 云端入口：
 
@@ -70,6 +70,7 @@ git checkout workbuddy
 - 降噪、语音增强、人声伴奏分离；
 - AI 音乐、音效、背景配乐和完整音频成品；
 - 电台节目、播客、有声书、课程音频、短剧旁白等流程化制作；
+- 本地页面支持中文、英文、日文、韩文四国语切换；
 - 将产出资产回写到本地页面，支持试听、下载、复制本地路径；
 - 按需导出 Premiere 可导入的 FCP7 XML / xmeml 多轨时间线。
 

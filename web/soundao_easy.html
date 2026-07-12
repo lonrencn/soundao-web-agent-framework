@@ -71,6 +71,35 @@
         margin-bottom: 22px;
       }
 
+      .language-switch {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        margin-left: auto;
+        border: 1px solid rgba(255, 244, 219, 0.28);
+        border-radius: 8px;
+        padding: 4px;
+        background: rgba(255, 250, 240, 0.12);
+      }
+
+      .language-switch button {
+        width: auto;
+        min-height: 28px;
+        margin: 0;
+        border: 1px solid transparent;
+        border-radius: 6px;
+        padding: 0 8px;
+        color: #f6e4c4;
+        background: transparent;
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      .language-switch button.active {
+        color: #2e2114;
+        background: #fff4db;
+      }
+
       .brand-logo {
         display: block;
         width: min(210px, 58vw);
@@ -903,26 +932,32 @@
         <div class="hero">
           <div class="brand-row">
             <img class="brand-logo" src="/assets/Soundao-logo.png" alt="声岛" />
-            <a class="back-link" href="/soundao">返回专业页面</a>
+            <a class="back-link" href="/soundao" data-i18n="backProfessional">返回专业页面</a>
+            <div class="language-switch" aria-label="Language">
+              <button type="button" data-lang="zh" class="active">中文</button>
+              <button type="button" data-lang="en">EN</button>
+              <button type="button" data-lang="ja">日本語</button>
+              <button type="button" data-lang="ko">한국어</button>
+            </div>
           </div>
-          <h1>告诉你要什么，全包在我身上</h1>
-          <p class="lead">
+          <h1 data-i18n="heroTitle">告诉你要什么，全包在我身上</h1>
+          <p class="lead" data-i18n="heroLead">
             你不用懂工具，不用挑型号，不用看复杂说明。只要用自己的话说清楚想做什么、已有些什么、希望听起来怎样，后面的步骤交给助手安排。
           </p>
           <div class="promise">
             <div>
-              <strong>不用学</strong>
-              <span>说明书先挪走，直接说你想做成什么。</span>
+              <strong data-i18n="promiseNoLearnTitle">不用学</strong>
+              <span data-i18n="promiseNoLearnText">说明书先挪走，直接说你想做成什么。</span>
               <img class="promise-robot" src="/assets/easy-robot-no-learn.webp" alt="" />
             </div>
             <div>
-              <strong>不用选</strong>
-              <span>你不用挑方案，助手会自己安排顺序。</span>
+              <strong data-i18n="promiseNoChooseTitle">不用选</strong>
+              <span data-i18n="promiseNoChooseText">你不用挑方案，助手会自己安排顺序。</span>
               <img class="promise-robot" src="/assets/easy-robot-no-choose.webp" alt="" />
             </div>
             <div>
-              <strong>说人话</strong>
-              <span>像聊天一样讲需求，结果回到这个页面。</span>
+              <strong data-i18n="promisePlainTitle">说人话</strong>
+              <span data-i18n="promisePlainText">像聊天一样讲需求，结果回到这个页面。</span>
               <img class="promise-robot" src="/assets/easy-robot-plain-talk.webp" alt="" />
             </div>
           </div>
@@ -935,44 +970,44 @@
 
       <section>
         <div class="section-title">
-          <h2>你可以这样提需求</h2>
+          <h2 data-i18n="examplesTitle">你可以这样提需求</h2>
         </div>
         <div class="guide-grid">
           <article class="guide has-art">
             <img class="guide-visual" src="/assets/easy-decor-clean.webp" alt="" />
             <div class="guide-mark">配</div>
-            <h3>把文字变成配音</h3>
-            <p>适合小说、课程、广告、解说、旁白。你说清楚角色、语气和用途就行。</p>
+            <h3 data-i18n="guideVoiceTitle">把文字变成配音</h3>
+            <p data-i18n="guideVoiceText">适合小说、课程、广告、解说、旁白。你说清楚角色、语气和用途就行。</p>
           </article>
           <article class="guide has-art">
             <img class="guide-visual" src="/assets/easy-decor-clean-wave.webp" alt="" />
             <div class="guide-mark">清</div>
-            <h3>让录音更清楚</h3>
-            <p>适合有底噪、回声、杂音、音量忽大忽小的录音。</p>
+            <h3 data-i18n="guideCleanTitle">让录音更清楚</h3>
+            <p data-i18n="guideCleanText">适合有底噪、回声、杂音、音量忽大忽小的录音。</p>
           </article>
           <article class="guide has-art">
             <img class="guide-visual" src="/assets/easy-decor-transcript.webp" alt="" />
             <div class="guide-mark">字</div>
-            <h3>从录音里整理文字</h3>
-            <p>适合访谈、会议、播客、课程录音，可以继续整理成字幕或重点。</p>
+            <h3 data-i18n="guideTranscriptTitle">从录音里整理文字</h3>
+            <p data-i18n="guideTranscriptText">适合访谈、会议、播客、课程录音，可以继续整理成字幕或重点。</p>
           </article>
           <article class="guide has-art">
             <img class="guide-visual" src="/assets/easy-decor-music.webp" alt="" />
             <div class="guide-mark">乐</div>
-            <h3>做背景音乐</h3>
-            <p>适合短片、课程、故事、活动开场。你描述气氛，助手来安排。</p>
+            <h3 data-i18n="guideMusicTitle">做背景音乐</h3>
+            <p data-i18n="guideMusicText">适合短片、课程、故事、活动开场。你描述气氛，助手来安排。</p>
           </article>
           <article class="guide has-art">
             <img class="guide-visual" src="/assets/easy-decor-sfx.webp" alt="" />
             <div class="guide-mark">效</div>
-            <h3>加声音效果</h3>
-            <p>适合脚步声、门声、环境声、转场声，让内容更有画面感。</p>
+            <h3 data-i18n="guideSfxTitle">加声音效果</h3>
+            <p data-i18n="guideSfxText">适合脚步声、门声、环境声、转场声，让内容更有画面感。</p>
           </article>
           <article class="guide has-art">
             <img class="guide-visual" src="/assets/easy-decor-celebrate.webp" alt="" />
             <div class="guide-mark">片</div>
-            <h3>做完整音频成品</h3>
-            <p>适合从文稿、录音、音乐到最终文件的一整套制作。</p>
+            <h3 data-i18n="guideCompleteTitle">做完整音频成品</h3>
+            <p data-i18n="guideCompleteText">适合从文稿、录音、音乐到最终文件的一整套制作。</p>
           </article>
         </div>
       </section>
@@ -980,37 +1015,37 @@
       <section class="ask-section">
         <form id="easyForm" class="ask">
           <div class="ask-head">
-            <h2>直接说需求</h2>
+            <h2 data-i18n="askTitle">直接说需求</h2>
             <div class="ask-tabs" aria-label="需求类型">
-              <button class="ask-tab active" type="button" data-tab="plain">直接说</button>
-              <button class="ask-tab" type="button" data-tab="radio">AI 电台</button>
+              <button class="ask-tab active" type="button" data-tab="plain" data-i18n="plainTab">直接说</button>
+              <button class="ask-tab" type="button" data-tab="radio" data-i18n="radioTab">AI 电台</button>
             </div>
           </div>
-          <p class="hint">写得越像平时说话越好。比如：“我想把一章小说做成男女双人配音，要有情绪，最后给我音频文件。”</p>
+          <p class="hint" data-i18n="askHint">写得越像平时说话越好。比如：“我想把一章小说做成男女双人配音，要有情绪，最后给我音频文件。”</p>
 
           <div class="ask-panel active" data-panel="plain">
-            <label for="need">你想做什么</label>
-            <textarea id="need" name="need" placeholder="例如：我想把一段课程稿做成温和、清楚、适合学习的讲解声音。"></textarea>
+            <label for="need" data-i18n="needLabel">你想做什么</label>
+            <textarea id="need" name="need" data-i18n-placeholder="needPlaceholder" placeholder="例如：我想把一段课程稿做成温和、清楚、适合学习的讲解声音。"></textarea>
 
-            <label for="material">你现在有什么</label>
-            <textarea id="material" name="material" placeholder="例如：有文字稿，有一段参考声音，想加一点轻音乐。"></textarea>
+            <label for="material" data-i18n="materialLabel">你现在有什么</label>
+            <textarea id="material" name="material" data-i18n-placeholder="materialPlaceholder" placeholder="例如：有文字稿，有一段参考声音，想加一点轻音乐。"></textarea>
 
-            <label for="style">你希望听起来怎样</label>
-            <input id="style" name="style" placeholder="例如：自然、亲切、稳重、像真人说话" />
+            <label for="style" data-i18n="styleLabel">你希望听起来怎样</label>
+            <input id="style" name="style" data-i18n-placeholder="stylePlaceholder" placeholder="例如：自然、亲切、稳重、像真人说话" />
 
-            <label for="priority">最在意什么</label>
+            <label for="priority" data-i18n="priorityLabel">最在意什么</label>
             <select id="priority" name="priority">
-              <option value="先保证好听">先保证好听</option>
-              <option value="先尽快看到结果">先尽快看到结果</option>
-              <option value="先少花成本">先少花成本</option>
-              <option value="先适合批量制作">先适合批量制作</option>
+              <option value="先保证好听" data-i18n="priorityGood">先保证好听</option>
+              <option value="先尽快看到结果" data-i18n="priorityFast">先尽快看到结果</option>
+              <option value="先少花成本" data-i18n="priorityCheap">先少花成本</option>
+              <option value="先适合批量制作" data-i18n="priorityBatch">先适合批量制作</option>
             </select>
 
-            <button type="submit" data-mode="plain">交给助手</button>
+            <button type="submit" data-mode="plain" data-i18n="submitAssistant">交给助手</button>
           </div>
 
           <div class="ask-panel" data-panel="radio">
-            <label for="radioPrompt">AI 电台节目提示词</label>
+            <label for="radioPrompt" data-i18n="radioPromptLabel">AI 电台节目提示词</label>
             <textarea id="radioPrompt" class="radio-template" name="radioPrompt">请制作一档电台广播节目。
 
 节目长度：{5分钟左右}
@@ -1028,50 +1063,50 @@
 声音要有情绪起伏，语气自然，适合{夜晚或通勤}收听；
 结尾要有一句让人舒服的收束和祝福；
 最终请给我可以直接听的音频成品。</textarea>
-            <p class="radio-tip">把大括号里的默认内容换成你的想法，再交给助手。</p>
+            <p class="radio-tip" data-i18n="radioTip">把大括号里的默认内容换成你的想法，再交给助手。</p>
             <div class="radio-cache-actions">
-              <button class="restore-default" id="restoreRadioDefaults" type="button">新建项目</button>
-              <button class="revision-toggle" id="showRadioRevision" type="button">填写修改意见</button>
+              <button class="restore-default" id="restoreRadioDefaults" type="button" data-i18n="newProject">新建项目</button>
+              <button class="revision-toggle" id="showRadioRevision" type="button" data-i18n="writeRevision">填写修改意见</button>
             </div>
             <div class="radio-revision-panel collapsed" id="radioRevisionPanel">
-              <label for="radioRevisionNotes">修改意见</label>
-              <textarea id="radioRevisionNotes" name="radioRevisionNotes" placeholder="不改变上面的任务要求，只写你想让助手基于上一版怎么改。填写这里就是修改模式。"></textarea>
-              <p class="radio-tip">不改变任务要求，提意见，就是修改模式。</p>
+              <label for="radioRevisionNotes" data-i18n="revisionLabel">修改意见</label>
+              <textarea id="radioRevisionNotes" name="radioRevisionNotes" data-i18n-placeholder="revisionPlaceholder" placeholder="不改变上面的任务要求，只写你想让助手基于上一版怎么改。填写这里就是修改模式。"></textarea>
+              <p class="radio-tip" data-i18n="revisionTip">不改变任务要求，提意见，就是修改模式。</p>
             </div>
-            <button class="radio-submit" type="submit" data-mode="radio">交给助手</button>
+            <button class="radio-submit" type="submit" data-mode="radio" data-i18n="submitAssistant">交给助手</button>
           </div>
 
           <div class="result embedded-result">
             <div class="status-row">
-              <span class="badge" id="status">等待你的需求</span>
+              <span class="badge" id="status" data-i18n="statusIdle">等待你的需求</span>
               <div class="progress"><div id="progress"></div></div>
-              <button class="stop-button" id="stopAgent" type="button">强制停止</button>
+              <button class="stop-button" id="stopAgent" type="button" data-i18n="forceStop">强制停止</button>
             </div>
-            <div id="progressText">提交需求后，助手会把进度写在这里。</div>
+            <div id="progressText" data-i18n="progressIdle">提交需求后，助手会把进度写在这里。</div>
             <div class="playback-options-row">
               <label class="playback-options" for="autoPlayFinal">
                 <input id="autoPlayFinal" type="checkbox" checked />
-                <span>完成后自动播放</span>
+                <span data-i18n="autoPlay">完成后自动播放</span>
               </label>
               <label class="playback-options" for="exportTimelineXml">
                 <input id="exportTimelineXml" type="checkbox" />
-                <span>导出时间线轨道</span>
+                <span data-i18n="exportTimeline">导出时间线轨道</span>
               </label>
             </div>
             <div class="asset-list collapsed" id="assetList">
               <div class="asset-list-title">
-                <span id="assetTitle">已产出的过程资产</span>
-                <button class="asset-toggle" id="assetToggle" type="button">展开查看</button>
+                <span id="assetTitle" data-i18n="assetTitle">已产出的过程资产</span>
+                <button class="asset-toggle" id="assetToggle" type="button" data-i18n="expandAssets">展开查看</button>
               </div>
               <div class="asset-items" id="assetItems"></div>
             </div>
-            <div id="answer">结果会显示在这里。</div>
+            <div id="answer" data-i18n="answerIdle">结果会显示在这里。</div>
             <div class="feedback-panel">
-              <strong>评价</strong>
-              <p>我将会以评价来整理经验，让下次做的更好（笑脸）</p>
-              <textarea id="feedbackText" placeholder="哪里满意，哪里不满意，或者下次想怎么改，都可以直接写。"></textarea>
+              <strong data-i18n="feedbackTitle">评价</strong>
+              <p data-i18n="feedbackTip">我将会以评价来整理经验，让下次做的更好（笑脸）</p>
+              <textarea id="feedbackText" data-i18n-placeholder="feedbackPlaceholder" placeholder="哪里满意，哪里不满意，或者下次想怎么改，都可以直接写。"></textarea>
               <div class="feedback-actions">
-                <button id="submitFeedback" type="button">提交评价</button>
+                <button id="submitFeedback" type="button" data-i18n="submitFeedback">提交评价</button>
                 <span class="feedback-status" id="feedbackStatus"></span>
               </div>
             </div>
@@ -1082,15 +1117,326 @@
 
     </main>
     <div class="credit-widget" aria-live="polite">
-      <strong>积分</strong>
-      <span class="credit-label">本次扣除</span>
+      <strong data-i18n="creditsTitle">积分</strong>
+      <span class="credit-label" data-i18n="deductedLabel">本次扣除</span>
       <span class="credit-value" id="creditDeducted">待返回</span>
-      <span class="credit-label">剩余积分</span>
+      <span class="credit-label" data-i18n="remainingLabel">剩余积分</span>
       <span class="credit-value" id="creditRemaining">待返回</span>
       <span class="credit-note" id="creditNote"></span>
     </div>
     <script src="/web-agent-bridge.js"></script>
     <script>
+      const easyI18n = {
+        zh: {
+          backProfessional: "返回专业页面",
+          heroTitle: "告诉你要什么，全包在我身上",
+          heroLead: "你不用懂工具，不用挑型号，不用看复杂说明。只要用自己的话说清楚想做什么、已有些什么、希望听起来怎样，后面的步骤交给助手安排。",
+          promiseNoLearnTitle: "不用学",
+          promiseNoLearnText: "说明书先挪走，直接说你想做成什么。",
+          promiseNoChooseTitle: "不用选",
+          promiseNoChooseText: "你不用挑方案，助手会自己安排顺序。",
+          promisePlainTitle: "说人话",
+          promisePlainText: "像聊天一样讲需求，结果回到这个页面。",
+          examplesTitle: "你可以这样提需求",
+          guideVoiceTitle: "把文字变成配音",
+          guideVoiceText: "适合小说、课程、广告、解说、旁白。你说清楚角色、语气和用途就行。",
+          guideCleanTitle: "让录音更清楚",
+          guideCleanText: "适合有底噪、回声、杂音、音量忽大忽小的录音。",
+          guideTranscriptTitle: "从录音里整理文字",
+          guideTranscriptText: "适合访谈、会议、播客、课程录音，可以继续整理成字幕或重点。",
+          guideMusicTitle: "做背景音乐",
+          guideMusicText: "适合短片、课程、故事、活动开场。你描述气氛，助手来安排。",
+          guideSfxTitle: "加声音效果",
+          guideSfxText: "适合脚步声、门声、环境声、转场声，让内容更有画面感。",
+          guideCompleteTitle: "做完整音频成品",
+          guideCompleteText: "适合从文稿、录音、音乐到最终文件的一整套制作。",
+          askTitle: "直接说需求",
+          plainTab: "直接说",
+          radioTab: "AI 电台",
+          askHint: "写得越像平时说话越好。比如：“我想把一章小说做成男女双人配音，要有情绪，最后给我音频文件。”",
+          needLabel: "你想做什么",
+          needPlaceholder: "例如：我想把一段课程稿做成温和、清楚、适合学习的讲解声音。",
+          materialLabel: "你现在有什么",
+          materialPlaceholder: "例如：有文字稿，有一段参考声音，想加一点轻音乐。",
+          styleLabel: "你希望听起来怎样",
+          stylePlaceholder: "例如：自然、亲切、稳重、像真人说话",
+          priorityLabel: "最在意什么",
+          priorityGood: "先保证好听",
+          priorityFast: "先尽快看到结果",
+          priorityCheap: "先少花成本",
+          priorityBatch: "先适合批量制作",
+          submitAssistant: "交给助手",
+          radioPromptLabel: "AI 电台节目提示词",
+          radioTip: "把大括号里的默认内容换成你的想法，再交给助手。",
+          newProject: "新建项目",
+          writeRevision: "填写修改意见",
+          collapseRevision: "收起修改意见",
+          revisionLabel: "修改意见",
+          revisionPlaceholder: "不改变上面的任务要求，只写你想让助手基于上一版怎么改。填写这里就是修改模式。",
+          revisionTip: "不改变任务要求，提意见，就是修改模式。",
+          statusIdle: "等待你的需求",
+          forceStop: "强制停止",
+          progressIdle: "提交需求后，助手会把进度写在这里。",
+          autoPlay: "完成后自动播放",
+          exportTimeline: "导出时间线轨道",
+          assetTitle: "已产出的过程资产",
+          expandAssets: "展开查看",
+          collapseAssets: "收起",
+          answerIdle: "结果会显示在这里。",
+          feedbackTitle: "评价",
+          feedbackTip: "我将会以评价来整理经验，让下次做的更好（笑脸）",
+          feedbackPlaceholder: "哪里满意，哪里不满意，或者下次想怎么改，都可以直接写。",
+          submitFeedback: "提交评价",
+          creditsTitle: "积分",
+          deductedLabel: "本次扣除",
+          remainingLabel: "剩余积分",
+          pendingValue: "待返回",
+          copied: "已复制",
+          submitStatus: "已交给助手",
+          radioSubmittedProgress: "已经收到电台节目需求，正在安排节目制作。",
+          plainSubmittedProgress: "已经收到需求，正在整理下一步。",
+          noFeedbackResult: "还没有可评价的结果。",
+          writeFeedbackFirst: "先写一句评价。",
+          savingFeedback: "正在保存评价。",
+          feedbackSaved: "已保存，助手下次会参考。",
+          feedbackFailed: "保存失败，稍后再试。",
+          stoppingStatus: "正在停止",
+          stoppingProgress: "正在强制停止，本次过程将全部清除。",
+          readResultFailed: (msg) => `读取结果失败：${msg}`,
+        },
+        en: {
+          backProfessional: "Back to professional page",
+          heroTitle: "Tell me what you need. I will handle the rest.",
+          heroLead: "You do not need to understand tools, choose models, or read complex instructions. Say what you want, what you already have, and how it should sound. The assistant will arrange the next steps.",
+          promiseNoLearnTitle: "No learning",
+          promiseNoLearnText: "Move the manual aside. Just say what you want to make.",
+          promiseNoChooseTitle: "No choosing",
+          promiseNoChooseText: "You do not need to pick the workflow. The assistant will arrange it.",
+          promisePlainTitle: "Plain talk",
+          promisePlainText: "Describe the task like a chat. Results come back to this page.",
+          examplesTitle: "Try asking like this",
+          guideVoiceTitle: "Turn text into voice",
+          guideVoiceText: "For novels, courses, ads, explainers, and narration. Tell us the role, tone, and usage.",
+          guideCleanTitle: "Make recordings clearer",
+          guideCleanText: "For noise, echo, hum, and uneven volume.",
+          guideTranscriptTitle: "Extract text from recordings",
+          guideTranscriptText: "For interviews, meetings, podcasts, and classes. It can continue into subtitles or highlights.",
+          guideMusicTitle: "Create background music",
+          guideMusicText: "For videos, courses, stories, and openings. Describe the mood; the assistant arranges it.",
+          guideSfxTitle: "Add sound effects",
+          guideSfxText: "For footsteps, doors, ambience, transitions, and scene sounds.",
+          guideCompleteTitle: "Create a finished audio product",
+          guideCompleteText: "For an end-to-end workflow from script, recording, and music to final file.",
+          askTitle: "Say what you need",
+          plainTab: "Plain request",
+          radioTab: "AI radio",
+          askHint: "Write as naturally as you speak. For example: “Make this novel chapter into a male-and-female duet voiceover with emotion, then give me the audio file.”",
+          needLabel: "What do you want to make?",
+          needPlaceholder: "For example: I want to turn a course script into a warm, clear teaching voice.",
+          materialLabel: "What do you already have?",
+          materialPlaceholder: "For example: a script, a reference voice, and a little background music.",
+          styleLabel: "How should it sound?",
+          stylePlaceholder: "For example: natural, friendly, steady, like a real person",
+          priorityLabel: "What matters most?",
+          priorityGood: "Make it sound good first",
+          priorityFast: "Show results quickly first",
+          priorityCheap: "Keep cost lower first",
+          priorityBatch: "Fit batch production first",
+          submitAssistant: "Hand to assistant",
+          radioPromptLabel: "AI radio program prompt",
+          radioTip: "Replace the default text in braces with your own ideas, then hand it to the assistant.",
+          newProject: "New project",
+          writeRevision: "Write revision notes",
+          collapseRevision: "Hide revision notes",
+          revisionLabel: "Revision notes",
+          revisionPlaceholder: "Keep the task above unchanged. Only write what you want changed based on the previous version.",
+          revisionTip: "Keeping the task unchanged and adding comments means revision mode.",
+          statusIdle: "Waiting for your request",
+          forceStop: "Force stop",
+          progressIdle: "After you submit, progress will appear here.",
+          autoPlay: "Auto-play when finished",
+          exportTimeline: "Export timeline tracks",
+          assetTitle: "Generated process assets",
+          expandAssets: "Expand",
+          collapseAssets: "Collapse",
+          answerIdle: "Results will appear here.",
+          feedbackTitle: "Feedback",
+          feedbackTip: "I will use your feedback to learn what to improve next time :)",
+          feedbackPlaceholder: "What worked, what did not, or what you want changed next time.",
+          submitFeedback: "Submit feedback",
+          creditsTitle: "Credits",
+          deductedLabel: "Deducted",
+          remainingLabel: "Remaining",
+          pendingValue: "Pending",
+          copied: "Copied",
+          submitStatus: "Handed to assistant",
+          radioSubmittedProgress: "Radio request received. The program production is being arranged.",
+          plainSubmittedProgress: "Request received. The next step is being organized.",
+          noFeedbackResult: "There is no result to review yet.",
+          writeFeedbackFirst: "Write one line of feedback first.",
+          savingFeedback: "Saving feedback.",
+          feedbackSaved: "Saved. The assistant will refer to it next time.",
+          feedbackFailed: "Save failed. Please try again later.",
+          stoppingStatus: "Stopping",
+          stoppingProgress: "Force stopping. This run will be cleared.",
+          readResultFailed: (msg) => `Failed to read result: ${msg}`,
+        },
+        ja: {
+          backProfessional: "専門ページへ戻る",
+          heroTitle: "欲しいものを伝えてください。あとは任せてください。",
+          heroLead: "ツールやモデル、複雑な説明を理解する必要はありません。何を作りたいか、手元に何があるか、どんな音にしたいかを自分の言葉で伝えるだけです。",
+          promiseNoLearnTitle: "学ばなくていい",
+          promiseNoLearnText: "説明書はいったん横へ。作りたいものをそのまま話してください。",
+          promiseNoChooseTitle: "選ばなくていい",
+          promiseNoChooseText: "手順を選ぶ必要はありません。助手が順番を組みます。",
+          promisePlainTitle: "普通の言葉で",
+          promisePlainText: "会話のように要望を伝えると、結果がこのページに戻ります。",
+          examplesTitle: "こんなふうに依頼できます",
+          guideVoiceTitle: "文字を音声にする",
+          guideVoiceText: "小説、講座、広告、解説、ナレーション向け。役、声色、用途を伝えるだけです。",
+          guideCleanTitle: "録音を聞きやすくする",
+          guideCleanText: "ノイズ、反響、雑音、音量のばらつきがある録音に向いています。",
+          guideTranscriptTitle: "録音から文字を整理する",
+          guideTranscriptText: "インタビュー、会議、ポッドキャスト、講座録音に向いています。字幕や要点整理にも続けられます。",
+          guideMusicTitle: "BGM を作る",
+          guideMusicText: "短編動画、講座、物語、イベントの導入に。雰囲気を伝えれば助手が整えます。",
+          guideSfxTitle: "効果音を加える",
+          guideSfxText: "足音、ドア、環境音、転換音などで内容に臨場感を出します。",
+          guideCompleteTitle: "完成音声を作る",
+          guideCompleteText: "台本、録音、音楽から最終ファイルまで一括制作します。",
+          askTitle: "要望を直接書く",
+          plainTab: "直接依頼",
+          radioTab: "AI ラジオ",
+          askHint: "普段話すように書くほど伝わります。例：「小説1章を男女2人の感情ある配音にして、最後に音声ファイルをください。」",
+          needLabel: "何を作りたいですか",
+          needPlaceholder: "例：講座原稿を、温かく聞きやすい解説音声にしたい。",
+          materialLabel: "今ある素材",
+          materialPlaceholder: "例：原稿、参考音声、少しのBGMを入れたい。",
+          styleLabel: "どんな聞こえ方にしたいですか",
+          stylePlaceholder: "例：自然、親しみやすい、落ち着いた、本物の人のように",
+          priorityLabel: "一番大事なこと",
+          priorityGood: "まず聞き心地",
+          priorityFast: "まず早く結果を見る",
+          priorityCheap: "まずコストを抑える",
+          priorityBatch: "まず一括制作に向ける",
+          submitAssistant: "助手に任せる",
+          radioPromptLabel: "AI ラジオ番組プロンプト",
+          radioTip: "波括弧内の既定内容を自分の内容に変えてから助手に渡してください。",
+          newProject: "新規プロジェクト",
+          writeRevision: "修正意見を書く",
+          collapseRevision: "修正意見を閉じる",
+          revisionLabel: "修正意見",
+          revisionPlaceholder: "上の依頼内容は変えず、前回版をどう直したいかだけを書いてください。",
+          revisionTip: "依頼内容を変えずに意見を書くと修正モードになります。",
+          statusIdle: "要望を待っています",
+          forceStop: "強制停止",
+          progressIdle: "送信後、進捗がここに表示されます。",
+          autoPlay: "完了後に自動再生",
+          exportTimeline: "タイムラインを書き出す",
+          assetTitle: "生成済みの途中素材",
+          expandAssets: "開く",
+          collapseAssets: "閉じる",
+          answerIdle: "結果はここに表示されます。",
+          feedbackTitle: "評価",
+          feedbackTip: "評価をもとに経験を整理し、次回もっと良くします（笑）",
+          feedbackPlaceholder: "満足した点、不満な点、次回変えたい点を書けます。",
+          submitFeedback: "評価を送信",
+          creditsTitle: "ポイント",
+          deductedLabel: "今回消費",
+          remainingLabel: "残り",
+          pendingValue: "待機中",
+          copied: "コピー済み",
+          submitStatus: "助手に渡しました",
+          radioSubmittedProgress: "ラジオ番組の依頼を受け取り、制作手順を組んでいます。",
+          plainSubmittedProgress: "依頼を受け取り、次の手順を整理しています。",
+          noFeedbackResult: "まだ評価できる結果がありません。",
+          writeFeedbackFirst: "まず一言評価を書いてください。",
+          savingFeedback: "評価を保存しています。",
+          feedbackSaved: "保存しました。次回の参考にします。",
+          feedbackFailed: "保存に失敗しました。あとで再試行してください。",
+          stoppingStatus: "停止中",
+          stoppingProgress: "強制停止しています。この処理内容はすべて消去されます。",
+          readResultFailed: (msg) => `結果の読み込みに失敗しました：${msg}`,
+        },
+        ko: {
+          backProfessional: "전문 페이지로 돌아가기",
+          heroTitle: "원하는 것만 말하세요. 나머지는 제가 맡겠습니다.",
+          heroLead: "도구나 모델, 복잡한 설명을 알 필요가 없습니다. 무엇을 만들고 싶은지, 어떤 자료가 있는지, 어떤 느낌이면 좋은지만 말하면 됩니다.",
+          promiseNoLearnTitle: "배울 필요 없음",
+          promiseNoLearnText: "설명서는 잠시 치워두고, 만들고 싶은 것을 바로 말하세요.",
+          promiseNoChooseTitle: "고를 필요 없음",
+          promiseNoChooseText: "작업 순서를 고르지 않아도 됩니다. assistant 가 정리합니다.",
+          promisePlainTitle: "쉬운 말로",
+          promisePlainText: "대화하듯 요구를 말하면 결과가 이 페이지로 돌아옵니다.",
+          examplesTitle: "이렇게 요청할 수 있어요",
+          guideVoiceTitle: "글을 음성으로 만들기",
+          guideVoiceText: "소설, 강의, 광고, 해설, 내레이션에 적합합니다. 역할, 말투, 용도만 알려 주세요.",
+          guideCleanTitle: "녹음을 더 또렷하게",
+          guideCleanText: "잡음, 울림, 소음, 들쭉날쭉한 음량이 있는 녹음에 적합합니다.",
+          guideTranscriptTitle: "녹음에서 글 정리",
+          guideTranscriptText: "인터뷰, 회의, 팟캐스트, 강의 녹음에 적합하며 자막이나 요약으로 이어갈 수 있습니다.",
+          guideMusicTitle: "배경음악 만들기",
+          guideMusicText: "짧은 영상, 강의, 이야기, 행사 오프닝에 적합합니다. 분위기를 설명하면 assistant 가 정리합니다.",
+          guideSfxTitle: "효과음 추가",
+          guideSfxText: "발소리, 문소리, 환경음, 전환음으로 더 생생하게 만듭니다.",
+          guideCompleteTitle: "완성 오디오 만들기",
+          guideCompleteText: "원고, 녹음, 음악부터 최종 파일까지 한 번에 제작합니다.",
+          askTitle: "요구사항 바로 말하기",
+          plainTab: "바로 말하기",
+          radioTab: "AI 라디오",
+          askHint: "평소 말하듯 쓰면 좋습니다. 예: “소설 한 장을 남녀 2인 감정 더빙으로 만들고 마지막에 오디오 파일을 주세요.”",
+          needLabel: "무엇을 만들고 싶나요",
+          needPlaceholder: "예: 강의 원고를 따뜻하고 또렷한 설명 음성으로 만들고 싶어요.",
+          materialLabel: "지금 가진 자료",
+          materialPlaceholder: "예: 원고, 참고 음성, 약간의 배경음악을 넣고 싶어요.",
+          styleLabel: "어떻게 들리면 좋나요",
+          stylePlaceholder: "예: 자연스럽고, 친근하고, 안정적이고, 실제 사람처럼",
+          priorityLabel: "가장 중요한 것",
+          priorityGood: "먼저 듣기 좋게",
+          priorityFast: "먼저 빨리 결과 보기",
+          priorityCheap: "먼저 비용 줄이기",
+          priorityBatch: "먼저 대량 제작에 맞게",
+          submitAssistant: "assistant 에게 맡기기",
+          radioPromptLabel: "AI 라디오 프로그램 프롬프트",
+          radioTip: "중괄호 안 기본 내용을 원하는 내용으로 바꾼 뒤 assistant 에게 맡기세요.",
+          newProject: "새 프로젝트",
+          writeRevision: "수정 의견 쓰기",
+          collapseRevision: "수정 의견 접기",
+          revisionLabel: "수정 의견",
+          revisionPlaceholder: "위 요구사항은 바꾸지 말고, 이전 버전을 어떻게 고칠지만 적어 주세요.",
+          revisionTip: "요구사항을 바꾸지 않고 의견만 쓰면 수정 모드입니다.",
+          statusIdle: "요청을 기다리는 중",
+          forceStop: "강제 중지",
+          progressIdle: "제출 후 진행 상황이 여기에 표시됩니다.",
+          autoPlay: "완료 후 자동 재생",
+          exportTimeline: "타임라인 트랙 내보내기",
+          assetTitle: "생성된 과정 자산",
+          expandAssets: "펼쳐보기",
+          collapseAssets: "접기",
+          answerIdle: "결과가 여기에 표시됩니다.",
+          feedbackTitle: "평가",
+          feedbackTip: "평가를 바탕으로 경험을 정리해 다음에는 더 잘 만들겠습니다 :)",
+          feedbackPlaceholder: "만족한 점, 아쉬운 점, 다음에 바꾸고 싶은 점을 적어 주세요.",
+          submitFeedback: "평가 제출",
+          creditsTitle: "포인트",
+          deductedLabel: "이번 차감",
+          remainingLabel: "남은 포인트",
+          pendingValue: "대기 중",
+          copied: "복사됨",
+          submitStatus: "assistant 에게 전달됨",
+          radioSubmittedProgress: "라디오 프로그램 요청을 받았습니다. 제작을 준비 중입니다.",
+          plainSubmittedProgress: "요청을 받았습니다. 다음 단계를 정리 중입니다.",
+          noFeedbackResult: "아직 평가할 결과가 없습니다.",
+          writeFeedbackFirst: "먼저 평가를 한 줄 적어 주세요.",
+          savingFeedback: "평가를 저장 중입니다.",
+          feedbackSaved: "저장되었습니다. 다음에 참고하겠습니다.",
+          feedbackFailed: "저장에 실패했습니다. 잠시 후 다시 시도해 주세요.",
+          stoppingStatus: "중지 중",
+          stoppingProgress: "강제 중지 중입니다. 이번 과정은 모두 삭제됩니다.",
+          readResultFailed: (msg) => `결과를 읽지 못했습니다: ${msg}`,
+        },
+      };
+
       const easyForm = document.getElementById("easyForm");
       const statusBox = document.getElementById("status");
       const progress = document.getElementById("progress");
@@ -1116,13 +1462,43 @@
       const feedbackText = document.getElementById("feedbackText");
       const submitFeedback = document.getElementById("submitFeedback");
       const feedbackStatus = document.getElementById("feedbackStatus");
+      const languageButtons = document.querySelectorAll("[data-lang]");
       let currentResultId = "";
       let loadedResultId = "";
       let lastAssetSignature = "";
+      let currentLanguage = localStorage.getItem("soundao_ui_language") || "zh";
       const radioPromptDefault = radioPrompt.value;
       const radioRevisionNotesDefault = radioRevisionNotes.value;
       const radioPromptCacheKey = "soundao_easy_radio_prompt";
       const radioRevisionCacheKey = "soundao_easy_radio_revision_notes";
+
+      function t(key) {
+        return (easyI18n[currentLanguage] && easyI18n[currentLanguage][key]) || easyI18n.zh[key] || key;
+      }
+
+      function applyEasyLanguage() {
+        document.documentElement.lang = currentLanguage === "zh" ? "zh-CN" : currentLanguage;
+        document.querySelectorAll("[data-i18n]").forEach((node) => {
+          node.textContent = t(node.dataset.i18n);
+        });
+        document.querySelectorAll("[data-i18n-placeholder]").forEach((node) => {
+          node.setAttribute("placeholder", t(node.dataset.i18nPlaceholder));
+        });
+        languageButtons.forEach((button) => button.classList.toggle("active", button.dataset.lang === currentLanguage));
+        if (!currentResultId && !loadedResultId) {
+          statusBox.textContent = t("statusIdle");
+          progressText.textContent = t("progressIdle");
+          answer.textContent = t("answerIdle");
+          creditDeducted.textContent = t("pendingValue");
+          creditRemaining.textContent = t("pendingValue");
+        }
+        if (radioRevisionPanel.classList.contains("collapsed")) {
+          showRadioRevision.textContent = t("writeRevision");
+        } else {
+          showRadioRevision.textContent = t("collapseRevision");
+        }
+        assetToggle.textContent = assetList.classList.contains("collapsed") ? t("expandAssets") : t("collapseAssets");
+      }
 
       function loadRadioDraftCache() {
         const cachedPrompt = localStorage.getItem(radioPromptCacheKey);
@@ -1145,7 +1521,7 @@
         radioPrompt.value = radioPromptDefault;
         radioRevisionNotes.value = radioRevisionNotesDefault;
         radioRevisionPanel.classList.add("collapsed");
-        showRadioRevision.textContent = "填写修改意见";
+        showRadioRevision.textContent = t("writeRevision");
       }
 
       const progressSlogans = {
@@ -1368,7 +1744,7 @@
 
       assetToggle.addEventListener("click", () => {
         const collapsed = assetList.classList.toggle("collapsed");
-        assetToggle.textContent = collapsed ? "展开查看" : "收起";
+        assetToggle.textContent = collapsed ? t("expandAssets") : t("collapseAssets");
       });
 
       async function copyTextToClipboard(text) {
@@ -1395,10 +1771,10 @@
         const originalText = button.textContent;
         try {
           await copyTextToClipboard(path);
-          button.textContent = "已复制";
+          button.textContent = t("copied");
           button.classList.add("copied");
         } catch {
-          button.textContent = "复制失败";
+          button.textContent = currentLanguage === "zh" ? "复制失败" : "Copy failed";
         } finally {
           window.setTimeout(() => {
             button.textContent = originalText;
@@ -1588,9 +1964,19 @@
       restoreRadioDefaults.addEventListener("click", restoreRadioDefaultPrompt);
       showRadioRevision.addEventListener("click", () => {
         const collapsed = radioRevisionPanel.classList.toggle("collapsed");
-        showRadioRevision.textContent = collapsed ? "填写修改意见" : "收起修改意见";
+        showRadioRevision.textContent = collapsed ? t("writeRevision") : t("collapseRevision");
         if (!collapsed) radioRevisionNotes.focus();
       });
+
+      languageButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          currentLanguage = button.dataset.lang || "zh";
+          localStorage.setItem("soundao_ui_language", currentLanguage);
+          applyEasyLanguage();
+        });
+      });
+
+      applyEasyLanguage();
 
       function buildPlainTask(form) {
         const need = String(form.get("need") || "").trim() || "用户想做一个音频成品，但还没有写清楚具体需求。";
@@ -1666,19 +2052,19 @@
         const mode = event.submitter?.dataset.mode || "plain";
         const form = new FormData(easyForm);
         const request = mode === "radio" ? buildRadioTask() : buildPlainTask(form);
-        statusBox.textContent = "已交给助手";
-        setProgressMessage(mode === "radio" ? "已经收到电台节目需求，正在安排节目制作。" : "已经收到需求，正在整理下一步。");
+        statusBox.textContent = t("submitStatus");
+        setProgressMessage(mode === "radio" ? t("radioSubmittedProgress") : t("plainSubmittedProgress"));
         progress.style.width = "8%";
         answer.textContent = "";
-        creditDeducted.textContent = "待返回";
-        creditRemaining.textContent = "待返回";
+        creditDeducted.textContent = t("pendingValue");
+        creditRemaining.textContent = t("pendingValue");
         creditNote.textContent = "";
         feedbackText.value = "";
         feedbackStatus.textContent = "";
         lastAssetSignature = "";
         renderAssets([]);
         assetList.classList.add("collapsed");
-        assetToggle.textContent = "展开查看";
+        assetToggle.textContent = t("expandAssets");
         setWorkingState(true);
         loadedResultId = "";
         const saved = await window.SoundaoAgentBridge.result({
@@ -1693,16 +2079,16 @@
         const feedback = feedbackText.value.trim();
         const resultId = currentResultId || loadedResultId;
         if (!resultId) {
-          feedbackStatus.textContent = "还没有可评价的结果。";
+          feedbackStatus.textContent = t("noFeedbackResult");
           return;
         }
         if (!feedback) {
-          feedbackStatus.textContent = "先写一句评价。";
+          feedbackStatus.textContent = t("writeFeedbackFirst");
           feedbackText.focus();
           return;
         }
         submitFeedback.disabled = true;
-        feedbackStatus.textContent = "正在保存评价。";
+        feedbackStatus.textContent = t("savingFeedback");
         try {
           const response = await fetch("/api/agent-feedback", {
             method: "POST",
@@ -1715,9 +2101,9 @@
             }),
           });
           if (!response.ok) throw new Error("save failed");
-          feedbackStatus.textContent = "已保存，助手下次会参考。";
+          feedbackStatus.textContent = t("feedbackSaved");
         } catch {
-          feedbackStatus.textContent = "保存失败，稍后再试。";
+          feedbackStatus.textContent = t("feedbackFailed");
         } finally {
           submitFeedback.disabled = false;
         }
@@ -1726,8 +2112,8 @@
       stopAgent.addEventListener("click", async () => {
         if (!currentResultId) return;
         stopAgent.disabled = true;
-        statusBox.textContent = "正在停止";
-        setProgressMessage("正在强制停止，本次过程将全部清除。", false);
+        statusBox.textContent = t("stoppingStatus");
+        setProgressMessage(t("stoppingProgress"), false);
         await fetch("/api/agent-cancel", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -1754,7 +2140,7 @@
           if ((body.status === "done" || body.status === "error") && body.result_id !== loadedResultId) {
             loadedResultId = body.result_id || currentResultId;
             loadAnswer(body).catch((error) => {
-              answer.textContent = `读取结果失败：${error.message}`;
+              answer.textContent = t("readResultFailed")(error.message);
             });
           }
         },

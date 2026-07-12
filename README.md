@@ -4,7 +4,7 @@
 
 [中文说明](README-CN.md)
 
-**Soundao Web Agent Framework | An open-source local WebUI bridge for audio-production agents. It solves the gap between powerful cloud audio APIs and non-technical users who just want finished deliverables. Compared with a single script or a standalone web tool, it provides local WebUI interaction, Codex / Opencode / WorkBuddy branches, Soundao cloud capability docking, process asset visibility, final delivery checks, and MIT-licensed commercial use.**
+**Soundao Web Agent Framework | An open-source multilingual local WebUI bridge for audio-production agents. It solves the gap between powerful cloud audio APIs and non-technical users who just want finished deliverables. Compared with a single script or a standalone web tool, it provides Chinese / English / Japanese / Korean UI switching, Codex / Opencode / WorkBuddy branches, Soundao cloud capability docking, process asset visibility, final delivery checks, and MIT-licensed commercial use.**
 
 Soundao Web Agent Framework is a local Agent WebUI bridge for Soundao.
 
@@ -12,7 +12,7 @@ It is not the source code of the Soundao cloud platform, and it does not include
 
 > Users describe audio needs in plain language on a local page; the Agent reads documentation, calls Soundao cloud capabilities, downloads assets, checks results, and packages the final deliverables.
 
-The Soundao cloud platform provides text-to-speech, voice cloning, audio analysis, cleanup, stem separation, AI music, sound effects, and media asset capabilities. This repository provides the local entry point, Agent collaboration flow, task handoff, result display, workspace conventions, and branch-specific adaptations for different Agent environments.
+The Soundao cloud platform provides text-to-speech, voice cloning, audio analysis, cleanup, stem separation, AI music, sound effects, and media asset capabilities. This repository provides the local multilingual entry point, Agent collaboration flow, task handoff, result display, workspace conventions, and branch-specific adaptations for different Agent environments.
 
 Soundao cloud entry:
 
@@ -72,6 +72,7 @@ With Soundao cloud capabilities and a local Agent workflow, this project can sup
 - denoising, speech enhancement, and vocal/accompaniment separation;
 - AI music, sound effects, background music, and complete audio deliverables;
 - radio programs, podcasts, audiobooks, course audio, short-drama narration, and other production workflows;
+- Chinese, English, Japanese, and Korean UI switching for the local pages;
 - local display of generated assets, including preview, download, and local path copy;
 - optional Premiere-importable FCP7 XML / xmeml multi-track timeline export.
 
@@ -378,4 +379,3 @@ Do not treat cloud-generated files as permanently stored. Download completed res
 ## License
 
 This project is open-source under the MIT License.
-

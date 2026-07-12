@@ -97,6 +97,35 @@
         margin-bottom: 22px;
       }
 
+      .language-switch {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        margin-left: auto;
+        border: 1px solid rgba(255, 244, 219, 0.28);
+        border-radius: 8px;
+        padding: 4px;
+        background: rgba(255, 250, 240, 0.12);
+      }
+
+      .language-switch button {
+        width: auto;
+        min-height: 28px;
+        margin: 0;
+        border: 1px solid transparent;
+        border-radius: 6px;
+        padding: 0 8px;
+        color: #f6e4c4;
+        background: transparent;
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      .language-switch button.active {
+        color: #2e2114;
+        background: #fff4db;
+      }
+
       .plain-link {
         display: inline-flex;
         align-items: center;
@@ -598,86 +627,94 @@
         <section class="hero-main">
           <div class="brand-row">
             <img class="brand-logo" src="/assets/Soundao-logo.png" alt="Soundao" />
-            <a class="plain-link" href="/soundao-easy">
+            <a class="plain-link" href="/soundao-easy" data-i18n-html="easyLink">
               别让我看见英文和术语！！ &gt;&gt;
               <span class="plain-link-emphasis">说人话版</span>
             </a>
+            <div class="language-switch" aria-label="Language">
+              <button type="button" data-lang="zh" class="active">中文</button>
+              <button type="button" data-lang="en">EN</button>
+              <button type="button" data-lang="ja">日本語</button>
+              <button type="button" data-lang="ko">한국어</button>
+            </div>
           </div>
-          <h1>Soundao 无门槛的专业音频工作台</h1>
-          <p class="summary">
+          <h1 data-i18n="heroTitle">Soundao 无门槛的专业音频工作台</h1>
+          <p class="summary" data-i18n="heroSummary">
             这里把 Soundao 的 TTS、声音克隆、音频分析、清理、分离、音乐、音效和媒资能力整理成清晰入口。
             你可以先浏览能力菜单，也可以直接告诉 Agent 你的职业、素材和目标，让它给出可执行方案。
           </p>
-          <p class="agent-question-tip">问 Agent：Soundao 能干嘛？将会得到详细的功能说明</p>
+          <p class="agent-question-tip" data-i18n="agentTip">问 Agent：Soundao 能干嘛？将会得到详细的功能说明</p>
           <div class="hero-metrics">
-            <div class="metric"><strong id="featureCount">7</strong><span>能力模块</span></div>
-            <div class="metric"><strong>Agent</strong><span>进度与交付物回写页面</span></div>
-            <div class="metric"><strong>Local</strong><span>本地工作区保存关键结果</span></div>
+            <div class="metric"><strong id="featureCount">7</strong><span data-i18n="metricCapabilities">能力模块</span></div>
+            <div class="metric"><strong>Agent</strong><span data-i18n="metricAgent">进度与交付物回写页面</span></div>
+            <div class="metric"><strong>Local</strong><span data-i18n="metricLocal">本地工作区保存关键结果</span></div>
           </div>
         </section>
         <aside class="quick-panel">
           <div class="panel-title">
-            <h2>快速决策</h2>
-            <span class="sync-pill" id="fetchedAt">文档同步中</span>
+            <h2 data-i18n="quickDecision">快速决策</h2>
+            <span class="sync-pill" id="fetchedAt" data-i18n="syncing">文档同步中</span>
           </div>
           <ul class="quick-list" id="quickStart"></ul>
           <div class="meta-strip">
             <span class="pill">本地 Web UI</span>
             <span class="pill">Python requests 调 API</span>
-            <span class="pill">Agent 进度回写</span>
+            <span class="pill" data-i18n="progressWriteback">Agent 进度回写</span>
           </div>
         </aside>
       </header>
 
       <section>
         <div class="section-title">
-          <h2>能力菜单</h2>
-          <p>每张卡片对应一类可调用能力，颜色用于区分任务域：蓝色偏合成，绿色偏分析，暖色偏修复，紫色偏创作与媒体。</p>
+          <h2 data-i18n="capabilityMenu">能力菜单</h2>
+          <p data-i18n="capabilityMenuDesc">每张卡片对应一类可调用能力，颜色用于区分任务域：蓝色偏合成，绿色偏分析，暖色偏修复，紫色偏创作与媒体。</p>
         </div>
         <div class="feature-grid" id="featureGrid"></div>
       </section>
 
       <section>
         <div class="section-title">
-          <h2>让 Agent 推荐方案</h2>
-          <p>不想逐条读文档时，填入你的身份、目标和已有素材，Agent 会结合云端文档生成一套下一步操作建议。</p>
+          <h2 data-i18n="consultTitle">让 Agent 推荐方案</h2>
+          <p data-i18n="consultDesc">不想逐条读文档时，填入你的身份、目标和已有素材，Agent 会结合云端文档生成一套下一步操作建议。</p>
         </div>
         <div class="consult">
           <form id="consultForm" class="consult-form">
-            <label for="role">你的职业或角色</label>
-            <input id="role" name="role" placeholder="例如：短视频创作者、小说作者、课程老师、播客剪辑师" />
+            <label for="role" data-i18n="roleLabel">你的职业或角色</label>
+            <input id="role" name="role" data-i18n-placeholder="rolePlaceholder" placeholder="例如：短视频创作者、小说作者、课程老师、播客剪辑师" />
 
-            <label for="goal">你想完成什么</label>
+            <label for="goal" data-i18n="goalLabel">你想完成什么</label>
             <textarea
               id="goal"
               name="goal"
+              data-i18n-placeholder="goalPlaceholder"
               placeholder="例如：把小说片段做成多角色配音，想要自然、有情绪、可交付音频。"
             ></textarea>
 
-            <label for="material">你已有的素材</label>
+            <label for="material" data-i18n="materialLabel">你已有的素材</label>
             <textarea
               id="material"
               name="material"
+              data-i18n-placeholder="materialPlaceholder"
               placeholder="例如：有一段参考人声、3 千字脚本、需要背景音乐和音效。"
             ></textarea>
 
-            <label for="priority">优先考虑</label>
+            <label for="priority" data-i18n="priorityLabel">优先考虑</label>
             <select id="priority" name="priority">
-              <option value="质量优先">质量优先</option>
-              <option value="速度优先">速度优先</option>
-              <option value="成本优先">成本优先</option>
-              <option value="稳定批量">稳定批量</option>
+              <option value="质量优先" data-i18n="priorityQuality">质量优先</option>
+              <option value="速度优先" data-i18n="prioritySpeed">速度优先</option>
+              <option value="成本优先" data-i18n="priorityCost">成本优先</option>
+              <option value="稳定批量" data-i18n="priorityBatch">稳定批量</option>
             </select>
 
-            <button type="submit">请 Agent 推荐方案</button>
+            <button type="submit" data-i18n="recommendButton">请 Agent 推荐方案</button>
           </form>
           <section class="result-panel">
             <div class="status-row">
-              <span class="badge" id="agentStatus">等待咨询</span>
+              <span class="badge" id="agentStatus" data-i18n="waitingConsult">等待咨询</span>
               <div class="progress"><div id="agentProgress"></div></div>
             </div>
-            <div id="progressText">填写左侧信息后，Agent 会结合 Soundao 功能给你方案。</div>
-            <div id="recommendation">推荐结果会显示在这里。</div>
+            <div id="progressText" data-i18n="consultProgressIdle">填写左侧信息后，Agent 会结合 Soundao 功能给你方案。</div>
+            <div id="recommendation" data-i18n="recommendationIdle">推荐结果会显示在这里。</div>
             <div id="debugCommand"></div>
           </section>
         </div>
@@ -685,6 +722,207 @@
     </main>
     <script src="/web-agent-bridge.js"></script>
     <script>
+      const introI18n = {
+        zh: {
+          easyLink: '别让我看见英文和术语！！ &gt;&gt; <span class="plain-link-emphasis">说人话版</span>',
+          heroTitle: "Soundao 无门槛的专业音频工作台",
+          heroSummary:
+            "这里把 Soundao 的 TTS、声音克隆、音频分析、清理、分离、音乐、音效和媒资能力整理成清晰入口。你可以先浏览能力菜单，也可以直接告诉 Agent 你的职业、素材和目标，让它给出可执行方案。",
+          agentTip: "问 Agent：Soundao 能干嘛？将会得到详细的功能说明",
+          metricCapabilities: "能力模块",
+          metricAgent: "进度与交付物回写页面",
+          metricLocal: "本地工作区保存关键结果",
+          quickDecision: "快速决策",
+          syncing: "文档同步中",
+          syncedPrefix: "已同步：",
+          progressWriteback: "Agent 进度回写",
+          capabilityMenu: "能力菜单",
+          capabilityMenuDesc: "每张卡片对应一类可调用能力，颜色用于区分任务域：蓝色偏合成，绿色偏分析，暖色偏修复，紫色偏创作与媒体。",
+          consultTitle: "让 Agent 推荐方案",
+          consultDesc: "不想逐条读文档时，填入你的身份、目标和已有素材，Agent 会结合云端文档生成一套下一步操作建议。",
+          roleLabel: "你的职业或角色",
+          rolePlaceholder: "例如：短视频创作者、小说作者、课程老师、播客剪辑师",
+          goalLabel: "你想完成什么",
+          goalPlaceholder: "例如：把小说片段做成多角色配音，想要自然、有情绪、可交付音频。",
+          materialLabel: "你已有的素材",
+          materialPlaceholder: "例如：有一段参考人声、3 千字脚本、需要背景音乐和音效。",
+          priorityLabel: "优先考虑",
+          priorityQuality: "质量优先",
+          prioritySpeed: "速度优先",
+          priorityCost: "成本优先",
+          priorityBatch: "稳定批量",
+          recommendButton: "请 Agent 推荐方案",
+          waitingConsult: "等待咨询",
+          consultProgressIdle: "填写左侧信息后，Agent 会结合 Soundao 功能给你方案。",
+          recommendationIdle: "推荐结果会显示在这里。",
+          scenarioLabel: "适合场景",
+          enginesLabel: "推荐引擎",
+          cloudDoc: "云端文档",
+          statuses: { processing: "分析中", done: "已生成", error: "生成失败", cancelled: "已中止", idle: "等待咨询" },
+          processingElapsed: (sec) => `Agent 正在分析，已运行 ${Math.round(sec)} 秒。`,
+          processingDefault: "Agent 正在处理。",
+          submitted: "已提交",
+          submittedProgress: "Agent 正在结合你的情况和 Soundao 功能文档做推荐。",
+          readError: (msg) => `读取推荐结果失败：${msg}`,
+        },
+        en: {
+          easyLink: 'No English, no jargon please! &gt;&gt; <span class="plain-link-emphasis">Plain-talk mode</span>',
+          heroTitle: "Soundao, a professional audio workspace with almost no learning curve",
+          heroSummary:
+            "This page organizes Soundao text-to-speech, voice cloning, analysis, cleanup, separation, music, sound effects, and media assets into clear entry points. Browse the capability menu, or tell the Agent your role, materials, and goal.",
+          agentTip: "Ask the Agent: What can Soundao do? You will get a detailed capability overview.",
+          metricCapabilities: "Capability modules",
+          metricAgent: "Progress and deliverables written back to the page",
+          metricLocal: "Key results saved in a local workspace",
+          quickDecision: "Quick decisions",
+          syncing: "Syncing docs",
+          syncedPrefix: "Synced: ",
+          progressWriteback: "Agent progress writeback",
+          capabilityMenu: "Capability menu",
+          capabilityMenuDesc: "Each card maps to one callable capability. Colors separate synthesis, analysis, repair, creation, and media tasks.",
+          consultTitle: "Let the Agent recommend a plan",
+          consultDesc: "If you do not want to read every document, enter your role, goal, and materials. The Agent will turn the cloud docs into a next-step plan.",
+          roleLabel: "Your role",
+          rolePlaceholder: "For example: short-video creator, novelist, course teacher, podcast editor",
+          goalLabel: "What you want to finish",
+          goalPlaceholder: "For example: turn a novel scene into a natural, emotional, multi-role voiceover.",
+          materialLabel: "Materials you already have",
+          materialPlaceholder: "For example: a voice reference, a 3,000-word script, and a need for BGM and effects.",
+          priorityLabel: "Priority",
+          priorityQuality: "Best quality",
+          prioritySpeed: "Fastest result",
+          priorityCost: "Lower cost",
+          priorityBatch: "Stable batch work",
+          recommendButton: "Ask Agent for a plan",
+          waitingConsult: "Waiting",
+          consultProgressIdle: "Fill in the form, and the Agent will recommend a Soundao plan.",
+          recommendationIdle: "Recommendations will appear here.",
+          scenarioLabel: "Best for",
+          enginesLabel: "Suggested engines",
+          cloudDoc: "Cloud docs",
+          statuses: { processing: "Analyzing", done: "Generated", error: "Failed", cancelled: "Stopped", idle: "Waiting" },
+          processingElapsed: (sec) => `Agent is analyzing. Runtime: ${Math.round(sec)} seconds.`,
+          processingDefault: "Agent is working.",
+          submitted: "Submitted",
+          submittedProgress: "Agent is matching your needs with Soundao capabilities.",
+          readError: (msg) => `Failed to read recommendation: ${msg}`,
+        },
+        ja: {
+          easyLink: '英語も専門用語も見たくない！！ &gt;&gt; <span class="plain-link-emphasis">やさしい言葉版</span>',
+          heroTitle: "Soundao 誰でも使えるプロ向け音声ワークスペース",
+          heroSummary:
+            "Soundao の音声合成、声のクローン、音声分析、ノイズ処理、分離、音楽、効果音、メディア資産を分かりやすい入口に整理しました。機能メニューを見ることも、職業・素材・目標を Agent に伝えることもできます。",
+          agentTip: "Agent に「Soundao で何ができる？」と聞くと、詳しい機能説明が返ります。",
+          metricCapabilities: "機能モジュール",
+          metricAgent: "進捗と納品物をページへ表示",
+          metricLocal: "重要な結果をローカルに保存",
+          quickDecision: "すばやく判断",
+          syncing: "文書を同期中",
+          syncedPrefix: "同期済み：",
+          progressWriteback: "Agent 進捗表示",
+          capabilityMenu: "機能メニュー",
+          capabilityMenuDesc: "各カードは呼び出せる機能を表します。色で合成、分析、修復、制作、メディア系のタスクを区別しています。",
+          consultTitle: "Agent にプランを提案してもらう",
+          consultDesc: "文書を全部読む代わりに、役割・目標・素材を入力してください。Agent が次の手順を提案します。",
+          roleLabel: "あなたの職業・役割",
+          rolePlaceholder: "例：動画クリエイター、小説家、講師、ポッドキャスト編集者",
+          goalLabel: "やりたいこと",
+          goalPlaceholder: "例：小説の一場面を自然で感情のある複数役の音声にしたい。",
+          materialLabel: "手元にある素材",
+          materialPlaceholder: "例：参考音声、3000字の台本、BGM と効果音が必要。",
+          priorityLabel: "優先したいこと",
+          priorityQuality: "品質優先",
+          prioritySpeed: "速度優先",
+          priorityCost: "コスト優先",
+          priorityBatch: "安定した一括制作",
+          recommendButton: "Agent に提案してもらう",
+          waitingConsult: "相談待ち",
+          consultProgressIdle: "左側を入力すると、Agent が Soundao の使い方を提案します。",
+          recommendationIdle: "提案結果はここに表示されます。",
+          scenarioLabel: "向いている場面",
+          enginesLabel: "おすすめエンジン",
+          cloudDoc: "クラウド文書",
+          statuses: { processing: "分析中", done: "生成済み", error: "失敗", cancelled: "停止済み", idle: "相談待ち" },
+          processingElapsed: (sec) => `Agent が分析中です。経過 ${Math.round(sec)} 秒。`,
+          processingDefault: "Agent が処理しています。",
+          submitted: "送信済み",
+          submittedProgress: "Agent があなたの状況と Soundao の機能を照合しています。",
+          readError: (msg) => `提案結果の読み込みに失敗しました：${msg}`,
+        },
+        ko: {
+          easyLink: '영어와 전문용어는 싫어요!! &gt;&gt; <span class="plain-link-emphasis">쉬운 말 버전</span>',
+          heroTitle: "Soundao, 누구나 쓰는 전문 오디오 작업대",
+          heroSummary:
+            "Soundao 의 음성 합성, 보이스 클론, 오디오 분석, 정리, 분리, 음악, 효과음, 미디어 자산 기능을 명확한入口로 정리했습니다. 기능 메뉴를 보거나, 직업·소재·목표를 Agent 에게 바로 알려 주세요.",
+          agentTip: "Agent 에게 “Soundao 로 무엇을 할 수 있어?”라고 물어보면 자세한 기능 설명을 받을 수 있습니다.",
+          metricCapabilities: "기능 모듈",
+          metricAgent: "진행 상황과 결과물을 페이지에 표시",
+          metricLocal: "중요 결과를 로컬 작업공간에 저장",
+          quickDecision: "빠른 선택",
+          syncing: "문서 동기화 중",
+          syncedPrefix: "동기화됨: ",
+          progressWriteback: "Agent 진행 표시",
+          capabilityMenu: "기능 메뉴",
+          capabilityMenuDesc: "각 카드는 호출 가능한 기능을 나타냅니다. 색상으로 합성, 분석, 복원, 제작, 미디어 작업을 구분합니다.",
+          consultTitle: "Agent 에게 해결책 추천받기",
+          consultDesc: "문서를 모두 읽지 않아도 됩니다. 역할, 목표, 보유 소재를 입력하면 Agent 가 다음 실행 계획을 제안합니다.",
+          roleLabel: "직업 또는 역할",
+          rolePlaceholder: "예: 숏폼 크리에이터, 소설 작가, 강사, 팟캐스트 편집자",
+          goalLabel: "완성하고 싶은 것",
+          goalPlaceholder: "예: 소설 장면을 자연스럽고 감정 있는 다역 음성으로 만들고 싶어요.",
+          materialLabel: "가지고 있는 소재",
+          materialPlaceholder: "예: 참고 음성, 3천 자 대본, 배경음악과 효과음 필요.",
+          priorityLabel: "우선순위",
+          priorityQuality: "품질 우선",
+          prioritySpeed: "속도 우선",
+          priorityCost: "비용 우선",
+          priorityBatch: "안정적인 대량 제작",
+          recommendButton: "Agent 에게 추천 요청",
+          waitingConsult: "대기 중",
+          consultProgressIdle: "왼쪽 정보를 입력하면 Agent 가 Soundao 활용 방안을 추천합니다.",
+          recommendationIdle: "추천 결과가 여기에 표시됩니다.",
+          scenarioLabel: "적합한 용도",
+          enginesLabel: "추천 엔진",
+          cloudDoc: "클라우드 문서",
+          statuses: { processing: "분석 중", done: "생성됨", error: "실패", cancelled: "중지됨", idle: "대기 중" },
+          processingElapsed: (sec) => `Agent 가 분석 중입니다. ${Math.round(sec)}초 경과.`,
+          processingDefault: "Agent 가 처리 중입니다.",
+          submitted: "제출됨",
+          submittedProgress: "Agent 가 요청과 Soundao 기능을 맞춰 보고 있습니다.",
+          readError: (msg) => `추천 결과를 읽지 못했습니다: ${msg}`,
+        },
+      };
+
+      const introFeatureTranslations = {
+        en: {
+          tts: { title: "Voice generation and cloning", tagline: "Create narration, character voices, and cloned voices from text and references.", bestFor: ["Narration", "Audiobooks", "Courses", "Characters"], recommended: "Start with the most stable voice path, then refine emotion and pacing." },
+          audio_analysis: { title: "Audio analysis", tagline: "Turn recordings into text, segments, speaker notes, and subtitles.", bestFor: ["Meetings", "Interviews", "Podcasts", "Courses"], recommended: "Use analysis first when the source is a real recording." },
+          audio_cleanup: { title: "Audio cleanup", tagline: "Improve noisy recordings and make speech clearer.", bestFor: ["Noise", "Echo", "Uneven volume"], recommended: "Clean before transcription, remixing, or delivery." },
+          music: { title: "AI music", tagline: "Generate background music, short songs, and emotional transitions.", bestFor: ["Radio", "Videos", "Stories", "Openings"], recommended: "Describe mood, length, and usage scene." },
+          sfx: { title: "Sound effects", tagline: "Create footsteps, doors, ambience, transitions, and scene sounds.", bestFor: ["Drama", "Games", "Short videos"], recommended: "Use short, specific descriptions for better results." },
+          media: { title: "Media workflows", tagline: "Handle subtitle translation, multilingual dubbing, and media assets.", bestFor: ["Videos", "Localization", "Courses"], recommended: "Let the Agent plan the full media path." },
+          assets: { title: "Asset retrieval", tagline: "Retrieve user-provided asset IDs and organize delivery files.", bestFor: ["Referenced files", "Reusable assets", "Project packages"], recommended: "Keep important outputs in the local workspace." },
+        },
+        ja: {
+          tts: { title: "音声生成・声のクローン", tagline: "テキストや参考音声からナレーション、キャラクター音声、クローン音声を作ります。", bestFor: ["ナレーション", "オーディオブック", "講座", "キャラクター"], recommended: "安定した音声生成から始め、感情と間を調整します。" },
+          audio_analysis: { title: "音声分析", tagline: "録音を文字、区切り、話者情報、字幕に整理します。", bestFor: ["会議", "インタビュー", "ポッドキャスト", "講座"], recommended: "実録音の素材は、まず分析から始めるのがおすすめです。" },
+          audio_cleanup: { title: "音声クリーニング", tagline: "ノイズのある録音を聞きやすく整えます。", bestFor: ["ノイズ", "反響", "音量のばらつき"], recommended: "文字起こしや納品前に先に整えると安定します。" },
+          music: { title: "AI 音楽", tagline: "BGM、短い歌、感情の切り替え用音楽を作ります。", bestFor: ["ラジオ", "動画", "物語", "オープニング"], recommended: "雰囲気、長さ、使う場面を伝えてください。" },
+          sfx: { title: "効果音", tagline: "足音、ドア、環境音、転換音などを作ります。", bestFor: ["ドラマ", "ゲーム", "短い動画"], recommended: "短く具体的に書くほど結果が安定します。" },
+          media: { title: "メディア制作", tagline: "字幕翻訳、多言語吹き替え、メディア素材を扱います。", bestFor: ["動画", "多言語化", "講座"], recommended: "全体の制作手順は Agent に設計させるのがおすすめです。" },
+          assets: { title: "素材の取回し", tagline: "ユーザー素材 ID を取得し、納品ファイルを整理します。", bestFor: ["参照ファイル", "再利用素材", "プロジェクト一式"], recommended: "重要な成果物はローカル作業区に保存します。" },
+        },
+        ko: {
+          tts: { title: "음성 생성과 보이스 클론", tagline: "텍스트와 참고 음성으로 내레이션, 캐릭터 음성, 클론 음성을 만듭니다.", bestFor: ["내레이션", "오디오북", "강의", "캐릭터"], recommended: "안정적인 음성 경로부터 시작해 감정과 속도를 다듬습니다." },
+          audio_analysis: { title: "오디오 분석", tagline: "녹음을 텍스트, 구간, 화자 정보, 자막으로 정리합니다.", bestFor: ["회의", "인터뷰", "팟캐스트", "강의"], recommended: "실제 녹음 파일은 먼저 분석하는 것이 좋습니다." },
+          audio_cleanup: { title: "오디오 정리", tagline: "잡음 있는 녹음을 더 또렷하게 만듭니다.", bestFor: ["잡음", "울림", "음량 불균형"], recommended: "전사, 믹싱, 납품 전에 먼저 정리하면 안정적입니다." },
+          music: { title: "AI 음악", tagline: "배경음악, 짧은 노래, 감정 전환 음악을 만듭니다.", bestFor: ["라디오", "영상", "이야기", "오프닝"], recommended: "분위기, 길이, 사용 장면을 설명하세요." },
+          sfx: { title: "효과음", tagline: "발소리, 문소리, 환경음, 전환음을 만듭니다.", bestFor: ["드라마", "게임", "숏폼"], recommended: "짧고 구체적인 설명이 더 좋은 결과를 만듭니다." },
+          media: { title: "미디어 작업", tagline: "자막 번역, 다국어 더빙, 미디어 소재를 처리합니다.", bestFor: ["영상", "현지화", "강의"], recommended: "전체 미디어 흐름은 Agent 가 설계하도록 하세요." },
+          assets: { title: "소재 가져오기", tagline: "사용자 소재 ID 를 가져오고 납품 파일을 정리합니다.", bestFor: ["참조 파일", "재사용 소재", "프로젝트 패키지"], recommended: "중요 결과물은 로컬 작업공간에 저장합니다." },
+        },
+      };
+
       const featureGrid = document.getElementById("featureGrid");
       const quickStart = document.getElementById("quickStart");
       const fetchedAt = document.getElementById("fetchedAt");
@@ -694,7 +932,29 @@
       const progressText = document.getElementById("progressText");
       const recommendation = document.getElementById("recommendation");
       const featureCount = document.getElementById("featureCount");
+      const languageButtons = document.querySelectorAll("[data-lang]");
+      let currentLanguage = localStorage.getItem("soundao_ui_language") || "zh";
+      let currentDocs = null;
       let currentResultId = "";
+
+      function tr(key) {
+        return (introI18n[currentLanguage] && introI18n[currentLanguage][key]) || introI18n.zh[key] || key;
+      }
+
+      function applyIntroLanguage() {
+        document.documentElement.lang = currentLanguage === "zh" ? "zh-CN" : currentLanguage;
+        document.querySelectorAll("[data-i18n]").forEach((node) => {
+          node.textContent = tr(node.dataset.i18n);
+        });
+        document.querySelectorAll("[data-i18n-html]").forEach((node) => {
+          node.innerHTML = tr(node.dataset.i18nHtml);
+        });
+        document.querySelectorAll("[data-i18n-placeholder]").forEach((node) => {
+          node.setAttribute("placeholder", tr(node.dataset.i18nPlaceholder));
+        });
+        languageButtons.forEach((button) => button.classList.toggle("active", button.dataset.lang === currentLanguage));
+        if (currentDocs) renderDocs(currentDocs);
+      }
 
       const featureIcons = {
         tts: "声",
@@ -720,51 +980,55 @@
       }
 
       function renderFeature(feature) {
+        const translated = introFeatureTranslations[currentLanguage]?.[feature.id] || {};
+        const view = { ...feature, ...translated };
         const el = document.createElement("article");
         el.className = "feature";
         el.dataset.featureId = feature.id || "";
         el.innerHTML = `
           <div class="feature-top">
             <div class="feature-icon" aria-hidden="true">${escapeHtml(featureIcons[feature.id] || "能")}</div>
-            <span class="doc-link">${escapeHtml(feature.doc || "云端文档")}</span>
+            <span class="doc-link">${escapeHtml(feature.doc || tr("cloudDoc"))}</span>
           </div>
-          <h3>${escapeHtml(feature.title)}</h3>
-          <p>${escapeHtml(feature.tagline)}</p>
-          <div class="label">适合场景</div>
-          <div class="tags">${renderChips(feature.bestFor, "tag")}</div>
-          <div class="label">推荐引擎</div>
-          <div class="tags">${renderChips(feature.engines, "engine")}</div>
-          <div class="recommend">${escapeHtml(feature.recommended)}</div>
+          <h3>${escapeHtml(view.title)}</h3>
+          <p>${escapeHtml(view.tagline)}</p>
+          <div class="label">${escapeHtml(tr("scenarioLabel"))}</div>
+          <div class="tags">${renderChips(view.bestFor, "tag")}</div>
+          <div class="label">${escapeHtml(tr("enginesLabel"))}</div>
+          <div class="tags">${renderChips(view.engines, "engine")}</div>
+          <div class="recommend">${escapeHtml(view.recommended)}</div>
         `;
         return el;
+      }
+
+      function renderDocs(docs) {
+        const fetchedDate = new Date(docs.fetched_at);
+        fetchedAt.textContent = `${tr("syncedPrefix")}${fetchedDate.toLocaleString()}`;
+        quickStart.innerHTML = (docs.quick_start || []).map((item) => `<li>${escapeHtml(item)}</li>`).join("");
+        featureGrid.replaceChildren(...(docs.features || []).map(renderFeature));
+        featureCount.textContent = String((docs.features || []).length);
       }
 
       async function loadDocs() {
         const response = await fetch("/soundao-docs.json");
         const docs = await response.json();
-        const fetchedDate = new Date(docs.fetched_at);
-        fetchedAt.textContent = `已同步：${fetchedDate.toLocaleString()}`;
-        quickStart.innerHTML = (docs.quick_start || []).map((item) => `<li>${escapeHtml(item)}</li>`).join("");
-        featureGrid.replaceChildren(...(docs.features || []).map(renderFeature));
-        featureCount.textContent = String((docs.features || []).length);
+        currentDocs = docs;
+        renderDocs(docs);
         return docs;
       }
 
       function statusLabel(status) {
-        if (status === "processing") return "分析中";
-        if (status === "done") return "已生成";
-        if (status === "error") return "生成失败";
-        if (status === "cancelled") return "已中止";
-        return "等待咨询";
+        const statuses = tr("statuses");
+        return statuses[status] || statuses.idle;
       }
 
       function friendlyProgress(body) {
         const outcome = body.outcome || {};
         if (outcome.public_message) return outcome.public_message;
         if (body.status === "processing" && outcome.elapsed_sec) {
-          return `Agent 正在分析，已运行 ${Math.round(outcome.elapsed_sec)} 秒。`;
+          return tr("processingElapsed")(outcome.elapsed_sec);
         }
-        return body.message || "Agent 正在处理。";
+        return body.message || tr("processingDefault");
       }
 
       function cleanResult(text) {
@@ -810,8 +1074,8 @@
           `优先考虑：${priority}`,
           "要求：用用户能看懂的中文输出，包含推荐功能、使用顺序、原因、需要准备的素材、下一步操作。不展示代码、JSON、本地路径或 API 原始响应。",
         ].join("\n");
-        agentStatus.textContent = "已提交";
-        progressText.textContent = "Agent 正在结合你的情况和 Soundao 功能文档做推荐。";
+        agentStatus.textContent = tr("submitted");
+        progressText.textContent = tr("submittedProgress");
         agentProgress.style.width = "8%";
         recommendation.textContent = "";
         const saved = await window.SoundaoAgentBridge.result({
@@ -841,14 +1105,23 @@
           agentProgress.style.width = `${Math.max(0, Math.min(100, Number(body.progress || 0)))}%`;
           if (body.status === "done" || body.status === "error") {
             loadDeliverable(body).catch((error) => {
-              recommendation.textContent = `读取推荐结果失败：${error.message}`;
+              recommendation.textContent = tr("readError")(error.message);
             });
           }
         },
       });
 
+      languageButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          currentLanguage = button.dataset.lang || "zh";
+          localStorage.setItem("soundao_ui_language", currentLanguage);
+          applyIntroLanguage();
+        });
+      });
+
+      applyIntroLanguage();
       loadDocs().catch((error) => {
-        fetchedAt.textContent = "文档读取失败";
+        fetchedAt.textContent = currentLanguage === "zh" ? "文档读取失败" : "Failed to read docs";
         quickStart.innerHTML = `<li>${escapeHtml(error.message)}</li>`;
       });
     </script>
