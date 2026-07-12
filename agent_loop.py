@@ -648,7 +648,7 @@ def build_agent_prompt(result: dict[str, Any], out_dir: Path, cwd: Path) -> str:
    - 推荐先执行：`python web_agent_framework/soundao_cloud.py llms --path /llms-full.txt --out "{out_dir / "llms-full.txt"}"`。
    - 如果任务只涉及某类能力，还要读取对应分模块文档，例如 `/llms/tts.txt`、`/llms/music.txt`、`/llms/audio-tools.txt`、`/llms/sfx.txt`、`/llms/media.txt`。
    - 读取完成后必须写出 `{out_dir / "cloud_doc_check.json"}`，说明读取了哪些文档、是否发现和本地 skill/流程不一致、接下来采用哪个能力入口。
-2. 如果需要调用 Soundao 登录、生成、分析、下载、取回资产、查积分等需要凭证的能力，但当前项目环境没有可用凭证，必须停止实际调用，并通过通知工具告诉用户：“请把 Soundao 登录凭证或 API Key 发到主 Codex 窗口，我配置好后再继续。”凭证配置完成前，只能读取公开文档、整理方案和说明能力，不能编造结果。
+2. 如果需要调用 Soundao 登录、生成、分析、下载、取回资产、查积分等需要凭证的能力，但当前项目环境没有可用凭证，必须停止实际调用，并通过通知工具告诉用户：“请把 Soundao 登录凭证，也就是用户名和密码，发到主 Codex 窗口，我配置好后再继续。没有凭证请加入 QQ 群 1030846851 申请，申请注明 Soundao试用。”凭证配置完成前，只能读取公开文档、整理方案和说明能力，不能编造结果。
 3. 凭证不能写进代码、页面、日志、交付物、manifest 或 Git 提交；只能使用项目环境变量或主 Agent 已配置的本地凭证。
 
 工作目录：

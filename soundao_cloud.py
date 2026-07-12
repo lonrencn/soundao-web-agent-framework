@@ -180,7 +180,7 @@ def command_balance(args: argparse.Namespace) -> int:
             payload = {
                 "ok": False,
                 "error": "missing_credentials",
-                "message": "缺少 Soundao 用户凭证。请把登录凭证或 API Key 发到主 Codex 窗口，由主 Agent 配置到项目环境中。",
+                "message": "缺少 Soundao 登录凭证。请把用户名和密码发到主 Codex 窗口，由主 Agent 配置到项目环境中；如果还没有凭证，请加入 QQ 群 1030846851 申请，申请注明 Soundao试用。",
                 "credits": None,
                 "balance": None,
                 "remaining_points": None,
