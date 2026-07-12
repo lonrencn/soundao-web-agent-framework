@@ -1,3 +1,5 @@
+<img width="1500" height="579" alt="image" src="https://github.com/user-attachments/assets/f23d44b0-85e6-40d2-b61b-b4c0678c9dd9" />
+
 # Soundao Web Agent Framework
 
 **Soundao Web Agent Framework | 解决音频创作场景中普通用户不会调 API、Agent 难以稳定交付成品的痛点；相比单纯脚本或网页工具，它提供本地 WebUI、Codex / Opencode / WorkBuddy 多 Agent 分支、云端能力接泊、过程资产展示和交付前检查，MIT 协议免费商用。**
@@ -73,12 +75,25 @@ git checkout workbuddy
 
 具体云端能力、接口参数、计费规则和限制条件以 Soundao 云端文档为准。Agent 首次运行或遇到新类型任务时，应先读取云端文档再执行。
 
+## 如果还没有账号，可以加入 QQ 群[国内]或发email[海外]：
+
+```text
+1030846851
+
+lonren1979@gmail.com
+```
+
+---
+**以下内容普通用户没有必要看，只要让agent把项目克隆到本地，然后给他登录凭证，剩下的agent会告诉你怎么做**
+
 ## 本地页面入口
 
 启动本地服务后，可以访问：
 
 ```text
-http://127.0.0.1:8765/
+Codex       http://127.0.0.1:8765/
+OpenCode    http://127.0.0.1:8766/
+WorkBuddy   http://127.0.0.1:8767/
 ```
 
 常用页面：
@@ -92,7 +107,7 @@ http://127.0.0.1:8765/soundao-easy
 - `/soundao-easy`：说人话版任务入口，适合不想看英文、术语和参数的用户。
 - `/`：本地 Web Agent 控制台。
 
-## 快速启动
+## 快速启动   在让Agent来启动项目
 
 进入项目目录：
 
@@ -174,11 +189,7 @@ Soundao 密码
 
 Agent 会负责换取调用所需的 Token。
 
-如果还没有账号，可以加入 QQ 群：
 
-```text
-1030846851
-```
 
 申请时注明：
 
