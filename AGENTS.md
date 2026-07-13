@@ -10,15 +10,25 @@
 
 读取项目根目录的 `.env` 文件。如果不存在，从 `.env.example` 复制一份。
 
-必须确认以下变量已填写：
+### 必须确认的变量
 
 | 变量 | 说明 | 没有怎么办 |
 |------|------|-----------|
-| `SOUNDAO_AGENT_WORKSPACE` | Agent 工作区绝对路径 | 让用户指定一个目录，或默认为源码同级的 `Soundao_Agent_Workspace` |
 | `SOUNDAO_USER` | Soundao 用户名 | 向用户索要；没有就提示加入 QQ 群 1030846851 申请试用 |
 | `SOUNDAO_PASS` | Soundao 密码 | 同上 |
 
 **凭证缺失时不要继续后续步骤**，先向用户说明需要凭证。
+
+### 按需确认的变量
+
+| 变量 | 默认值 | 说明 |
+|------|--------|------|
+| `SOUNDAO_AGENT_WORKSPACE` | 源码同级的 `Soundao_Agent_Workspace` | Agent 工作区路径，留空用默认即可 |
+| `WEB_AGENT_OPENCODE_MODEL` | 空 | 子 Agent 模型（`provider/model` 格式）。留空用 opencode 自身默认模型；如果用户有偏好的模型，帮用户填写 |
+| `WEB_AGENT_OPENCODE_FLAGS` | `--dangerously-skip-permissions` | `opencode run` 附加参数，一般不需要改 |
+| `WEB_AGENT_OPENCODE_TIMEOUT_SEC` | `1500` | 子 Agent 超时秒数，任务复杂可加大 |
+
+检查完毕后告诉用户哪些已配好、哪些用了默认值。
 
 ## 3. 确认运行环境
 
@@ -56,8 +66,3 @@ http://127.0.0.1:8766/soundao-easy
 > 请制作一档电台广播节目，主题"信念的力量"，时长5分钟，女声主持。
 
 提交后 Agent 会自动读取云端文档、调用 TTS 和音乐生成、混音并交付成品。
-
-## 注意事项
-
-- 子 Agent 超时默认 1500 秒，可在 `.env` 用 `WEB_AGENT_OPENCODE_TIMEOUT_SEC` 覆盖
-- 子 Agent 默认模型 `zhipuai-coding-plan/glm-5.1`，可在 `.env` 用 `WEB_AGENT_OPENCODE_MODEL` 覆盖
