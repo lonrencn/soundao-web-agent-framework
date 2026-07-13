@@ -821,7 +821,7 @@ def handle_agent_request(result: dict[str, Any], out_dir: Path, cwd: Path) -> di
         if stale.exists():
             stale.unlink()
 
-    model = os.environ.get("WEB_AGENT_OPENCODE_MODEL", "zhipuai-coding-plan/glm-5.1")
+    model = os.environ.get("WEB_AGENT_OPENCODE_MODEL", "")
     default_flags = "--dangerously-skip-permissions"
     extra_flags = os.environ.get("WEB_AGENT_OPENCODE_FLAGS", default_flags)
     args = [

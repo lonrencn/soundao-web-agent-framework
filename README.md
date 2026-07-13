@@ -84,7 +84,7 @@ soundao-web-agent-framework/
 | `SOUNDAO_PASS` | — | Soundao 密码 |
 | `SOUNDAO_API_KEY` | — | Soundao API Key（与用户名二选一） |
 | `SOUNDAO_AGENT_WORKSPACE` | 源码同级目录 | Agent 工作区路径 |
-| `WEB_AGENT_OPENCODE_MODEL` | `zhipuai-coding-plan/glm-5.1` | 子 Agent 使用的模型 |
+| `WEB_AGENT_OPENCODE_MODEL` | 空（用 opencode 默认） | 子 Agent 使用的模型（provider/model 格式） |
 | `WEB_AGENT_OPENCODE_TIMEOUT_SEC` | `1500` | 子 Agent 超时秒数 |
 | `WEB_AGENT_OPENCODE_FLAGS` | 空 | 附加 `opencode run` 参数（如 `--pure --dangerously-skip-permissions`） |
 | `WEB_AGENT_OPENCODE_BIN` | 自动检测 | opencode 可执行文件路径 |
