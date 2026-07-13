@@ -619,6 +619,53 @@ def ensure_child_opencode_env(child_data_dir: Path) -> dict[str, str]:
     return env
 
 
+def detect_parent_model() -> str:
+    """Try to read the parent opencode's model from its config/auth files."""
+    home = Path.home()
+    for candidate in [
+        home / ".config" / "opencode" / "config.json",
+        home / ".config" / "opencode" / "opencode.json",
+        home / ".opencode" / "opencode.json",
+        home / ".local" / "share" / "opencode" / "auth.json",
+    ]:
+        if candidate.exists():
+            try:
+                data = json.loads(candidate.read_text(encoding="utf-8"))
+                if isinstance(data, dict):
+                    model = data.get("model")
+                    if model and isinstance(model, str):
+                        return model
+            except Exception:
+                pass
+    return ""
+
+
+def ensure_child_config(cwd: Path) -> None:
+    """Ensure cwd has opencode.json with permission:allow and inherited model.
+
+    The child agent starts with --dir <cwd>, so opencode looks for
+    opencode.json in cwd — NOT in the framework directory (ROOT).
+    Without this file the child has no permissions and fails immediately.
+    """
+    target = cwd / "opencode.json"
+    config: dict[str, Any] = {
+        "$schema": "https://opencode.ai/config.json",
+        "permission": "allow",
+    }
+    model = os.environ.get("WEB_AGENT_OPENCODE_MODEL", "") or detect_parent_model()
+    if model:
+        config["model"] = model
+    if target.exists():
+        try:
+            existing = json.loads(target.read_text(encoding="utf-8"))
+            if isinstance(existing, dict):
+                existing.update(config)
+                config = existing
+        except Exception:
+            pass
+    target.write_text(json.dumps(config, indent=2, ensure_ascii=False), encoding="utf-8")
+
+
 def opencode_command() -> list[str]:
     env_bin = os.environ.get("WEB_AGENT_OPENCODE_BIN")
     if env_bin and Path(env_bin).exists():
@@ -821,7 +868,8 @@ def handle_agent_request(result: dict[str, Any], out_dir: Path, cwd: Path) -> di
         if stale.exists():
             stale.unlink()
 
-    model = os.environ.get("WEB_AGENT_OPENCODE_MODEL", "")
+    model = os.environ.get("WEB_AGENT_OPENCODE_MODEL", "") or detect_parent_model()
+    ensure_child_config(cwd)
     extra_flags = os.environ.get("WEB_AGENT_OPENCODE_FLAGS", "")
     args = [
         *opencode_command(),

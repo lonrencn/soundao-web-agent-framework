@@ -24,8 +24,8 @@
 | 变量 | 默认值 | 说明 |
 |------|--------|------|
 | `SOUNDAO_AGENT_WORKSPACE` | 源码同级的 `Soundao_Agent_Workspace` | Agent 工作区路径，留空用默认即可 |
-| `WEB_AGENT_OPENCODE_MODEL` | 空 | 子 Agent 模型（`provider/model` 格式）。留空用 opencode 自身默认模型；如果用户有偏好的模型，帮用户填写 |
-| `WEB_AGENT_OPENCODE_FLAGS` | 空 | `opencode run` 附加参数，留空即可（权限由项目根目录 `opencode.json` 的 `permission: allow` 控制） |
+| `WEB_AGENT_OPENCODE_MODEL` | 自动继承父进程 | 子 Agent 模型（`provider/model` 格式）。留空则自动从父 opencode 配置继承；继承失败再让用户手动填写 |
+| `WEB_AGENT_OPENCODE_FLAGS` | 空 | `opencode run` 附加参数，留空即可（权限由 `--dir` 目录下的 `opencode.json` 自动生成） |
 | `WEB_AGENT_OPENCODE_TIMEOUT_SEC` | `1500` | 子 Agent 超时秒数，任务复杂可加大 |
 
 检查完毕后告诉用户哪些已配好、哪些用了默认值。

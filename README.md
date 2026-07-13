@@ -84,7 +84,7 @@ soundao-web-agent-framework/
 | `SOUNDAO_PASS` | — | Soundao 密码 |
 | `SOUNDAO_API_KEY` | — | Soundao API Key（与用户名二选一） |
 | `SOUNDAO_AGENT_WORKSPACE` | 源码同级目录 | Agent 工作区路径 |
-| `WEB_AGENT_OPENCODE_MODEL` | 空（用 opencode 默认） | 子 Agent 使用的模型（provider/model 格式） |
+| `WEB_AGENT_OPENCODE_MODEL` | 自动继承父进程 | 子 Agent 使用的模型（`provider/model` 格式），留空自动继承 |
 | `WEB_AGENT_OPENCODE_TIMEOUT_SEC` | `1500` | 子 Agent 超时秒数 |
 | `WEB_AGENT_OPENCODE_FLAGS` | 空 | 附加 `opencode run` 参数（一般留空） |
 | `WEB_AGENT_OPENCODE_BIN` | 自动检测 | opencode 可执行文件路径 |
@@ -92,7 +92,8 @@ soundao-web-agent-framework/
 ## opencode 适配说明
 
 - 默认只传 `opencode run --dir <cwd>`，不带额外参数
-- 全量权限由项目根目录 `opencode.json` 的 `"permission": "allow"` 控制，无需 CLI flag
+- **权限**：启动前自动在 `--dir` 目录生成 `opencode.json`（`"permission": "allow"`），确保子 Agent 读到
+- **模型**：留空时自动从父 opencode 配置文件（`config.json`/`auth.json`）继承，避免子 Agent 回退到错误默认模型
 - 如需 `--pure` 等，在 `.env` 设 `WEB_AGENT_OPENCODE_FLAGS`
 - 自动隔离 `OPENCODE_*` 环境变量，避免父子进程冲突
 - 独立 `.opencode-data/` 目录存放子 Agent 数据库和配置
