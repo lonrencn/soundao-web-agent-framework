@@ -218,10 +218,10 @@ class BridgeHandler(SimpleHTTPRequestHandler):
         query = parse_qs(parsed.query)
 
         if path in {"/", "/index.html"}:
-            self.send_file(WEB / "index.html")
-            return
-        if path == "/demo":
-            self.send_file(WEB / "demo_interaction.html")
+            self.send_response(302)
+            self.send_header("Location", "/soundao-easy")
+            self.send_header("Content-Length", "0")
+            self.end_headers()
             return
         if path == "/soundao":
             self.send_file(WEB / "soundao_intro.html")
