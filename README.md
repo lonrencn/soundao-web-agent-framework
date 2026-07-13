@@ -86,13 +86,14 @@ soundao-web-agent-framework/
 | `SOUNDAO_AGENT_WORKSPACE` | 源码同级目录 | Agent 工作区路径 |
 | `WEB_AGENT_OPENCODE_MODEL` | 空（用 opencode 默认） | 子 Agent 使用的模型（provider/model 格式） |
 | `WEB_AGENT_OPENCODE_TIMEOUT_SEC` | `1500` | 子 Agent 超时秒数 |
-| `WEB_AGENT_OPENCODE_FLAGS` | 空 | 附加 `opencode run` 参数（如 `--pure --dangerously-skip-permissions`） |
+| `WEB_AGENT_OPENCODE_FLAGS` | 空 | 附加 `opencode run` 参数（一般留空） |
 | `WEB_AGENT_OPENCODE_BIN` | 自动检测 | opencode 可执行文件路径 |
 
 ## opencode 适配说明
 
 - 默认只传 `opencode run --dir <cwd>`，不带额外参数
-- 如需 `--pure` 或 `--dangerously-skip-permissions`，在 `.env` 设 `WEB_AGENT_OPENCODE_FLAGS`
+- 全量权限由项目根目录 `opencode.json` 的 `"permission": "allow"` 控制，无需 CLI flag
+- 如需 `--pure` 等，在 `.env` 设 `WEB_AGENT_OPENCODE_FLAGS`
 - 自动隔离 `OPENCODE_*` 环境变量，避免父子进程冲突
 - 独立 `.opencode-data/` 目录存放子 Agent 数据库和配置
 - `--pure` 禁用外部插件，加快启动

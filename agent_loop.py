@@ -800,7 +800,7 @@ def kill_orphan_opencode_runs() -> None:
             if proc.info["pid"] == current_pid:
                 continue
             cmd = " ".join(proc.info.get("cmdline") or [])
-            if "opencode" in (proc.info.get("name") or "").lower() and "run" in cmd and "--dangerously-skip-permissions" in cmd:
+            if "opencode" in (proc.info.get("name") or "").lower() and " run " in cmd:
                 proc.kill()
         except (psutil.NoSuchProcess, psutil.AccessDenied):
             continue
@@ -822,8 +822,7 @@ def handle_agent_request(result: dict[str, Any], out_dir: Path, cwd: Path) -> di
             stale.unlink()
 
     model = os.environ.get("WEB_AGENT_OPENCODE_MODEL", "")
-    default_flags = "--dangerously-skip-permissions"
-    extra_flags = os.environ.get("WEB_AGENT_OPENCODE_FLAGS", default_flags)
+    extra_flags = os.environ.get("WEB_AGENT_OPENCODE_FLAGS", "")
     args = [
         *opencode_command(),
         "run",
