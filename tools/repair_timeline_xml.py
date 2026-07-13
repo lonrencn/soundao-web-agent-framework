@@ -8,12 +8,6 @@ import urllib.parse
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-if str(PROJECT_ROOT) not in sys.path:
-    sys.path.insert(0, str(PROJECT_ROOT))
-
-from project_config import get_workspace_path
-
 
 def unique(items: list[str]) -> list[str]:
     output: list[str] = []
@@ -370,12 +364,17 @@ def main() -> int:
         print("Usage: repair_timeline_xml.py <result-dir>")
         return 2
     result_dir = Path(sys.argv[1]).resolve()
-    project_root = Path(__file__).resolve().parents[1]
-    workspace = get_workspace_path(required=False)
-    archive_dir = workspace / "02_工作成果" / "AI电台节目" / result_dir.name if workspace else None
+    project_root = Path(__file__).resolve().parents[2]
+    archive_dir = (
+        project_root
+        / "Soundao_Agent_Workspace"
+        / "02_工作成果"
+        / "AI电台节目"
+        / result_dir.name
+    )
 
     repair_result(result_dir, archive_dir)
-    framework_dir = project_root
+    framework_dir = project_root / "soundao-web-agent-framework"
     update_latest_command(framework_dir / "latest_agent_command.json", result_dir)
     update_latest_command(
         framework_dir / "runs" / "default" / "agent_command.latest.json",

@@ -23,14 +23,19 @@ from typing import Any
 
 import requests
 
-from project_config import get_workspace_path
-
+_dotenv = Path(__file__).resolve().parent / ".env"
+if _dotenv.exists():
+    for _line in _dotenv.read_text(encoding="utf-8").splitlines():
+        _line = _line.strip()
+        if _line and not _line.startswith("#") and "=" in _line:
+            _k, _, _v = _line.partition("=")
+            os.environ.setdefault(_k.strip(), _v.strip())
 
 ROOT = Path(__file__).resolve().parent
 RUNS = ROOT / "runs"
 LATEST_RESULT = ROOT / "latest_result.json"
 STATE = ROOT / ".agent_loop_state.json"
-WORKSPACE = get_workspace_path(required=True)
+WORKSPACE = Path(os.environ.get("SOUNDAO_AGENT_WORKSPACE", ROOT.parent / "Soundao_Agent_Workspace")).resolve()
 
 
 def now() -> str:
@@ -585,44 +590,69 @@ def should_handle_edge_fast_tts(result: dict[str, Any]) -> bool:
     return bool(text.strip())
 
 
-def codex_command() -> list[str]:
-    env_bin = os.environ.get("WEB_AGENT_CODEX_BIN")
+def ensure_child_opencode_env(child_data_dir: Path) -> dict[str, str]:
+    child_data_dir.mkdir(parents=True, exist_ok=True)
+    real_home = Path.home()
+    pairs = [
+        (real_home / ".local" / "share" / "opencode" / "auth.json",
+         child_data_dir / ".local" / "share" / "opencode" / "auth.json"),
+        (real_home / ".config" / "opencode" / "config.json",
+         child_data_dir / ".config" / "opencode" / "config.json"),
+        (real_home / ".config" / "opencode" / "opencode.json",
+         child_data_dir / ".config" / "opencode" / "opencode.json"),
+        (real_home / ".config" / "opencode" / "opencode.jsonc",
+         child_data_dir / ".config" / "opencode" / "opencode.jsonc"),
+        (real_home / ".opencode" / "opencode.json",
+         child_data_dir / ".opencode" / "opencode.json"),
+        (real_home / ".opencode" / "opencode.jsonc",
+         child_data_dir / ".opencode" / "opencode.jsonc"),
+    ]
+    for src, dst in pairs:
+        if src.exists() and not dst.exists():
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(src, dst)
+    env = {
+        key: value
+        for key, value in os.environ.items()
+        if not key.startswith(("OPENCODE_SERVER_", "OPENCODE_CLIENT", "OPENCODE_"))
+    }
+    env["HOME"] = str(child_data_dir)
+    env["USERPROFILE"] = str(child_data_dir)
+    return env
+
+
+def opencode_command() -> list[str]:
+    env_bin = os.environ.get("WEB_AGENT_OPENCODE_BIN")
     if env_bin and Path(env_bin).exists():
         return [env_bin]
-    vendor_bin = (
-        Path.home()
-        / "AppData"
-        / "Roaming"
-        / "npm"
-        / "node_modules"
-        / "@openai"
-        / "codex"
-        / "node_modules"
-        / "@openai"
-        / "codex-win32-x64"
-        / "vendor"
-        / "x86_64-pc-windows-msvc"
-        / "bin"
-        / "codex.exe"
-    )
-    if vendor_bin.exists():
-        return [str(vendor_bin)]
-    native = shutil.which("codex.exe")
+    native = shutil.which("opencode.exe")
     if native:
         return [native]
-    codex = shutil.which("codex")
-    if codex and codex.lower().endswith(".ps1"):
+    found = shutil.which("opencode")
+    if found and found.lower().endswith(".ps1"):
         return [
             "powershell",
             "-NoProfile",
             "-ExecutionPolicy",
             "Bypass",
             "-File",
-            codex,
+            found,
         ]
-    if codex:
-        return [codex]
-    return ["codex"]
+    if found:
+        return [found]
+    npm_bin = (
+        Path.home()
+        / "AppData"
+        / "Roaming"
+        / "npm"
+        / "node_modules"
+        / "opencode-ai"
+        / "bin"
+        / "opencode.exe"
+    )
+    if npm_bin.exists():
+        return [str(npm_bin)]
+    return ["opencode"]
 
 
 def build_agent_prompt(result: dict[str, Any], out_dir: Path, cwd: Path) -> str:
@@ -631,6 +661,7 @@ def build_agent_prompt(result: dict[str, Any], out_dir: Path, cwd: Path) -> str:
     session_id = str(result.get("session_id") or "default")
     result_id = str(result.get("id") or "result")
     action = choose_action(result)
+    framework_dir = ROOT.name
     user_task = (
         payload.get("task")
         or payload.get("script")
@@ -641,16 +672,16 @@ def build_agent_prompt(result: dict[str, Any], out_dir: Path, cwd: Path) -> str:
     current_task_context = compact_task_context(result)
     prev_context = previous_run_context(session_id, result_id)
     write_json(out_dir / "previous_run_context.json", prev_context)
-    return f"""你是一个由本地 Web 交互触发的 Codex 子 Agent。
+    return f"""你是一个由本地 Web 交互触发的 opencode 子 Agent。
 
 请读取下面的 Web 交互结果，并真正执行用户要求的下一步，而不是只保存原始输入。
 
 开头首要规则：
 1. 如果这是首次运行本项目，或 `current_task_context_json` 显示用户开启了上一次没有处理过的新类型任务，必须先全量读取 Soundao 云端公开文档，检查接口、参数、计费、限制和推荐流程是否有变化。
-   - 推荐先执行：`python web_agent_framework/soundao_cloud.py llms --path /llms-full.txt --out "{out_dir / "llms-full.txt"}"`。
+   - 推荐先执行：`python {framework_dir}/soundao_cloud.py llms --path /llms-full.txt --out "{out_dir / "llms-full.txt"}"`。
    - 如果任务只涉及某类能力，还要读取对应分模块文档，例如 `/llms/tts.txt`、`/llms/music.txt`、`/llms/audio-tools.txt`、`/llms/sfx.txt`、`/llms/media.txt`。
    - 读取完成后必须写出 `{out_dir / "cloud_doc_check.json"}`，说明读取了哪些文档、是否发现和本地 skill/流程不一致、接下来采用哪个能力入口。
-2. 如果需要调用 Soundao 登录、生成、分析、下载、取回资产、查积分等需要凭证的能力，但当前项目环境没有可用凭证，必须停止实际调用，并通过通知工具告诉用户：“请把 Soundao 登录凭证，也就是用户名和密码，发到主 Codex 窗口，我配置好后再继续。没有凭证请加入 QQ 群 1030846851 申请，申请注明 Soundao试用。”凭证配置完成前，只能读取公开文档、整理方案和说明能力，不能编造结果。
+2. 如果需要调用 Soundao 登录、生成、分析、下载、取回资产、查积分等需要凭证的能力，但当前项目环境没有可用凭证，必须停止实际调用，并通过通知工具告诉用户：“请把 Soundao 登录凭证或 API Key 发到主 opencode 窗口，我配置好后再继续。”凭证配置完成前，只能读取公开文档、整理方案和说明能力，不能编造结果。
 3. 凭证不能写进代码、页面、日志、交付物、manifest 或 Git 提交；只能使用项目环境变量或主 Agent 已配置的本地凭证。
 
 工作目录：
@@ -674,15 +705,12 @@ Agent 工作区：
    - 复用文件前必须检查文件存在、大小合理、格式可读；不存在或不可读就列入重做。
    - 必须用用户能看懂的一句话调用通知工具汇报规划结果，例如“我先对比上一版，能复用背景音乐，需要重做两段口播。”
 3. 执行前先读取工作目录中的 `agent.md`。如果任务涉及 Soundao 云端能力，必须按上方“开头首要规则”读取云端文档并检查变化，再读取对应能力文档，按文档/技能流程执行；不要绕过文档自造流程。
-4. 如果当前环境有匹配的 Codex skill、Agent 工作区技能库或项目内已有专用脚本，应优先按 skill/脚本的既定流程执行。没有读到对应 skill、文档或脚本前，只能做方案说明，不能直接调用生成。
-   - Agent 工作区技能库路径：`{WORKSPACE / "03_关键数据" / "技能库"}`。
-    - 如果任务是 AI 电台、广播节目、口播节目、城市新闻电台、音乐电台或最终广播音频，必须先完整读取：
-      `{WORKSPACE / "03_关键数据" / "技能库" / "ai-radio-delivery" / "SKILL.md"}`
-      并按该 skill 的流程执行；不得临时自造一套电台流程。
-    - 如果任务要求导出 `timeline_tracks.xml`、FCP7 XML、Premiere / PR 可导入时间线、字幕轨 XML，必须先完整读取：
-      `{WORKSPACE / "03_关键数据" / "技能库" / "premiere-xml-timeline" / "SKILL.md"}`
-      并按该 skill 的文件格式规则执行。该 XML skill 只约束 XML 结构、媒体引用、采样率/声道/路径和字幕 generatoritem 等格式问题，不负责节目结构、BGM 生成、结尾曲生成或字幕时间分配算法。
-    - 电台类任务必须先有音乐或环境氛围，前 5 秒不得出现主持人口播；第一句主持人口播建议在 6-10 秒进入，最晚不得超过 15 秒。
+4. 如果当前环境有匹配的 opencode skill、项目内已有专用脚本，应优先按 skill/脚本的既定流程执行。没有读到对应 skill、文档或脚本前，只能做方案说明，不能直接调用生成。
+   - 技能文件位于项目内 `skills/` 目录。
+   - 如果任务是 AI 电台、广播节目、口播节目、城市新闻电台、音乐电台或最终广播音频，必须先完整读取：
+     `skills/ai-radio-delivery/SKILL.md`
+     并按该 skill 的流程执行；不得临时自造一套电台流程。
+   - 电台类任务必须先有音乐或环境氛围，前 5 秒不得出现主持人口播；第一句主持人口播建议在 6-10 秒进入，最晚不得超过 15 秒。
    - 电台口播不得把整期节目一次性塞给 TTS。必须按开场、引入、主体、情绪转折、收尾拆成 4-8 个自然段分别生成、检查、再拼接。
    - 不得把当前 TTS 引擎不支持的 `[温柔]`、`[自然]` 等情绪标签直接写进朗读正文；应使用引擎支持的语气/风格/指令参数，或通过短句、标点和停顿表达。
    - 如果主持人声音僵硬、机械、过快、过平或像念说明书，必须调整文案和 TTS 参数后重新生成，不能直接写成完成。
@@ -692,28 +720,28 @@ Agent 工作区：
    - 电台背景铺底音乐不要一次请求 300 秒。优先生成 30-90 秒无人声纯音乐，由混音脚本循环铺满节目时长；30 秒结尾配歌可单独生成。
    - 电台 BGM 必须有动态音量曲线：开头全量建立氛围，主持人开口前约 2 秒平滑拉低，口播中保持垫乐，口播停顿或静音时回升，情绪转折和结尾处适度抬高。不能只用一个固定低音量或简单 sidechain 压缩代替完整编排。
    - 云端音乐接口返回 504、超时或非音频内容时，不能把无配乐版本标记为完成；必须把已生成资产和失败原因回写页面，并提示可重试音乐生成。
-    - 如果 `current_task_context_json.fields.export_timeline_xml` 为 true，最终必须额外交付一个多轨道 XML 文件，建议命名 `timeline_tracks.xml`。默认必须使用已验证参考版 `Soundao FM：气质的价值` 的 FCP7 XML / `xmeml` 结构：根节点为 `<xmeml version="5">`，`sequence` 为 30fps、9000 帧、300 秒；字幕写入视频轨 `generatoritem` 的 Text effect；音频轨至少包含 `host_full` 完整口播轨、5 段循环背景音乐轨和 30 秒结尾配歌轨；路径使用 `file://localhost/<绝对路径>`，并把系统路径分隔符规范为 `/`。每个 `clipitem/file/media/audio` 必须写 `samplecharacteristics/depth=16`、`samplecharacteristics/samplerate=<实际媒体采样率>` 和 `channelcount=2`，否则 Premiere 可能导入成无波形静音线。如果口播原始长度不能放进 300 秒，必须先生成 `host_voice_retimed.mp3` 或重生成更短口播，`host_voice_retimed.mp3` 必须转成双声道；不能只改 XML 时间码假装可用。`deliverable_manifest.json` 必须写入 `timeline_xml_path`，并把 XML 和 `host_voice_retimed.mp3` 放入 `files`。同时额外交付 `subtitles.srt` 作为字幕导入备用文件。
+    - 如果 `current_task_context_json.fields.export_timeline_xml` 为 true，最终必须额外交付一个多轨道 XML 文件，建议命名 `timeline_tracks.xml`。默认必须使用已验证参考版 `Soundao FM：气质的价值` 的 FCP7 XML / `xmeml` 结构：根节点为 `<xmeml version="5">`，`sequence` 为 30fps、9000 帧、300 秒；字幕写入视频轨 `generatoritem` 的 Text effect；音频轨至少包含 `host_full` 完整口播轨、5 段循环背景音乐轨和 30 秒结尾配歌轨；路径使用 `file://localhost/G:/...`。每个 `clipitem/file/media/audio` 必须写 `samplecharacteristics/depth=16`、`samplecharacteristics/samplerate=44100` 和 `channelcount=2`，否则 Premiere 可能导入成无波形静音线。如果口播原始长度不能放进 300 秒，必须先生成 `host_voice_retimed.mp3` 或重生成更短口播，`host_voice_retimed.mp3` 必须转成双声道；不能只改 XML 时间码假装可用。`deliverable_manifest.json` 必须写入 `timeline_xml_path`，并把 XML 和 `host_voice_retimed.mp3` 放入 `files`。同时额外交付 `subtitles.srt` 作为字幕导入备用文件。
    - 如果对应 skill 里引用脚本，优先按脚本实现；如果脚本是 PowerShell，但用户或项目要求避免 PowerShell，则必须把等价逻辑改写成 Python 后执行。
 5. 需要写文件、改代码、生成报告、运行脚本时，直接在工作目录或输出目录内完成。
 6. 处理结果、生成的文件路径、关键命令和任何失败原因都写入输出目录。
 7. 云端 Soundao 文档里的 curl 示例只作为 API 语义参考；实际执行必须用 Python requests，不要用 PowerShell、cmd、curl、Invoke-WebRequest 或 Invoke-RestMethod。
-   - 优先调用工作目录里的 `web_agent_framework/soundao_cloud.py`，例如：
-     `python web_agent_framework/soundao_cloud.py llms --path /llms.txt --out <输出目录>/llms.txt`
-     `python web_agent_framework/soundao_cloud.py balance --out <输出目录>/balance_before.json`
-     `python web_agent_framework/soundao_cloud.py edge-tts --text "文本" --out <输出目录>/voice.mp3`
+   - 优先调用工作目录里的 `{framework_dir}/soundao_cloud.py`，例如：
+     `python {framework_dir}/soundao_cloud.py llms --path /llms.txt --out <输出目录>/llms.txt`
+     `python {framework_dir}/soundao_cloud.py balance --out <输出目录>/balance_before.json`
+     `python {framework_dir}/soundao_cloud.py edge-tts --text "文本" --out <输出目录>/voice.mp3`
    - 如果工具脚本不覆盖当前接口，就在输出目录写一个小型 Python requests 脚本并执行它。
    - 遇到 HTTP 202 或异步 job_id 时，按云端推荐轮询状态，推荐间隔 0.6 秒，并把进度写入输出目录日志。
    - 生成音乐或背景配乐时，必须优先调用 Soundao 云端音乐能力。不要用本地正弦波、噪声、简单循环或 ffmpeg 滤镜假装成音乐；ffmpeg 只能用于剪辑、混音、响度处理和格式转换。云端音乐不可用时，只能标记为未完成并说明需要重试配乐，不能把无配乐版本当成完整成品。
     - 使用 Soundao 云端付费能力时，必须在第一次付费调用前执行：
-      `python web_agent_framework/soundao_cloud.py balance --out <输出目录>/balance_before.json`
+       `python {framework_dir}/soundao_cloud.py balance --out <输出目录>/balance_before.json`
       在最后一次付费调用完成并下载资产后执行：
-      `python web_agent_framework/soundao_cloud.py balance --out <输出目录>/balance_after.json`
+       `python {framework_dir}/soundao_cloud.py balance --out <输出目录>/balance_after.json`
       该工具会按凭证类型自动选择余额接口：API Key 使用 `POST /v1/auth/balance`，登录账号使用 `GET /v1/auth/me`，并输出统一字段 `credits/balance/remaining_points`。
     - 最终必须在 `deliverable_manifest.json` 里写入 `credits`：
       {{"before": 调用前积分或 null, "after": 调用后积分或 null, "deducted": before-after 或云端返回扣费, "remaining": after}}
       如果任一步查询失败，写入能确认的字段，并在 `note` 中用中文说明失败原因。不要估算、不要编造积分，不要把 token、API Key、密码写入任何交付物或日志。
 8. 如果你想让用户知道当前进展，调用用户通知工具。页面只会显示这个工具里的短消息：
-   `python web_agent_framework/notify_user.py --out-dir "{out_dir}" --session-id "{session_id}" --result-id "{result_id}" --action "{action}" --progress 50 --message "正在读取云端文档并准备生成结果。"`
+   `python {framework_dir}/notify_user.py --out-dir "{out_dir}" --session-id "{session_id}" --result-id "{result_id}" --action "{action}" --progress 50 --message "正在读取云端文档并准备生成结果。"`
    - message 必须是用户能看懂的一句话。
    - 不要在 message 里放代码、JSON、日志、本地路径、token、接口原始响应。
    - 长任务建议在开始、关键阶段、等待云端异步任务、即将完成时各调用一次。
@@ -728,7 +756,7 @@ Agent 工作区：
     - 电台任务还必须检查主持人口播本身是否足够长，不能只用背景音乐把总时长补到目标时长。5 分钟节目中主持人口播建议不少于 210 秒；主持人口播结束到结尾配歌进入前的空档不应超过 15 秒，除非用户明确要求长音乐段并在交付说明中说明。
     - 交付前必须检查 `deliverable.md`、`cue_sheet.md`、`deliverable_manifest.json`、`timeline_tracks.xml` 等文本文件为 UTF-8 中文可读内容；标题、摘要、字幕轨、角色名和正文不得出现 `????` 这类问号替代乱码。发现乱码必须重写文件后再交付。
     - 写完最终交付物但还没有提交完成状态前，必须调用全局最终检查工具，把本次任务全文和修改意见一起与最终交付物核对：
-      `python web_agent_framework/final_delivery_check.py --out-dir "{out_dir}" --task-context "{out_dir / "task_context.json"}" --manifest "{out_dir / "deliverable_manifest.json"}" --out "{out_dir / "final_delivery_check.json"}"`
+      `python {framework_dir}/final_delivery_check.py --out-dir "{out_dir}" --task-context "{out_dir / "task_context.json"}" --manifest "{out_dir / "deliverable_manifest.json"}" --out "{out_dir / "final_delivery_check.json"}"`
       只有 `final_delivery_check.json` 中 `ok` 为 true，才可以把 `deliverable_manifest.json` 当成最终提交；如果 `ok` 为 false，必须根据 `blocking_issues` 修正交付物后重新检查，不能把失败报告包装成完成。
 12. `deliverable_manifest.json` 的 `primary_path` 必须指向文本说明文件（通常是 `deliverable.md`），不要指向 mp3/wav 等音频二进制文件；音频文件放进 `files` 列表供页面播放器展示。
 13. 必须在输出目录创建 `deliverable_manifest.json`，格式如下：
@@ -763,33 +791,57 @@ web_result_json:
 """
 
 
+def kill_orphan_opencode_runs() -> None:
+    try:
+        import psutil
+    except Exception:
+        return
+    current_pid = psutil.Process().pid
+    for proc in psutil.process_iter(["pid", "name", "cmdline"]):
+        try:
+            if proc.info["pid"] == current_pid:
+                continue
+            cmd = " ".join(proc.info.get("cmdline") or [])
+            if "opencode" in (proc.info.get("name") or "").lower() and "run" in cmd and "--dangerously-skip-permissions" in cmd:
+                proc.kill()
+        except (psutil.NoSuchProcess, psutil.AccessDenied):
+            continue
+
+
 def handle_agent_request(result: dict[str, Any], out_dir: Path, cwd: Path) -> dict[str, Any]:
+    kill_orphan_opencode_runs()
     session_id = str(result.get("session_id") or "default")
     result_id = str(result.get("id") or "result")
     task_context_path = write_task_context(out_dir, result)
     prompt = build_agent_prompt(result, out_dir, cwd)
-    prompt_path = out_dir / "codex_agent_prompt.md"
-    final_path = out_dir / "codex_agent_final.md"
-    stdout_path = out_dir / "codex_agent_stdout.log"
-    stderr_path = out_dir / "codex_agent_stderr.log"
+    prompt_path = out_dir / "opencode_agent_prompt.md"
+    final_path = out_dir / "opencode_agent_final.md"
+    stdout_path = out_dir / "opencode_agent_stdout.log"
+    stderr_path = out_dir / "opencode_agent_stderr.log"
     prompt_path.write_text(prompt, encoding="utf-8")
     for stale in (out_dir / "deliverable.md", out_dir / "deliverable_manifest.json", out_dir / "final_delivery_check.json"):
         if stale.exists():
             stale.unlink()
 
+    model = os.environ.get("WEB_AGENT_OPENCODE_MODEL", "zhipuai-coding-plan/glm-5.1")
+    default_flags = "--dangerously-skip-permissions"
+    extra_flags = os.environ.get("WEB_AGENT_OPENCODE_FLAGS", default_flags)
     args = [
-        *codex_command(),
-        "exec",
-        "--skip-git-repo-check",
-        "--dangerously-bypass-approvals-and-sandbox",
-        "-C",
+        *opencode_command(),
+        "run",
+        *extra_flags.split(),
+        "--dir",
         str(cwd),
-        "-o",
-        str(final_path),
-        "-",
     ]
+    if model:
+        args.extend(["-m", model])
+    args.append(
+        f"请读取并严格执行 {prompt_path} 文件中的全部指令。所有输出文件请写到 {out_dir} 目录。"
+    )
+    child_data_dir = Path(os.environ.get("WEB_AGENT_OPENCODE_DATA", ROOT / ".opencode-data"))
+    child_env = ensure_child_opencode_env(child_data_dir)
     started = time.time()
-    timeout_sec = int(os.environ.get("WEB_AGENT_CODEX_TIMEOUT_SEC", "900"))
+    timeout_sec = int(os.environ.get("WEB_AGENT_OPENCODE_TIMEOUT_SEC", "1500"))
     early_done_grace_sec = float(os.environ.get("WEB_AGENT_DELIVERABLE_GRACE_SEC", "3"))
     manifest_path = out_dir / "deliverable_manifest.json"
     deliverable_seen_at: float | None = None
@@ -800,16 +852,13 @@ def handle_agent_request(result: dict[str, Any], out_dir: Path, cwd: Path) -> di
     ) as stderr_file:
         proc = subprocess.Popen(
             args,
-            stdin=subprocess.PIPE,
             stdout=stdout_file,
             stderr=stderr_file,
             text=True,
             encoding="utf-8",
             errors="replace",
+            env=child_env,
         )
-        assert proc.stdin is not None
-        proc.stdin.write(prompt)
-        proc.stdin.close()
 
         last_heartbeat_at = 0.0
         last_final_check_notice_at = 0.0
@@ -844,7 +893,7 @@ def handle_agent_request(result: dict[str, Any], out_dir: Path, cwd: Path) -> di
                 heartbeat_message = (
                     str(user_message.get("message"))
                     if user_message and user_message.get("message")
-                    else f"Codex Agent 正在处理，已运行 {int(elapsed)} 秒。"
+                    else f"opencode Agent 正在处理，已运行 {int(elapsed)} 秒。"
                 )
                 write_agent_command(
                     str(result.get("session_id") or "default"),
@@ -875,11 +924,11 @@ def handle_agent_request(result: dict[str, Any], out_dir: Path, cwd: Path) -> di
                 deliverable = ensure_deliverable_from_final(
                     out_dir,
                     final_path,
-                    f"Codex 子 Agent 超时：{timeout_sec} 秒内没有完成。",
+                    f"opencode 子 Agent 超时：{timeout_sec} 秒内没有完成。",
                 )
                 return {
                     "ok": False,
-                    "message": f"Codex child agent timed out after {timeout_sec}s.",
+                    "message": f"opencode child agent timed out after {timeout_sec}s.",
                     "returncode": proc.returncode,
                     "elapsed_sec": round(elapsed, 3),
                     "deliverable": deliverable,
@@ -950,7 +999,7 @@ def handle_agent_request(result: dict[str, Any], out_dir: Path, cwd: Path) -> di
     deliverable = ensure_deliverable_from_final(
         out_dir,
         final_path,
-        "Codex 子 Agent 没有返回可用内容。",
+        "opencode 子 Agent 没有返回可用内容。",
     )
     final_check: dict[str, Any] | None = None
     final_ok = proc.returncode == 0
@@ -961,9 +1010,9 @@ def handle_agent_request(result: dict[str, Any], out_dir: Path, cwd: Path) -> di
     return {
         "ok": final_ok,
         "message": (
-            "Codex child agent finished and final delivery check passed."
+            "opencode child agent finished and final delivery check passed."
             if final_ok
-            else "Codex child agent failed or final delivery check did not pass."
+            else "opencode child agent failed or final delivery check did not pass."
         ),
         "returncode": proc.returncode,
         "elapsed_sec": round(time.time() - started, 3),
@@ -992,6 +1041,12 @@ def collect_process_output(proc: subprocess.Popen[str]) -> tuple[str, str]:
 def terminate_process_tree(pid: int) -> None:
     if os.name == "nt":
         subprocess.run(["taskkill", "/PID", str(pid), "/T", "/F"], capture_output=True, text=True)
+        try:
+            import psutil
+            for child in psutil.Process(pid).children(recursive=True):
+                subprocess.run(["taskkill", "/PID", str(child.pid), "/T", "/F"], capture_output=True, text=True)
+        except Exception:
+            pass
     else:
         try:
             os.killpg(pid, signal.SIGTERM)
@@ -1016,10 +1071,10 @@ def collect_visible_assets(out_dir: Path, limit: int = 50) -> list[dict[str, Any
         return []
     allowed_suffixes = {".mp3", ".wav", ".m4a", ".aac", ".ogg", ".flac", ".md", ".txt", ".json", ".xml", ".srt"}
     hidden_names = {
-        "codex_agent_prompt.md",
-        "codex_agent_final.md",
-        "codex_agent_stdout.log",
-        "codex_agent_stderr.log",
+        "opencode_agent_prompt.md",
+        "opencode_agent_final.md",
+        "opencode_agent_stdout.log",
+        "opencode_agent_stderr.log",
         "latest_decision.json",
         "deliverable_manifest.json",
     }
@@ -1119,8 +1174,8 @@ def ensure_deliverable_from_final(out_dir: Path, final_path: Path, message: str)
         return None
     deliverable_path.write_text(final_text, encoding="utf-8")
     manifest = {
-        "title": "Codex Agent 处理结果",
-        "summary": "Codex Agent 已返回最终结果，框架已回写为页面可读取的交付物。",
+        "title": "opencode Agent 处理结果",
+        "summary": "opencode Agent 已返回最终结果，框架已回写为页面可读取的交付物。",
         "primary_path": str(deliverable_path),
         "files": [str(deliverable_path), *visible_files, str(manifest_path), str(final_path)],
     }
@@ -1197,13 +1252,13 @@ def process_once(cwd: Path) -> dict[str, Any]:
             )
             write_agent_command(session_id, progress_command)
             outcome = handle_edge_fast_tts(result, out_dir)
-        elif action in {"agent_request", "codex_agent", "demo_user_decision"}:
+        elif action in {"agent_request", "opencode_agent", "demo_user_decision"}:
             progress_command = make_command(
                 result,
                 action,
                 "processing",
                 35,
-                "正在启动 Codex 子 Agent 处理你的要求。",
+                "正在启动 opencode 子 Agent 处理你的要求。",
             )
             write_agent_command(session_id, progress_command)
             outcome = handle_agent_request(result, out_dir, cwd)

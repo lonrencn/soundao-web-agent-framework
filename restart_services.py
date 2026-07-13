@@ -37,14 +37,17 @@ def start(script_name: str, *args: str) -> int:
         cwd=ROOT,
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
-        creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
+        creationflags=(
+            getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0)
+            | getattr(subprocess, "DETACHED_PROCESS", 0)
+        ),
     )
     return int(proc.pid)
 
 
 def main() -> int:
     killed = kill_matching("agent_loop.py") + kill_matching("server.py")
-    server_pid = start("server.py", "--host", "127.0.0.1", "--port", "8765")
+    server_pid = start("server.py", "--host", "127.0.0.1", "--port", "8766")
     loop_pid = start("agent_loop.py", "--interval", "1")
     time.sleep(1)
     print(f"killed={killed}")

@@ -19,6 +19,9 @@ __pycache__/
 venv/
 env/
 
+# opencode child data
+.opencode-data/
+
 # OS/editor noise
 .DS_Store
 Thumbs.db

@@ -1,0 +1,3 @@
+display_name: Premiere XML 时间线
+short_description: 生成 PR 可导入且有声音波形的 FCP7/xmeml 时间线。
+default_prompt: 为当前音频项目导出 Premiere 可导入的 timeline_tracks.xml，检查媒体描述、路径、波形和字幕。
