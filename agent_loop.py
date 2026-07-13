@@ -825,11 +825,12 @@ def handle_agent_request(result: dict[str, Any], out_dir: Path, cwd: Path) -> di
     args = [
         *opencode_command(),
         "run",
-        "--pure",
-        "--dangerously-skip-permissions",
         "--dir",
         str(cwd),
     ]
+    extra_flags = os.environ.get("WEB_AGENT_OPENCODE_FLAGS", "")
+    if extra_flags:
+        args.extend(extra_flags.split())
     if model:
         args.extend(["-m", model])
     args.append(
