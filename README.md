@@ -1,165 +1,105 @@
-# Web Agent Framework
+# Soundao Web Agent Framework — OpenCode 分支
 
-这个目录提供一个最小可用框架，让 opencode/Agent 打开本地 Web 页面，你在页面里交互，交互结果保存到 `soundao-web-agent-framework/runs/`，然后 Agent 可以读取结果并继续下一步。
+本地 WebUI + opencode Agent 协作框架。用户在页面提交音频需求，Agent 自动调用 Soundao 云端能力生成成品。
 
-## 结构
+## 快速开始
 
-- `server.py`：本地 HTTP 服务，提供页面、事件接口、结果落盘接口。
-- `web/index.html`：控制台，可打开目标链接、手动保存结果、查看最新结果。
-- `web/web-agent-bridge.js`：嵌入任意本地 Web 页的 JS 桥。
-- `web/demo_interaction.html`：演示页面。
-- `agent_loop.py`：Agent 侧轮询器，读取 `latest_result.json` 并执行 allowlist 动作。
-- `runs/`：每个 session 的事件、结果和 Agent 输出。
+### 1. 克隆项目
 
-## Agent 工作区
-
-源码目录和用户数据目录分离：
-
-```text
-G:\opencodespace\Soundao\soundao-web-agent-framework          # 本框架源码，可提交 Git
-G:\opencodespace\Soundao\Soundao_Agent_Workspace     # 用户素材、成果、日志、临时数据
+```bash
+git clone -b opencode https://github.com/lonrencn/soundao-web-agent-framework.git
+cd soundao-web-agent-framework
 ```
 
-默认工作区路径为源码目录同级的 `Soundao_Agent_Workspace`，也可以用环境变量覆盖：
+### 2. 创建虚拟环境
 
-```powershell
-$env:SOUNDAO_AGENT_WORKSPACE="G:\path\to\Soundao_Agent_Workspace"
+```bash
+python -m venv .venv
+.venv\Scripts\pip install requests psutil python-dotenv
 ```
 
-Agent 运行时应遵守工作区策略：
+### 3. 配置凭证
 
-- 用户参考素材：`01_参考数据/`
-- Agent 成果：`02_工作成果/`
-- 长期关键数据：`03_关键数据/`
-- 文档：`04_文档/`
-- 日志与审计：`05_日志/`
-- 可清理临时数据：`_temp/`
+创建 `.env` 文件（或让 Agent 帮你配置）：
 
-## 快速启动
-
-```powershell
-cd G:\opencodespace\Soundao\soundao-web-agent-framework
-.\run.ps1
+```ini
+SOUNDAO_USER=你的用户名
+SOUNDAO_PASS=你的密码
 ```
 
-打开：
+没有账号？加入 QQ 群 **1030846851** 申请试用。
 
-```text
-http://127.0.0.1:8767/
+### 4. 启动
+
+双击 **`start.bat`**，或命令行运行：
+
+```bash
+.venv\Scripts\python restart_services.py
 ```
 
-演示页：
+### 5. 打开页面
 
-```text
-http://127.0.0.1:8767/demo
+```
+http://127.0.0.1:8766/soundao-easy
 ```
 
-## 在你的本地 Web 页面里接入
+在页面里用自然语言描述需求，提交后 Agent 会自动处理。
 
-把这个脚本放进页面：
+## 端口
 
-```html
-<script
-  src="http://127.0.0.1:8767/web-agent-bridge.js"
-  data-session-id="my-task-001"
-></script>
+| 分支 | 端口 |
+|------|------|
+| Codex (main) | 8765 |
+| **OpenCode** | **8766** |
+| WorkBuddy | 8767 |
+
+## 项目结构
+
+```
+soundao-web-agent-framework/
+├── server.py              # 本地 HTTP 服务（端口 8766）
+├── agent_loop.py          # Agent 轮询器，用 opencode run 执行任务
+├── soundao_cloud.py       # Soundao 云端能力调用脚本
+├── agent.md               # Agent 接入说明（子 Agent 首先读这个）
+├── restart_services.py    # 一键重启 server + agent_loop
+├── start.bat              # Windows 快速启动
+├── final_delivery_check.py # 交付前全局检查
+├── project_config.py      # .env 加载和工作区路径管理
+├── web/                   # 前端页面（四国语 UI）
+│   ├── soundao_easy.html  # 零门槛入口
+│   └── soundao_intro.html # 功能介绍
+├── tools/                 # 时间线 XML 修复工具
+└── runs/                  # 运行时数据（自动生成）
 ```
 
-然后用 JS 保存结果：
+## 环境变量
 
-```html
-<script>
-  async function saveForAgent() {
-    await window.SoundaoAgentBridge.result({
-      step: "user_selected_voice",
-      status: "done",
-      payload: {
-        action: "write_summary",
-        voice: "moss_v15",
-        notes: "用户确认使用 MOSS v15 继续生成"
-      },
-      next_hint: "根据 voice 和 notes 继续生成音频"
-    });
-  }
-</script>
-```
+| 变量 | 默认值 | 说明 |
+|------|--------|------|
+| `SOUNDAO_USER` | — | Soundao 用户名 |
+| `SOUNDAO_PASS` | — | Soundao 密码 |
+| `SOUNDAO_API_KEY` | — | Soundao API Key（与用户名二选一） |
+| `WEB_AGENT_OPENCODE_MODEL` | `zhipuai-coding-plan/glm-5.1` | 子 Agent 使用的模型 |
+| `WEB_AGENT_OPENCODE_TIMEOUT_SEC` | `1500` | 子 Agent 超时秒数 |
+| `WEB_AGENT_OPENCODE_BIN` | 自动检测 | opencode 可执行文件路径 |
+| `SOUNDAO_AGENT_WORKSPACE` | 源码同级目录 | 工作区路径 |
 
-也可以给表单加属性，自动保存：
+## opencode 适配说明
 
-```html
-<form data-agent-result="user_decision">
-  <input name="voice" value="moss_v15" />
-  <textarea name="script">下一步要处理的内容</textarea>
-  <button type="submit">保存给 Agent</button>
-</form>
-```
+本分支将 Codex 子进程替换为 opencode：
 
-## Agent 读取并继续
+- 使用 `opencode run --pure --dangerously-skip-permissions` 执行任务
+- 自动隔离 `OPENCODE_*` 环境变量，避免父子进程冲突
+- 独立 `.opencode-data/` 目录存放子 Agent 数据库和配置
+- `--pure` 禁用外部插件，加快启动
+- `DETACHED_PROCESS` 标志确保进程不被沙箱杀死
 
-单次处理最新结果：
+## 技术要求
 
-```powershell
-cd G:\opencodespace\Soundao\soundao-web-agent-framework
-python .\agent_loop.py --once
-```
+- Python 3.10+
+- opencode CLI（`npm install -g opencode-ai`）
+- ffmpeg（音频混音用）
 
-持续轮询：
+## License
 
-```powershell
-python .\agent_loop.py
-```
-
-默认每 `2` 秒检查一次。可以用 `--interval` 调整：
-
-```powershell
-python .\agent_loop.py --interval 1
-```
-
-处理结果会写到：
-
-```text
-soundao-web-agent-framework\runs\<session_id>\agent_outputs\
-```
-
-同时页面可以轮询最新 Agent 指令：
-
-```js
-window.SoundaoAgentBridge.pollLatestCommand({
-  intervalMs: 1000,
-  onCommand(command) {
-    console.log("Agent command", command);
-  }
-});
-```
-
-`command.body.status` 会是 `processing`、`done`、`skipped` 或 `error`，`command.body.progress` 是 `0-100` 的进度值。
-
-## 动作 allowlist
-
-`payload.action` 支持：
-
-- `agent_request`：把 Web 交互结果交给 `opencode run` 子 Agent 真正处理，默认动作。
-- `write_summary`：把结果整理成 Markdown。
-- `write_file`：把 `payload.content` 或 `payload.script` 保存成文件。
-- `shell`：默认拒绝。只有设置 `WEB_AGENT_ALLOW_SHELL=1` 才会执行，且只建议用于完全可信的本地页面。
-
-`agent_request` 的输出文件一般在：
-
-```text
-soundao-web-agent-framework\runs\<session_id>\agent_outputs\deliverable.md
-soundao-web-agent-framework\runs\<session_id>\agent_outputs\deliverable_manifest.json
-soundao-web-agent-framework\runs\<session_id>\agent_outputs\opencode_agent_final.md
-```
-
-演示页会读取 `deliverable_manifest.json` 中的 `primary_path`，并把最终交付物内容直接显示在页面的“最终交付物”区域。
-
-opencode 自己也可以直接读取：
-
-```text
-soundao-web-agent-framework\latest_result.json
-soundao-web-agent-framework\runs\<session_id>\result.latest.json
-```
-
-## 开源协议
-
-本项目使用 MIT License 开源，详见 [LICENSE](LICENSE)。
+MIT
