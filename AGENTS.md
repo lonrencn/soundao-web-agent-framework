@@ -79,19 +79,18 @@ SOUNDAO_API_KEY=<API Key>
 
 **不要**只跑 `python server.py` —— 没有 agent_loop，Web UI 提交后会卡在"等待 WorkBuddy 处理"。
 
-**正确入口**（任选其一）：
+**唯一正确入口**（Agent 自己启动，不需要用户操作）：
 
-| 平台 | 命令 |
-|---|---|
-| Windows (PowerShell) | `.\run.ps1` 或 `start.bat` |
-| Windows (CMD) | `start.bat` |
-| macOS / Linux | `./start.sh` |
-| 任意平台 | `python restart_services.py` |
+```bash
+python restart_services.py
+```
 
 `restart_services.py` 会：
 1. 用 `kill_matching` 杀掉所有旧 `server.py` / `agent_loop.py` 进程
 2. 启动新的 `server.py`（提供 Web UI + API）
 3. 启动新的 `agent_loop.py`（每 1 秒轮询 `latest_result.json`）
+
+> 启动入口只有 `python restart_services.py` 一个。本项目不再提供 `start.bat` / `start.sh` / `run.ps1` 等手动脚本——服务由 Agent 拉起，不让用户去点 bat/sh。
 
 启动后**立即验证**：
 ```bash

@@ -8,14 +8,11 @@
 
 ## 快速开始
 
-```bash
-# Windows
-.\start.bat
-# 或 PowerShell
-.\run.ps1
+> 服务由 **Agent 拉起**，不需要用户点任何脚本。
+> Agent 进入本项目后，按 [`AGENTS.md`](./AGENTS.md) 的 7 步清单执行，最后一步统一执行：
 
-# macOS / Linux
-./start.sh
+```bash
+python restart_services.py
 ```
 
 启动后浏览器打开 `http://127.0.0.1:8766/soundao-easy` 体验 AI 电台示例。**第一次启动会先打印凭证状态，无凭证时 Web UI 会引导你加入 QQ 群。**
