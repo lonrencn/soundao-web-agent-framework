@@ -6,6 +6,14 @@
 
 **Soundao Web Agent Framework | An open-source multilingual local WebUI bridge for audio-production agents. It solves the gap between powerful cloud audio APIs and non-technical users who just want finished deliverables. Compared with a single script or a standalone web tool, it provides Chinese / English / Japanese / Korean UI switching, Codex / Opencode / WorkBuddy branches, Soundao cloud capability docking, process asset visibility, final delivery checks, and MIT-licensed commercial use.**
 
+## Start Here: AI Radio Demo
+
+**The first built-in example is an AI radio program workflow.** Open the plain-language page, keep or edit the default “Soundao FM” prompt, then hand it to the Agent. The Agent will use this single example to show the full workflow: understand the request, write the program script, generate narration, create background music and an ending song, mix the final audio, show process assets, check the result, and deliver a playable file.
+
+This is the recommended first experience for non-technical users: no API terms, no model choices, no command line. Just describe the radio show you want.
+
+**For Agents:** after cloning this repository, read [`AGENTS.md`](AGENTS.md) first. It defines the startup checklist, credential check, workspace setup, service startup, and default AI radio demo flow.
+
 Soundao Web Agent Framework is a local Agent WebUI bridge for Soundao.
 
 It is not the source code of the Soundao cloud platform, and it does not include cloud model files. It focuses on a different layer:
@@ -71,7 +79,7 @@ With Soundao cloud capabilities and a local Agent workflow, this project can sup
 - speech-to-text, audio analysis, speaker-aware organization, and subtitle output;
 - denoising, speech enhancement, and vocal/accompaniment separation;
 - AI music, sound effects, background music, and complete audio deliverables;
-- radio programs, podcasts, audiobooks, course audio, short-drama narration, and other production workflows;
+- radio programs, podcasts, audiobooks, course audio, short-drama narration, and other production workflows; the AI radio demo is the default showcase for learning how to use the framework;
 - Chinese, English, Japanese, and Korean UI switching for the local pages;
 - local display of generated assets, including preview, download, and local path copy;
 - optional Premiere-importable FCP7 XML / xmeml multi-track timeline export.
