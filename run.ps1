@@ -4,7 +4,7 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
-$Root = Split-Location -Parent $MyInvocation.MyCommand.Path
+$Root = Split-Path -Parent $MyInvocation.MyCommand.Path
 Set-Location $Root
 
 # ── Read .env if present ──────────────────────────────────────
@@ -25,4 +25,14 @@ if (Test-Path $EnvFile) {
 if (-not $HostName) { $HostName = [Environment]::GetEnvironmentVariable("SOUNDAO_HOST") || "127.0.0.1" }
 if ($Port -eq 0) { $Port = [int]([Environment]::GetEnvironmentVariable("SOUNDAO_PORT") || "8766") }
 
-python .\server.py --host $HostName --port $Port
+# ── Delegate to restart_services.py ───────────────────────────
+# It kills any stale server.py / agent_loop.py and starts both
+# (server + agent_loop) in one shot.  This is the only supported
+# way to bring the project up.  See AGENTS.md step 5.
+$Python = $null
+if (Test-Path (Join-Path $Root ".venv\Scripts\python.exe")) {
+  $Python = Join-Path $Root ".venv\Scripts\python.exe"
+} else {
+  $Python = "python"
+}
+& $Python (Join-Path $Root "restart_services.py")

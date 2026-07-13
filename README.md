@@ -4,6 +4,22 @@
 
 本项目已适配 WorkBuddy 环境。**WorkBuddy 本身就是 Agent**——不需要 Codex CLI 子进程，也不需要中间文件传递。WorkBuddy 直接读取 `latest_result.json` 处理任务。
 
+> 🤖 **Agent 必读**：进入本项目的 Agent（Codex / Claude Code / Cursor / WorkBuddy 等）请先读 [`AGENTS.md`](./AGENTS.md)，里面是 7 步强制启动清单。
+
+## 快速开始
+
+```bash
+# Windows
+.\start.bat
+# 或 PowerShell
+.\run.ps1
+
+# macOS / Linux
+./start.sh
+```
+
+启动后浏览器打开 `http://127.0.0.1:8766/soundao-easy` 体验 AI 电台示例。**第一次启动会先打印凭证状态，无凭证时 Web UI 会引导你加入 QQ 群。**
+
 ## ⚠️ 启动前必须配置 Soundao 凭证
 
 本项目需要 Soundao 云端 API 来完成音频生产任务（TTS、配乐、混音等）。**没有凭证时，只能读取公开文档和整理方案，不能发起实际生成调用。**
@@ -31,9 +47,10 @@
 
 - `server.py`：本地 HTTP 服务（端口 8766），提供页面、事件接口、结果落盘接口。
 - `config.py`：统一配置模块，从 `.env` 加载所有路径和凭证设置。
-- `web/index.html`：控制台，可打开目标链接、手动保存结果、查看最新结果。
+- `web/soundao_intro.html`：能力介绍页（`/soundao`）。
+- `web/soundao_easy.html`：零门槛音频工作台（`/soundao-easy`），用户主要操作界面。
 - `web/web-agent-bridge.js`：嵌入任意本地 Web 页的 JS 桥。
-- `web/demo_interaction.html`：演示页面。
+- `AGENTS.md`：Agent 启动清单（必读第一份文件）。
 - `agent_loop.py`：Agent 侧轮询器，读取 `latest_result.json` 并执行本地动作。
   - **WorkBuddy 模式**（默认）：`agent_request` 动作标记为"等待 WorkBuddy 处理"，由 WorkBuddy 主 Agent 直接读取 `latest_result.json` 执行。无 Soundao 凭证时直接返回提示，不卡住。
   - **Codex 模式**（可选）：需手动设置 `WEB_AGENT_WORKBUDDY=0` 并确保 Codex CLI 已安装。
