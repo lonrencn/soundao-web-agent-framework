@@ -110,9 +110,11 @@ Agent 不能凭感觉临时拼接音频流程。处理 Soundao 任务时必须�
 
 - 先读本文件，再读云端 `/llms.txt` 和对应能力文档。
 - 如果当前 opencode 环境或 Agent 工作区技能库有匹配的 skill，先按 skill 的流程执行。
-- Agent 工作区技能库位于 `Soundao_Agent_Workspace/03_关键数据/技能库/`。
+- 技能文件位于项目内 `skills/` 目录。
 - 制作 AI 电台、广播节目、口播节目、城市新闻电台、音乐电台或最终广播音频时，必须先完整读取并遵守：
-  `Soundao_Agent_Workspace/03_关键数据/技能库/ai-radio-delivery/SKILL.md`
+  `skills/ai-radio-delivery/SKILL.md`
+- 如果需要导出 Premiere 可导入的多轨时间线 XML，先读取：
+  `skills/premiere-xml-timeline/SKILL.md`
 - 如果项目里已有专用脚本，例如 `soundao_cloud.py`，优先使用脚本，不要另起一套随意流程。
 - 没有文档、skill 或脚本支撑的步骤，只能作为方案建议，不能直接生成。
 - 音乐、配音、音效、分析、清理、媒资取回都应使用 Soundao 云端对应能力；本地工具只用于文件整理、格式转换、混音、响度处理和结果归档。
